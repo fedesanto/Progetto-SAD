@@ -20,4 +20,5 @@ public interface Shape2D extends ShapeInterface{
     double getHeigth();
     void setFillColor( Paint color);
     Paint getFillColor();
+    String toString();
 }

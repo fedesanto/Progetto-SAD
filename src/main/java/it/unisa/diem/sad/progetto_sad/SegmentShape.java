@@ -1,7 +1,7 @@
 package it.unisa.diem.sad.progetto_sad;
 import javafx.scene.paint.Paint;
 
-public abstract class SegmentShape implements Shape1D{
+public abstract class SegmentShape implements Shape1D {
     private double X;
     private double Y;
     private Paint stroke;
@@ -46,4 +46,13 @@ public abstract class SegmentShape implements Shape1D{
         this.length = length;
     }
 
+
+    @Override
+    public String toString() {
+        return "SegmentShape;" +
+                X + ";" +
+                Y + ";" +
+                stroke.toString() + ";" +
+                length;
+    }
 }
