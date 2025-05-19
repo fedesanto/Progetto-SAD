@@ -1,7 +1,7 @@
 package it.unisa.diem.sad.progetto_sad;
 import javafx.scene.paint.Color;
 
-public  class Shape2DCreator extends ShapeCreator {
+public  class Shape2DCreator  implements ShapeCreator {
     public TYPE_2D type;
     private Color stroke;
     private final double D2_WIDTH = 30.0;

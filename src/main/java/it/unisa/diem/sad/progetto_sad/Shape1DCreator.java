@@ -2,7 +2,7 @@ package it.unisa.diem.sad.progetto_sad;
 
 import javafx.scene.paint.Color;
 
-public class Shape1DCreator extends ShapeCreator {
+public abstract class Shape1DCreator  implements ShapeCreator {
     public TYPE_1D type;
     private Color stroke;
     private final double D1_LENGTH = 80.0;
@@ -17,7 +17,7 @@ public class Shape1DCreator extends ShapeCreator {
     }
 
     @Override
-    public abstract ShapeInterface createShape();
+    public ShapeInterface createShape();
 
 }
 
