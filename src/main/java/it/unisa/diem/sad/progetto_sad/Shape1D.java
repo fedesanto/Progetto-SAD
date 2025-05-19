@@ -10,5 +10,6 @@ public interface Shape1D extends ShapeInterface{
     Paint getStrokeColor();
     void setLength(double length);
     double getLength();
+    String toString();
 
 }
