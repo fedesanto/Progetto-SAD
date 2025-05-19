@@ -3,12 +3,17 @@ package it.unisa.diem.sad.progetto_sad;
 import javafx.scene.paint.Paint;
 
 public abstract class Shape1DCreator implements ShapeCreator {
-    private final String type;
+    public TYPE_1D type;
     private Paint stroke;
+    private final double D1_LENGTH = 80.0;
 
-    public Shape1DCreator(String type, Paint stroke) {
+    public Shape1DCreator(TYPE_1D type, Paint stroke) {
         this.type = type;
         this.stroke = stroke;
+    }
+
+    public TYPE_1D getType() {
+        return type;
     }
 
     public void setStrokeColor(Paint color) {
