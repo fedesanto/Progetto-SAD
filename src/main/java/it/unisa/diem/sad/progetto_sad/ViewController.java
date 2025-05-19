@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
@@ -24,7 +23,7 @@ public class ViewController implements Initializable {
     @FXML
     private ColorPicker fillColorPicker;
     @FXML
-    private ScrollPane pane;
+    private Pane workspace;
 
     private ShapeCreator selectedShape;
 
@@ -64,7 +63,7 @@ public class ViewController implements Initializable {
     @FXML
     protected void addShape() {
         ShapeInterface shape = selectedShape.createShape();
-        pane.getContent().getChildren().add(shape.getShape());
+        workspace.getChildren().add(shape.getShape());
     }
 
     @FXML
