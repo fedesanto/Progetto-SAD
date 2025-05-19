@@ -22,22 +22,42 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="BARRA DEGLI STRUMENTI">
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="BARRA DEGLI STRUMENTI" textAlignment="CENTER" wrappingWidth="803.3515625">
          <VBox.margin>
-            <Insets top="5.0" />
+            <Insets />
          </VBox.margin>
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <AnchorPane prefHeight="210.0" prefWidth="800.0" />
+      <Line endX="400.0" startX="-400.0" strokeWidth="3.0" />
+      <HBox prefHeight="130.0" prefWidth="800.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="130.0" prefWidth="151.0" spacing="10.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="FORME" textAlignment="CENTER" wrappingWidth="149.662109375" />
+                  <VBox fx:id="selectableShapes" alignment="CENTER" prefHeight="69.0" prefWidth="151.0" spacing="10.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="1.0" fill="WHITE" height="30.0" onMouseClicked="#onHighlighting" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="40.0" />
+                        <Ellipse fill="WHITE" onMouseClicked="#onHighlighting" radiusX="31.0" radiusY="16.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                        <Line endX="50.0" onMouseClicked="#onHighlighting" startX="-50.0" strokeWidth="2.0" />
+                     </children>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+            <Line endX="-100.0" endY="135.0" startX="-100.0" />
+         </children>
+      </HBox>
       <Line endX="400.0" startX="-400.0" strokeWidth="3.0">
          <VBox.margin>
             <Insets />
          </VBox.margin></Line>
       <ScrollPane prefHeight="570.0" prefWidth="800.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="796.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="796.0" />
         </content>
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
