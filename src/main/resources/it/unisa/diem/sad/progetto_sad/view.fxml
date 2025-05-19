@@ -31,8 +31,9 @@
          </font>
       </Text>
       <Line endX="400.0" startX="-400.0" strokeWidth="3.0" />
-      <HBox prefHeight="130.0" prefWidth="800.0">
+      <HBox alignment="CENTER" prefHeight="130.0" prefWidth="800.0">
          <children>
+            <Line endX="-100.0" endY="135.0" startX="-100.0" />
             <VBox alignment="CENTER" prefHeight="130.0" prefWidth="151.0" spacing="10.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="FORME" textAlignment="CENTER" wrappingWidth="149.662109375" />
@@ -49,6 +50,23 @@
                </HBox.margin>
             </VBox>
             <Line endX="-100.0" endY="135.0" startX="-100.0" />
+            <VBox alignment="CENTER" prefHeight="136.0" prefWidth="306.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="40.0" prefWidth="233.0" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COLORE BORDI:" />
+                        <ColorPicker fx:id="strokeColorPicker" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="40.0" prefWidth="233.0" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COLORE RIEMPIMENTO:" />
+                        <ColorPicker fx:id="fillColorPicker" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Line endX="-100.0" endY="135.0" startX="-100.0" />
          </children>
       </HBox>
       <Line endX="400.0" startX="-400.0" strokeWidth="3.0">
@@ -57,7 +75,7 @@
          </VBox.margin></Line>
       <ScrollPane prefHeight="570.0" prefWidth="800.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="796.0" />
+          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="796.0" />
         </content>
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
