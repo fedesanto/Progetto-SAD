@@ -13,10 +13,6 @@ public abstract class Shape2DCreator implements ShapeCreator {
             this.fill = fill;
         }
 
-        public TYPE_2D getType() {
-        return type;
-        }
-
         public void setStrokeColor(Paint color) {
             this.stroke = color;
         }
