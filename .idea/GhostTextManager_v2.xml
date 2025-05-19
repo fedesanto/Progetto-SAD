@@ -3,6 +3,18 @@
   <component name="GhostTextManager">
     <option name="inputs">
       <map>
+        <entry key="@&lt;file_name&gt; &#10;generami i test">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1747692962571" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
         <entry key="@FXML&#10;    protected void addShape() {&#10;        ShapeInterface shape = selectedShape.createShape();&#10;        pane.getChildren().add(shape.getShape());&#10;    }">
           <value>
             <GhostTextMetaData>
@@ -15,6 +27,18 @@
             </GhostTextMetaData>
           </value>
         </entry>
+        <entry key="no it's in the builder@RectangleShape.java">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1747690662835" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
         <entry key="public enum TYPE{ &quot;LINE&quot;, &quot;RECTANGLE&quot;, &quot;ELLIPSE&quot;};">
           <value>
             <GhostTextMetaData>
@@ -22,6 +46,18 @@
               <option name="timestamps">
                 <list>
                   <option value="1747664653838" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="why  have errors">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1747690604631" />
                 </list>
               </option>
             </GhostTextMetaData>

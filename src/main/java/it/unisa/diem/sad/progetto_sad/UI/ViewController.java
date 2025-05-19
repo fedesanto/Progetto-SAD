@@ -104,6 +104,8 @@ public class ViewController implements Initializable {
     @FXML
     protected void addShape() {
         ShapeInterface shape = selectedShape.createShape();
+        shape.setCenterX();
+        shape.setCenterY();
         workspace.getChildren().add((Shape) shape);
     }
 
