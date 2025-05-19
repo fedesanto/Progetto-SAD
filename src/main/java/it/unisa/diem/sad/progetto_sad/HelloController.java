@@ -33,8 +33,17 @@ public class HelloController {
     @FXML
     protected void addShape() {
         ShapeInterface shape = selectedShape.createShape();
-        pane.getChildren().add(shape.getShape());
+        pane.getContent().getChildren().add(shape.getShape());
     }
 
+    @FXML
+    protected void pickedStrokeColor() {
+        selectedShape.setStroke(strokeColorPicker.getValue());
+    }
+
+    @FXML
+    protected void pickedFillColor() {
+        selectedShape.setFill(fillColorPicker.getValue());
+    }
 
 }
