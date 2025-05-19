@@ -1,5 +1,6 @@
 package it.unisa.diem.sad.progetto_sad;
 
+import javafx.scene.paint.Color;
 
 public interface ShapeInterface {
     void setX(double X);

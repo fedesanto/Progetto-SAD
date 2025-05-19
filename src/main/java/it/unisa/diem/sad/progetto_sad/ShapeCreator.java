@@ -1,10 +1,8 @@
 package it.unisa.diem.sad.progetto_sad;
-
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 
 public interface ShapeCreator {
     ShapeInterface createShape();
-    void setStrokeColor(Paint color);
-    void setFillColor(Paint color);
+    void setStrokeColor(Color color);
 
 }
