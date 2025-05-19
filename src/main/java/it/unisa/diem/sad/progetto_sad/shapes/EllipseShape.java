@@ -18,19 +18,19 @@ public abstract class EllipseShape implements Shape2D {
         this.fill = fill;
     }
 
-    public double getX() {
+    public double getCenterX() {
         return X;
     }
 
-    public void setX(double X) {
+    public void setCenterX(double X) {
         this.X = X;
     }
 
-    public double getY() {
+    public double getCenterY() {
         return Y;
     }
 
-    public void setY(double Y) {
+    public void setCenterY(double Y) {
         this.Y = Y;
     }
 
@@ -42,19 +42,19 @@ public abstract class EllipseShape implements Shape2D {
         this.stroke = stroke;
     }
 
-    public double getWidth() {
+    public double getShapeWidth() {
         return width;
     }
 
-    public void setWidth(double width) {
+    public void setShapeWidth(double width) {
         this.width = width;
     }
 
-    public double getHeigth() {
+    public double getShapeHeight() {
         return heigth;
     }
 
-    public void setHeigth(double heigth) {
+    public void setShapeHeight(double heigth) {
         this.heigth = heigth;
     }
 
