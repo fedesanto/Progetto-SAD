@@ -12,10 +12,6 @@ public abstract class Shape1DCreator implements ShapeCreator {
         this.stroke = stroke;
     }
 
-    public TYPE_1D getType() {
-        return type;
-    }
-
     public void setStrokeColor(Paint color) {
         this.stroke = color;
     }
