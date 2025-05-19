@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
@@ -40,44 +41,58 @@ public class ViewController implements Initializable {
 
     }
 
-    @FXML
-    protected void onHighlighting() {
-        DropShadow highlight = new DropShadow(20, Color.BLUE);  // effetto evidenziato
+    /**
+     * Evidenzia la forma selezionata
+     *
+     * @param selectedShape riferimento alla shape cliccata
+     */
+    private void highlightShape(Shape selectedShape) {
+        DropShadow highlight = new DropShadow(20, Color.BLUE);  // effetto di evidenziazione
 
-        for (Node shape : selectableShapes.getChildren()) { //itero su tutte le forme del pannello "Forme"
-            if (highlightedShape != null) {         //evidenzio la forma attualmente evidenziata
-                highlightedShape.setEffect(null);
-            }
-            highlightedShape = (Shape) shape;
-            highlightedShape.setEffect(highlight);  //evidenzio la forma cliccata
+        if (highlightedShape != null) {         // disattivo l'effetto alla forma attualmente evidenziata
+            highlightedShape.setEffect(null);
         }
+        highlightedShape = selectedShape;       // evidenzio la forma cliccata
+        highlightedShape.setEffect(highlight);
     }
 
     /**
      * Seleziona una linea come forma corrente da disegnare.
      * Imposta il colore del bordo preso dal color picker.
+     *
+     * @param e riferimento all'evento di click
      */
     @FXML
-    protected void chosenLine() {
+    protected void chosenLine(MouseEvent e) {
         selectedShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
+
+        highlightShape((Shape) e.getTarget());
     }
 
     /**
      * Seleziona un rettangolo come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
+     *
+     * @param e riferimento all'evento di click
      */
     @FXML
-    protected void chosenRectangle() {
+    protected void chosenRectangle(MouseEvent e) {
         selectedShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+
+        highlightShape((Shape) e.getTarget());
     }
 
     /**
      * Seleziona un'ellisse come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
+     *
+     * @param e riferimento all'evento di click
      */
     @FXML
-    protected void chosenEllipse() {
+    protected void chosenEllipse(MouseEvent e) {
         selectedShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+
+        highlightShape((Shape) e.getTarget());
     }
 
     /**

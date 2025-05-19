@@ -39,9 +39,9 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="FORME" textAlignment="CENTER" wrappingWidth="149.662109375" />
                   <VBox fx:id="selectableShapes" alignment="CENTER" prefHeight="69.0" prefWidth="151.0" spacing="10.0">
                      <children>
-                        <Rectangle arcHeight="5.0" arcWidth="1.0" fill="WHITE" height="30.0" onMouseClicked="#onHighlighting" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="40.0" />
-                        <Ellipse fill="WHITE" onMouseClicked="#onHighlighting" radiusX="31.0" radiusY="16.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
-                        <Line endX="50.0" onMouseClicked="#onHighlighting" startX="-50.0" strokeWidth="2.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="1.0" fill="WHITE" height="30.0" onMouseClicked="#chosenRectangle" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="40.0" />
+                        <Ellipse fill="WHITE" onMouseClicked="#chosenEllipse" radiusX="31.0" radiusY="16.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" />
+                        <Line endX="50.0" onMouseClicked="#chosenLine" startX="-50.0" strokeWidth="2.0" />
                      </children>
                   </VBox>
                </children>
