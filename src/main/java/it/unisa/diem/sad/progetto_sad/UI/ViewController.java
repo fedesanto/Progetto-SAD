@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -103,10 +104,14 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void addShape(MouseEvent event) {
-        ShapeInterface shape = selectedShape.createShape();
-        shape.setCenterX(event.getX());
-        shape.setCenterY(event.getY());
-        workspace.getChildren().add((Shape) shape);
+        if(selectedShape != null) {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                ShapeInterface shape = selectedShape.createShape();
+                shape.setCenterX(event.getX());
+                shape.setCenterY(event.getY());
+                workspace.getChildren().add((Shape) shape);
+            }
+        }
     }
 
     /**
