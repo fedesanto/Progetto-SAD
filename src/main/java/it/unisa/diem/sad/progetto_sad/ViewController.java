@@ -1,4 +1,4 @@
-package it.unisa.diem.sad.progetto_sad.UI;
+package it.unisa.diem.sad.progetto_sad;
 
 import it.unisa.diem.sad.progetto_sad.factories.Shape1DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
@@ -22,8 +22,6 @@ import java.util.ResourceBundle;
  */
 public class ViewController implements Initializable {
 
-    @FXML
-    private Pane selectableShapes;
     @FXML
     private ColorPicker strokeColorPicker;
     @FXML
