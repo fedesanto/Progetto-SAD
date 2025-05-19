@@ -9,10 +9,10 @@ public interface Shape2D extends ShapeInterface{
         ELLIPSE
     }
 
-    void setWidth(double width);
-    double getWidth();
-    void setHeigth(double heigth);
-    double getHeigth();
+    void setShapeWidth(double width);
+    double getShapeWidth();
+    void setShapeHeight(double heigth);
+    double getShapeHeight();
     void setFillColor(Color color);
     Color getFillColor();
 }
