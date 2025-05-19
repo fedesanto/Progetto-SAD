@@ -2,6 +2,11 @@ package it.unisa.diem.sad.progetto_sad;
 import javafx.scene.paint.Paint;
 
 public interface Shape1D extends ShapeInterface{
+
+    enum TYPE_1D {
+        LINE
+    }
+
     void setX(double X);
     void setY(double Y);
     double getX();
