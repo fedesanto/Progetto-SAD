@@ -1,4 +1,4 @@
-package it.unisa.diem.sad.progetto_sad;
+package it.unisa.diem.sad.progetto_sad.UI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

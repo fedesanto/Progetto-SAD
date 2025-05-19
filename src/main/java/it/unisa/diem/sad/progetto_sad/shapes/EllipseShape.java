@@ -1,8 +1,7 @@
-package it.unisa.diem.sad.progetto_sad;
-
+package it.unisa.diem.sad.progetto_sad.shapes;
 import javafx.scene.paint.Color;
 
-public abstract class RectangleShape implements Shape2D {
+public abstract class EllipseShape implements Shape2D {
     private double X;
     private double Y;
     private Color stroke;
@@ -10,7 +9,7 @@ public abstract class RectangleShape implements Shape2D {
     private double heigth;
     private Color fill;
 
-    public RectangleShape(double X, double Y, Color stroke, double width, double heigth, Color fill) {
+    public EllipseShape(double X, double Y, Color stroke, double width, double heigth, Color fill) {
         this.X = X;
         this.Y = Y;
         this.stroke = stroke;
@@ -68,7 +67,7 @@ public abstract class RectangleShape implements Shape2D {
     }
     @Override
     public String toString() {
-        return "RectangleShape;" +
+        return "EllipseShape;" +
                 X + ";" +
                 Y + ";" +
                 stroke.toString() + ";" +

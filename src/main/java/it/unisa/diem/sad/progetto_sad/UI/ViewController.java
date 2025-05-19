@@ -1,8 +1,11 @@
-package it.unisa.diem.sad.progetto_sad;
+package it.unisa.diem.sad.progetto_sad.UI;
 
+import it.unisa.diem.sad.progetto_sad.factories.Shape1DCreator;
+import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
+import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
+import it.unisa.diem.sad.progetto_sad.shapes.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
@@ -101,7 +104,7 @@ public class ViewController implements Initializable {
     @FXML
     protected void addShape() {
         ShapeInterface shape = selectedShape.createShape();
-        workspace.getChildren().add(shape.getShape());
+        workspace.getChildren().add((Shape) shape);
     }
 
     /**

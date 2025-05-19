@@ -1,4 +1,4 @@
-package it.unisa.diem.sad.progetto_sad;
+package it.unisa.diem.sad.progetto_sad.shapes;
 
 import javafx.scene.paint.Color;
 
@@ -9,7 +9,5 @@ public interface ShapeInterface {
     double getY();
     void setStrokeColor(Color color);
     Color getStrokeColor();
-    void setLength(double length);
-    double getLength();
     String toString();
 }
