@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 
-<VBox alignment="CENTER" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unisa.diem.sad.progetto_sad.UI.ViewController">
+<VBox alignment="CENTER" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unisa.diem.sad.progetto_sad.ViewController">
    <children>
       <MenuBar prefHeight="56.0" prefWidth="800.0">
         <menus>
@@ -55,13 +55,13 @@
                   <HBox alignment="CENTER" prefHeight="40.0" prefWidth="233.0" spacing="20.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COLORE BORDI:" />
-                        <ColorPicker fx:id="strokeColorPicker" />
+                        <ColorPicker fx:id="strokeColorPicker" onAction="#pickedStrokeColor" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="40.0" prefWidth="233.0" spacing="20.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COLORE RIEMPIMENTO:" />
-                        <ColorPicker fx:id="fillColorPicker" />
+                        <ColorPicker fx:id="fillColorPicker" onAction="#pickedFillColor" />
                      </children>
                   </HBox>
                </children>
@@ -75,7 +75,7 @@
          </VBox.margin></Line>
       <ScrollPane prefHeight="570.0" prefWidth="800.0">
         <content>
-          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="796.0" />
+          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" onMouseClicked="#addShape" prefHeight="398.0" prefWidth="796.0" />
         </content>
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
