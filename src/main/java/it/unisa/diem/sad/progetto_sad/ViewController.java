@@ -74,6 +74,8 @@ public class ViewController implements Initializable {
 
     @FXML
     protected void pickedFillColor() {
-        selectedShape.setFillColor(fillColorPicker.getValue());
+        if(selectedShape instanceof Shape2DCreator) {
+            ((Shape2DCreator) selectedShape).setFillColor(fillColorPicker.getValue());
+        }
     }
 }
