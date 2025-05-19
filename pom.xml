@@ -60,7 +60,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>it.unisa.diem.sad.progetto_sad/it.unisa.diem.sad.progetto_sad.HelloApplication
+                            <mainClass>it.unisa.diem.sad.progetto_sad/it.unisa.diem.sad.progetto_sad.DrawingApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
