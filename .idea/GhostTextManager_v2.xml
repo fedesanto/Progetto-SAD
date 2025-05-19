@@ -27,6 +27,18 @@
             </GhostTextMetaData>
           </value>
         </entry>
+        <entry key="C:\Users\attil\PycharmProjects\Progetto-SAD\src\main\java\module-info.java:7:30&#10;java: package is empty or does not exist: it.unisa.diem.sad.progetto_sad">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1747694416810" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
         <entry key="no it's in the builder@RectangleShape.java">
           <value>
             <GhostTextMetaData>
@@ -58,6 +70,18 @@
               <option name="timestamps">
                 <list>
                   <option value="1747690604631" />
+                </list>
+              </option>
+            </GhostTextMetaData>
+          </value>
+        </entry>
+        <entry key="why i have error in line 7">
+          <value>
+            <GhostTextMetaData>
+              <option name="count" value="1.0" />
+              <option name="timestamps">
+                <list>
+                  <option value="1747694373588" />
                 </list>
               </option>
             </GhostTextMetaData>

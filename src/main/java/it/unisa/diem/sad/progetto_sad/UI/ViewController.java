@@ -102,10 +102,10 @@ public class ViewController implements Initializable {
      * Crea e aggiunge al workspace la forma selezionata, usando le proprietà correnti.
      */
     @FXML
-    protected void addShape() {
+    protected void addShape(MouseEvent event) {
         ShapeInterface shape = selectedShape.createShape();
-        shape.setCenterX();
-        shape.setCenterY();
+        shape.setCenterX(event.getX());
+        shape.setCenterY(event.getY());
         workspace.getChildren().add((Shape) shape);
     }
 

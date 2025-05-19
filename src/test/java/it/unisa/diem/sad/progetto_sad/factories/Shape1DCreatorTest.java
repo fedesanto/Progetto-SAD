@@ -26,7 +26,7 @@ class Shape1DCreatorTest {
 
         SegmentShape segment = (SegmentShape) shape;
         assertEquals(Color.RED, segment.getStroke(), "Il colore del bordo non corrisponde.");
-        assertEquals(80, segment.getLength(), "La lunghezza del segmento dovrebbe essere 80.");
+        assertEquals(80, segment.getShapeLength(), "La lunghezza del segmento dovrebbe essere 80.");
     }
 
     @Test

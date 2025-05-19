@@ -27,8 +27,8 @@ class Shape2DCreatorTest {
         RectangleShape rectangle = (RectangleShape) shape;
         assertEquals(Color.BLACK, rectangle.getStroke(), "Colore del bordo errato.");
         assertEquals(Color.YELLOW, rectangle.getFill(), "Colore di riempimento errato.");
-        assertEquals(30, rectangle.getWidth(), "Larghezza errata.");
-        assertEquals(20, rectangle.getHeigth(), "Altezza errata.");
+        assertEquals(30, rectangle.getShapeWidth(), "Larghezza errata.");
+        assertEquals(20, rectangle.getShapeHeight(), "Altezza errata.");
     }
 
     @Test
@@ -40,8 +40,8 @@ class Shape2DCreatorTest {
         EllipseShape ellipse = (EllipseShape) shape;
         assertEquals(Color.BLUE, ellipse.getStroke(), "Colore del bordo errato.");
         assertEquals(Color.GREEN, ellipse.getFill(), "Colore di riempimento errato.");
-        assertEquals(30, ellipse.getWidth(), "Larghezza errata.");
-        assertEquals(20, ellipse.getHeigth(), "Altezza errata.");
+        assertEquals(30, ellipse.getShapeWidth(), "Larghezza errata.");
+        assertEquals(20, ellipse.getShapeHeight(), "Altezza errata.");
     }
 
     @Test
@@ -67,5 +67,5 @@ class Shape2DCreatorTest {
 
         assertNull(shape, "La forma dovrebbe essere nulla se il tipo non è supportato.");
     }
-}
+
 }

@@ -53,8 +53,8 @@ public class Shape2DCreator implements ShapeCreator {
         switch (this.type) {
             case RECTANGLE:
                 return new RectangleShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
-            case ELLIPSE:
-                return new EllipseShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
+            //case ELLIPSE:
+            //    return new EllipseShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
             default:
                 return null;
         }
