@@ -3,7 +3,9 @@ package it.unisa.diem.sad.progetto_sad;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -13,12 +15,18 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ViewController implements Initializable {
-    @FXML
-    private Label welcomeText;
 
     @FXML
     private Pane selectableShapes;
     private Shape highlightedShape;
+    @FXML
+    private ColorPicker strokeColorPicker;
+    @FXML
+    private ColorPicker fillColorPicker;
+    @FXML
+    private ScrollPane pane;
+
+    private ShapeCreator selectedShape;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -38,9 +46,34 @@ public class ViewController implements Initializable {
         }
     }
 
+    @FXML
+    protected void chosenLine() {
+        selectedShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
+    }
 
     @FXML
-    protected void onHelloButtonClick() {
+    protected void chosenRectangle() {
+        selectedShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+    }
 
+    @FXML
+    protected void chosenEllipse() {
+        selectedShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+    }
+
+    @FXML
+    protected void addShape() {
+        ShapeInterface shape = selectedShape.createShape();
+        pane.getContent().getChildren().add(shape.getShape());
+    }
+
+    @FXML
+    protected void pickedStrokeColor() {
+        selectedShape.setStrokeColor(strokeColorPicker.getValue());
+    }
+
+    @FXML
+    protected void pickedFillColor() {
+        selectedShape.setFillColor(fillColorPicker.getValue());
     }
 }
