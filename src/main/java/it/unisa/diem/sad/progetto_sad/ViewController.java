@@ -34,14 +34,14 @@ public class ViewController implements Initializable {
 
     @FXML
     protected void onHighlighting() {
-        DropShadow highlight = new DropShadow(20, Color.BLUE);
+        DropShadow highlight = new DropShadow(20, Color.BLUE);  // effetto evidenziato
 
-        for (Node shape : selectableShapes.getChildren()) {
-            if (highlightedShape != null) {
+        for (Node shape : selectableShapes.getChildren()) { //itero su tutte le forme del pannello "Forme"
+            if (highlightedShape != null) {         //evidenzio la forma attualmente evidenziata
                 highlightedShape.setEffect(null);
             }
             highlightedShape = (Shape) shape;
-            highlightedShape.setEffect(highlight);
+            highlightedShape.setEffect(highlight);  //evidenzio la forma cliccata
         }
     }
 
