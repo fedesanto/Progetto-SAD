@@ -1,13 +1,14 @@
 package it.unisa.diem.sad.progetto_sad;
-import javafx.scene.paint.Paint;
+
+import javafx.scene.paint.Color;
 
 public abstract class SegmentShape implements Shape1D {
     private double X;
     private double Y;
-    private Paint stroke;
+    private Color stroke;
     private double length;
 
-    public SegmentShape(double X, double Y, Paint stroke, double length) {
+    public SegmentShape(double X, double Y, Color stroke, double length) {
         this.X = X;
         this.Y = Y;
         this.stroke = stroke;
@@ -30,11 +31,11 @@ public abstract class SegmentShape implements Shape1D {
         this.Y = Y;
     }
 
-    public Paint getStroke() {
+    public Color getStroke() {
         return stroke;
     }
 
-    public void setStroke(Paint stroke) {
+    public void setStroke(Color stroke) {
         this.stroke = stroke;
     }
 

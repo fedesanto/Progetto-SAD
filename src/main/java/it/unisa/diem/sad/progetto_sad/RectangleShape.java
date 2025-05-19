@@ -1,15 +1,16 @@
 package it.unisa.diem.sad.progetto_sad;
-import javafx.scene.paint.Paint;
+
+import javafx.scene.paint.Color;
 
 public abstract class RectangleShape implements Shape2D {
     private double X;
     private double Y;
-    private Paint stroke;
+    private Color stroke;
     private double width;
     private double heigth;
-    private Paint fill;
+    private Color fill;
 
-    public RectangleShape(double X, double Y, Paint stroke, double width, double heigth, Paint fill) {
+    public RectangleShape(double X, double Y, Color stroke, double width, double heigth, Color fill) {
         this.X = X;
         this.Y = Y;
         this.stroke = stroke;
@@ -34,11 +35,11 @@ public abstract class RectangleShape implements Shape2D {
         this.Y = Y;
     }
 
-    public Paint getStroke() {
+    public Color getStroke() {
         return stroke;
     }
 
-    public void setStroke(Paint stroke) {
+    public void setStroke(Color stroke) {
         this.stroke = stroke;
     }
 
@@ -58,11 +59,11 @@ public abstract class RectangleShape implements Shape2D {
         this.heigth = heigth;
     }
 
-    public Paint getFill() {
+    public Color getFill() {
         return fill;
     }
 
-    public void setFill(Paint fill) {
+    public void setFill(Color fill) {
         this.fill = fill;
     }
     @Override

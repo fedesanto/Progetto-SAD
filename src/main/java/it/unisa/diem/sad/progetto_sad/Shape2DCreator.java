@@ -1,23 +1,24 @@
 package it.unisa.diem.sad.progetto_sad;
+import javafx.scene.paint.Color;
 
-public abstract class Shape2DCreator implements ShapeCreator {
+public  class Shape2DCreator extends ShapeCreator {
     public TYPE_2D type;
-    private Paint stroke;
+    private Color stroke;
     private final double D2_WIDTH = 30.0;
     private final double D2_HEIGHT = 20.0;
-    private Paint fill;
+    private Color fill;
 
-        public Shape2DCreator(TYPE_2D type, Paint stroke, Paint fill) {
+        public Shape2DCreator(TYPE_2D type, Color stroke, Color fill) {
             this.type = type;
             this.stroke = stroke;
             this.fill = fill;
         }
 
-        public void setStrokeColor(Paint color) {
+        public void setStrokeColor(Color color) {
             this.stroke = color;
         }
 
-        public void setFillColor(Paint color) {
+        public void setFillColor(Color color) {
             this.fill = color;
         }
 
