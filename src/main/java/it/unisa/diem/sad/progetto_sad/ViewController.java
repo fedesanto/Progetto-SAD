@@ -164,7 +164,7 @@ public class ViewController implements Initializable {
     @FXML
     protected void saveFileOperation() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (.txt)", ".txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
         File file = fileChooser.showSaveDialog(null);
 
         if(file != null){
@@ -176,11 +176,7 @@ public class ViewController implements Initializable {
 
             if(! FileManager.saveFile(shapeList, file.getAbsolutePath())) {
                 // Generazione alert in caso di errore nel salvataggio
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText(null);
-                alert.setContentText("Impossibile salvare il file.");
-                alert.showAndWait();
+                showAlert("Errore", "Impossibile salvare il file.");
             }
         }
     }
@@ -192,26 +188,40 @@ public class ViewController implements Initializable {
     @FXML
     protected void loadFileOperation() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (.txt)", ".txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
         File file = fileChooser.showOpenDialog(null);
 
         if(file != null){
-            List<ShapeInterface> shapeList = FileManager.loadFile(file.getAbsolutePath());
+            if(! file.getName().toLowerCase().endsWith(".txt")) {
+                // Mostra errore se il file non ha estensione .txt
+                showAlert("Errore", "Il file deve avere estensione .txt.");
+            }else {
+                List<ShapeInterface> shapeList = FileManager.loadFile(file.getAbsolutePath());
 
-            if(shapeList != null) {
-                // Rimuove tutte le forme precedenti e aggiunge le nuove
-                workspace.getChildren().clear();
-                for (ShapeInterface shape : shapeList)
-                    workspace.getChildren().add((Shape) shape);
-            }
-            else {
-                // Generazione alert in caso di errore nel caricamento
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText(null);
-                alert.setContentText("Impossibile caricare il file.");
-                alert.showAndWait();
+                if (shapeList != null) {
+                    // Rimuove tutte le forme precedenti e aggiunge le nuove
+                    workspace.getChildren().clear();
+                    for (ShapeInterface shape : shapeList)
+                        workspace.getChildren().add((Shape) shape);
+                } else {
+                    // Generazione alert in caso di errore nel caricamento
+                    showAlert("Errore", "Impossibile caricare il file.");
+                }
             }
         }
+    }
+
+    /**
+     * Mostra una finestra di dialogo di errore con un titolo e un messaggio specificati.
+     *
+     * @param title   il titolo della finestra di dialogo.
+     * @param message il messaggio di errore da visualizzare nel contenuto dell'alert.
+     */
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
