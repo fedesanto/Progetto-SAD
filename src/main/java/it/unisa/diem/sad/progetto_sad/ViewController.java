@@ -8,6 +8,7 @@ import it.unisa.diem.sad.progetto_sad.shapes.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
@@ -54,9 +55,10 @@ public class ViewController implements Initializable {
     }
 
     /**
-     * Evidenzia la forma selezionata
+     * Evidenzia visivamente la forma selezionata applicando un effetto visivo.
+     * Se un'altra forma era precedentemente evidenziata, rimuove l'effetto.
      *
-     * @param shape riferimento alla shape cliccata
+     * @param shape forma da evidenziare
      */
     private void highlightShape(Shape shape) {
         DropShadow highlight = new DropShadow(20, Color.BLUE);  // effetto di evidenziazione
@@ -108,7 +110,10 @@ public class ViewController implements Initializable {
     }
 
     /**
-     * Crea e aggiunge al workspace la forma selezionata, usando le proprietà correnti.
+     * Aggiunge una nuova forma nel punto cliccato dal mouse se è stato selezionato uno strumento.
+     * Solo il tasto sinistro del mouse attiva questa azione.
+     *
+     * @param event evento di click del mouse
      */
     @FXML
     protected void addShape(MouseEvent event) {
@@ -143,11 +148,19 @@ public class ViewController implements Initializable {
         }
     }
 
+    /**
+     * Abilita il pulsante di salvataggio solo se esistono forme nel workspace.
+     * Viene invocato da un evento di click su "File".
+     */
     @FXML
     protected void onClickFile() {
         saveButton.setDisable(workspace.getChildren().isEmpty());
     }
 
+    /**
+     * Salva le forme presenti nel workspace in un file scelto dall'utente.
+     * Il formato del file è testuale, come definito nella classe FileManager.
+     */
     @FXML
     protected void saveFileOperation() {
         FileChooser fileChooser = new FileChooser();
@@ -157,13 +170,25 @@ public class ViewController implements Initializable {
         if(file != null){
             List<ShapeInterface> shapeList = new ArrayList<>();
 
+            // Conversione dei nodi in ShapeInterface
             for (Node node : workspace.getChildren())
                 shapeList.add((ShapeInterface) node);
 
-            FileManager.saveFile(shapeList, file.getAbsolutePath());
+            if(! FileManager.saveFile(shapeList, file.getAbsolutePath())) {
+                // Generazione alert in caso di errore nel salvataggio
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText(null);
+                alert.setContentText("Impossibile salvare il file.");
+                alert.showAndWait();
+            }
         }
     }
 
+    /**
+     * Carica forme da un file scelto dall'utente e le visualizza nel workspace.
+     * Sovrascrive eventuali forme già presenti.
+     */
     @FXML
     protected void loadFileOperation() {
         FileChooser fileChooser = new FileChooser();
@@ -173,9 +198,20 @@ public class ViewController implements Initializable {
         if(file != null){
             List<ShapeInterface> shapeList = FileManager.loadFile(file.getAbsolutePath());
 
-            workspace.getChildren().clear();
-            for (ShapeInterface shape : shapeList)
-                workspace.getChildren().add((Shape) shape);
+            if(shapeList != null) {
+                // Rimuove tutte le forme precedenti e aggiunge le nuove
+                workspace.getChildren().clear();
+                for (ShapeInterface shape : shapeList)
+                    workspace.getChildren().add((Shape) shape);
+            }
+            else {
+                // Generazione alert in caso di errore nel caricamento
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText(null);
+                alert.setContentText("Impossibile caricare il file.");
+                alert.showAndWait();
+            }
         }
     }
 }
