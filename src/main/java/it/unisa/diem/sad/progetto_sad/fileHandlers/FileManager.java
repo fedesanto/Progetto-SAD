@@ -69,7 +69,7 @@ public class FileManager {
                         shapes.add(shape);
                     }
 
-                    if(campi[1].equals("Ellipse")) {
+                    if(campi[1].equals("EllipseShape")) {
                         double centerX = Double.parseDouble(campi[2]);
                         double centerY = Double.parseDouble(campi[3]);
                         Color stroke = Color.web(campi[4]);

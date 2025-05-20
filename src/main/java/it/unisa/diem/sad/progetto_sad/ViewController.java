@@ -124,7 +124,8 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedStrokeColor() {
-        chosenShape.setStrokeColor(strokeColorPicker.getValue());
+        if(chosenShape != null)
+            chosenShape.setStrokeColor(strokeColorPicker.getValue());
     }
 
     /**
@@ -132,8 +133,10 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedFillColor() {
-        if(chosenShape instanceof Shape2DCreator) {
-            ((Shape2DCreator) chosenShape).setFillColor(fillColorPicker.getValue());
+        if(chosenShape != null){
+            if(chosenShape instanceof Shape2DCreator) {
+                ((Shape2DCreator) chosenShape).setFillColor(fillColorPicker.getValue());
+            }
         }
     }
 
@@ -143,16 +146,13 @@ public class ViewController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (.txt)", ".txt"));
         File file = fileChooser.showSaveDialog(null);
 
-        if(file.getName().endsWith(".txt")){
+        if(file != null){
             List<ShapeInterface> shapeList = new ArrayList<>();
 
             for (Node node : workspace.getChildren())
                 shapeList.add((ShapeInterface) node);
 
             FileManager.saveFile(shapeList, file.getAbsolutePath());
-        }
-        else {
-            System.out.println("File non valido");
         }
     }
 
@@ -162,15 +162,12 @@ public class ViewController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files (.txt)", ".txt"));
         File file = fileChooser.showOpenDialog(null);
 
-        if(file.getName().endsWith(".txt")){
+        if(file != null){
             List<ShapeInterface> shapeList = FileManager.loadFile(file.getAbsolutePath());
 
             workspace.getChildren().clear();
             for (ShapeInterface shape : shapeList)
                 workspace.getChildren().add((Shape) shape);
-        }
-        else {
-            System.out.println("File non valido");
         }
     }
 }
