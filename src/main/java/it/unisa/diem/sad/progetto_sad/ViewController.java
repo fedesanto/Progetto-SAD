@@ -102,13 +102,13 @@ public class ViewController implements Initializable {
      * Seleziona un'ellisse come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
      *
-     * @param e riferimento all'evento di click
+     * @param event riferimento all'evento di click
      */
     @FXML
-    protected void chosenEllipse(MouseEvent e) {
-        if(e.getButton() == MouseButton.PRIMARY) {
+    protected void chosenEllipse(MouseEvent event) {
+        if(event.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-            highlightShape((Shape) e.getTarget());
+            highlightShape((Shape) event.getTarget());
         }
     }
 
