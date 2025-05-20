@@ -1,10 +1,14 @@
 package it.unisa.diem.sad.progetto_sad;
 
+import it.unisa.diem.sad.progetto_sad.factories.Shape1DCreator;
+import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
+import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
+import it.unisa.diem.sad.progetto_sad.shapes.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -18,8 +22,6 @@ import java.util.ResourceBundle;
  */
 public class ViewController implements Initializable {
 
-    @FXML
-    private Pane selectableShapes;
     @FXML
     private ColorPicker strokeColorPicker;
     @FXML
@@ -99,9 +101,15 @@ public class ViewController implements Initializable {
      * Crea e aggiunge al workspace la forma selezionata, usando le proprietà correnti.
      */
     @FXML
-    protected void addShape() {
-        ShapeInterface shape = selectedShape.createShape();
-        workspace.getChildren().add(shape.getShape());
+    protected void addShape(MouseEvent event) {
+        if(selectedShape != null) {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                ShapeInterface shape = selectedShape.createShape();
+                shape.setCenterX(event.getX());
+                shape.setCenterY(event.getY());
+                workspace.getChildren().add((Shape) shape);
+            }
+        }
     }
 
     /**

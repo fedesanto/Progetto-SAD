@@ -1,4 +1,6 @@
-package it.unisa.diem.sad.progetto_sad;
+package it.unisa.diem.sad.progetto_sad.fileHandlers;
+
+import it.unisa.diem.sad.progetto_sad.shapes.ShapeInterface;
 
 import java.io.FileWriter;
 import java.io.IOException;

@@ -55,13 +55,13 @@
                   <HBox alignment="CENTER" prefHeight="40.0" prefWidth="233.0" spacing="20.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COLORE BORDI:" />
-                        <ColorPicker fx:id="strokeColorPicker" />
+                        <ColorPicker fx:id="strokeColorPicker" onAction="#pickedStrokeColor" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="40.0" prefWidth="233.0" spacing="20.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COLORE RIEMPIMENTO:" />
-                        <ColorPicker fx:id="fillColorPicker" />
+                        <ColorPicker fx:id="fillColorPicker" onAction="#pickedFillColor" />
                      </children>
                   </HBox>
                </children>
@@ -75,7 +75,7 @@
          </VBox.margin></Line>
       <ScrollPane prefHeight="570.0" prefWidth="800.0">
         <content>
-          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="796.0" />
+          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" onMouseClicked="#addShape" prefHeight="398.0" prefWidth="796.0" />
         </content>
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
