@@ -50,13 +50,12 @@ public class Shape2DCreator implements ShapeCreator {
      */
     @Override
     public ShapeInterface createShape(){
-        switch (this.type) {
-            case RECTANGLE:
-                return new RectangleShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
-            case ELLIPSE:
-                return new EllipseShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
-            default:
-                return null;
+        if (this.type == Shape2D.TYPE_2D.RECTANGLE) {
+            return new RectangleShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
+        } else if (this.type == Shape2D.TYPE_2D.ELLIPSE) {
+            return new EllipseShape(0, 0, this.stroke, this.D2_WIDTH, this.D2_HEIGHT, this.fill);
+        } else {
+            return null;
         }
     }
 

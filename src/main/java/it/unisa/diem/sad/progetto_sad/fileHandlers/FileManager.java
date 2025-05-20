@@ -41,8 +41,8 @@ public class FileManager {
                         Shape1DCreator creator = new Shape1DCreator(Shape1D.TYPE_1D.LINE, stroke);
                         SegmentShape shape = (SegmentShape) creator.createShape();
 
-                        shape.setCenterX(centerX);
-                        shape.setCenterY(centerY);
+                        shape.setShapeX(centerX);
+                        shape.setShapeY(centerY);
                         shape.setShapeLength(length);
 
                         shapes.add(shape);
@@ -61,8 +61,8 @@ public class FileManager {
                         Shape2DCreator creator = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, stroke, fill);
                         RectangleShape shape = (RectangleShape) creator.createShape();
 
-                        shape.setCenterX(centerX);
-                        shape.setCenterY(centerY);
+                        shape.setShapeX(centerX);
+                        shape.setShapeY(centerY);
                         shape.setShapeWidth(width);
                         shape.setShapeHeight(height);
 
@@ -80,8 +80,8 @@ public class FileManager {
                         Shape2DCreator creator = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, stroke, fill);
                         EllipseShape shape = (EllipseShape) creator.createShape();
 
-                        shape.setCenterX(centerX);
-                        shape.setCenterY(centerY);
+                        shape.setShapeX(centerX);
+                        shape.setShapeY(centerY);
                         shape.setShapeWidth(width);
                         shape.setShapeHeight(height);
 
