@@ -74,26 +74,28 @@ public class ViewController implements Initializable {
      * Seleziona una linea come forma corrente da disegnare.
      * Imposta il colore del bordo preso dal color picker.
      *
-     * @param e riferimento all'evento di click
+     * @param event riferimento all'evento di click
      */
     @FXML
-    protected void chosenLine(MouseEvent e) {
-        chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
-
-        highlightShape((Shape) e.getTarget());
+    protected void chosenLine(MouseEvent event) {
+        if(event.getButton() == MouseButton.PRIMARY) {
+            chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
+            highlightShape((Shape) event.getTarget());
+        }
     }
 
     /**
      * Seleziona un rettangolo come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
      *
-     * @param e riferimento all'evento di click
+     * @param event riferimento all'evento di click
      */
     @FXML
-    protected void chosenRectangle(MouseEvent e) {
-        chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-
-        highlightShape((Shape) e.getTarget());
+    protected void chosenRectangle(MouseEvent event) {
+        if(event.getButton() == MouseButton.PRIMARY) {
+            chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+            highlightShape((Shape) event.getTarget());
+        }
     }
 
     /**
@@ -104,9 +106,10 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void chosenEllipse(MouseEvent e) {
-        chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-
-        highlightShape((Shape) e.getTarget());
+        if(e.getButton() == MouseButton.PRIMARY) {
+            chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+            highlightShape((Shape) e.getTarget());
+        }
     }
 
     /**
@@ -167,14 +170,14 @@ public class ViewController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
         File file = fileChooser.showSaveDialog(null);
 
-        if(file != null){
+        if (file != null) {
             List<ShapeInterface> shapeList = new ArrayList<>();
 
             // Conversione dei nodi in ShapeInterface
             for (Node node : workspace.getChildren())
                 shapeList.add((ShapeInterface) node);
 
-            if(! FileManager.saveFile(shapeList, file.getAbsolutePath())) {
+            if (!FileManager.saveFile(shapeList, file.getAbsolutePath())) {
                 // Generazione alert in caso di errore nel salvataggio
                 showAlert("Errore", "Impossibile salvare il file.");
             }
@@ -191,11 +194,11 @@ public class ViewController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
         File file = fileChooser.showOpenDialog(null);
 
-        if(file != null){
-            if(! file.getName().toLowerCase().endsWith(".txt")) {
+        if (file != null) {
+            if (!file.getName().toLowerCase().endsWith(".txt")) {
                 // Mostra errore se il file non ha estensione .txt
                 showAlert("Errore", "Il file deve avere estensione .txt.");
-            }else {
+            } else {
                 List<ShapeInterface> shapeList = FileManager.loadFile(file.getAbsolutePath());
 
                 if (shapeList != null) {
