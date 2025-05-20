@@ -12,51 +12,50 @@ class RectangleShapeTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize a default rectangle before each test
         rect = new RectangleShape(0, 0, Color.BLACK, 40, 20, Color.WHITE);
     }
 
     @Test
-    void testGetCenterXAndGetCenterY() {
-        assertEquals(0, rect.getCenterX());
-        assertEquals(0, rect.getCenterY());
+    void testGetCenterXAndGetShapeY() {
+        assertEquals(0, rect.getShapeX());
+        assertEquals(0, rect.getShapeY());
 
-        rect.setX(10);
-        rect.setY(15);
+        rect.setShapeX(10);
+        rect.setShapeY(15);
         rect.setShapeWidth(50);
         rect.setShapeHeight(30);
-        assertEquals(10 + 50 / 2.0, rect.getCenterX());
-        assertEquals(15 + 30 / 2.0, rect.getCenterY());
+        assertEquals(10 + 50 / 2.0, rect.getShapeX());
+        assertEquals(15 + 30 / 2.0, rect.getShapeY());
     }
 
     @Test
-    void testSetCenterX() {
-        rect.setCenterX(100);
-        assertEquals(100, rect.getCenterX());
-        assertEquals(100 - rect.getShapeWidth() / 2.0, rect.getX());
+    void testSetShapeX() {
+        rect.setShapeX(100);
+        assertEquals(100, rect.getShapeX());
+        assertEquals(100 - rect.getShapeWidth() / 2.0, rect.getShapeX());
     }
 
     @Test
-    void testSetCenterY() {
-        rect.setCenterY(80);
-        assertEquals(80, rect.getCenterY());
-        assertEquals(80 - rect.getShapeHeight() / 2.0, rect.getY());
+    void testSetShapeY() {
+        rect.setShapeY(80);
+        assertEquals(80, rect.getShapeY());
+        assertEquals(80 - rect.getShapeHeight() / 2.0, rect.getShapeY());
     }
 
     @Test
     void testSetShapeWidthMaintainsCenter() {
-        double originalCenterX = rect.getCenterX();
+        double originalCenterX = rect.getShapeX();
         rect.setShapeWidth(100);
         assertEquals(100, rect.getShapeWidth());
-        assertEquals(originalCenterX, rect.getCenterX());
+        assertEquals(originalCenterX, rect.getShapeX());
     }
 
     @Test
     void testSetShapeHeightMaintainsCenter() {
-        double originalCenterY = rect.getCenterY();
+        double originalCenterY = rect.getShapeY();
         rect.setShapeHeight(200);
         assertEquals(200, rect.getShapeHeight());
-        assertEquals(originalCenterY, rect.getCenterY());
+        assertEquals(originalCenterY, rect.getShapeY());
     }
 
     @Test
@@ -80,11 +79,11 @@ class RectangleShapeTest {
         String[] parts = s.split(";");
         assertEquals("Shape2D", parts[0]);
         assertEquals("RectangleShape", parts[1]);
-        assertEquals(Double.toString(rect.getCenterX()), parts[2]);
-        assertEquals(Double.toString(rect.getCenterY()), parts[3]);
+        assertEquals(Double.toString(rect.getShapeX()), parts[2]);
+        assertEquals(Double.toString(rect.getShapeY()), parts[3]);
         assertEquals(rect.getStrokeColor().toString(), parts[4]);
         assertEquals(rect.getFillColor().toString(), parts[5]);
-        assertEquals(Double.toString(rect.getHeight()), parts[6]);
+        assertEquals(Double.toString(rect.getShapeHeight()), parts[6]);
         assertEquals(rect.getFillColor().toString(), parts[7]);
     }
 }

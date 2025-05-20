@@ -15,10 +15,11 @@ public class SegmentShape extends Line implements Shape1D {
      */
     public SegmentShape(double X, double Y, Color stroke, double length) {
         super(0., 0., 0., 0.);
-        setCenterX(X);
-        setCenterY(Y);
-        setStrokeColor(stroke);
+
+        setShapeX(X);
+        setShapeY(Y);
         setShapeLength(length);
+        setStrokeColor(stroke);
     }
 
     /**
@@ -26,7 +27,7 @@ public class SegmentShape extends Line implements Shape1D {
      *
      * @return coordinata X centro
      */
-    public double getCenterX() {
+    public double getShapeX() {
         return (getStartX() + getEndX())/2;     //Calcolo la coordinata X del centro della linea
     }
 
@@ -35,8 +36,8 @@ public class SegmentShape extends Line implements Shape1D {
      *
      * @param X coordinata X del centro della linea
      */
-    public void setCenterX(double X) {
-        double cy = getCenterY();
+    public void setShapeX(double X) {
+        double cy = getShapeY();
 
         double dx = getEndX() - getStartX();     // vettore direzione
         double dy = getEndY() - getStartY();
@@ -56,7 +57,7 @@ public class SegmentShape extends Line implements Shape1D {
      *
      * @return coordinata Y centro
      */
-    public double getCenterY() {
+    public double getShapeY() {
         return (getStartY() + getEndY())/2;     //Calcolo la coordinata Y del centro della linea
     }
 
@@ -65,8 +66,8 @@ public class SegmentShape extends Line implements Shape1D {
      *
      * @param Y coordinata Y del centro della linea
      */
-    public void setCenterY(double Y) {
-        double cx = getCenterX();
+    public void setShapeY(double Y) {
+        double cx = getShapeX();
 
         double dx = getEndX() - getStartX();      // vettore direzione
         double dy = getEndY() - getStartY();
@@ -117,8 +118,8 @@ public class SegmentShape extends Line implements Shape1D {
      * @param length lunghezza della linea
      */
     public void setShapeLength(double length) {
-        double cx = getCenterX();
-        double cy = getCenterY();
+        double cx = getShapeX();
+        double cy = getShapeY();
 
         double dx = getEndX() - getStartX();    // vettore direzione
         double dy = getEndY() - getStartY();
@@ -141,6 +142,6 @@ public class SegmentShape extends Line implements Shape1D {
      * @return la stringa CSV descrittiva del segmento
      */
     public String toString() {
-        return "Shape1D;SegmentShape;" + getCenterX() + ";" + getCenterY() + ";" + getStrokeColor() + ";" + getShapeLength();
+        return "Shape1D;SegmentShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeLength();
     }
 }

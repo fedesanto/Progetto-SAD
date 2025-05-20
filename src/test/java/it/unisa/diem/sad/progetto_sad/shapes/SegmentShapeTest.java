@@ -15,25 +15,25 @@ class SegmentShapeTest {
     }
 
     @Test
-    void getCenterX() {
-        assertEquals(50, segment.getCenterX());
+    void getShapeX() {
+        assertEquals(50, segment.getShapeX());
     }
 
     @Test
-    void setCenterX() {
-        segment.setCenterX(100);
-        assertEquals(100, segment.getCenterX());
+    void setShapeX() {
+        segment.setShapeX(100);
+        assertEquals(100, segment.getShapeX());
     }
 
     @Test
-    void getCenterY() {
-        assertEquals(50, segment.getCenterY());
+    void getShapeY() {
+        assertEquals(50, segment.getShapeY());
     }
 
     @Test
-    void setCenterY() {
-        segment.setCenterX(100);
-        assertEquals(100, segment.getCenterY());
+    void setShapeY() {
+        segment.setShapeX(100);
+        assertEquals(100, segment.getShapeY());
     }
 
     @Test

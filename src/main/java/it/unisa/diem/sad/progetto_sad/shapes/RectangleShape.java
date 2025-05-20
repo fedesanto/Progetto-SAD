@@ -18,11 +18,11 @@ public class RectangleShape extends Rectangle implements Shape2D {
     public RectangleShape(double X, double Y, Color stroke, double width, double height, Color fill) {
         super(0., 0., 0., 0.);
 
-        setCenterX(X);
-        setCenterY(Y);
-        setStrokeColor(stroke);
+        setShapeX(X);
+        setShapeY(Y);
         setShapeWidth(width);
         setShapeHeight(height);
+        setStrokeColor(stroke);
         setFillColor(fill);
     }
 
@@ -31,7 +31,7 @@ public class RectangleShape extends Rectangle implements Shape2D {
      *
      * @return la coordinata X del punto centrale
      */
-    public double getCenterX() {
+    public double getShapeX() {
         return getX() + getWidth() / 2.0;
     }
 
@@ -40,28 +40,26 @@ public class RectangleShape extends Rectangle implements Shape2D {
      *
      * @return la coordinata Y del punto centrale
      */
-    public double getCenterY() {
+    public double getShapeY() {
         return getY() + getHeight() / 2.0;
     }
 
     /**
-     * Sposta il rettangolo in modo che il centro abbia ascissa {@code X},
-     * mantenendo invariata l’altezza e la rotazione.
+     * Sposta il rettangolo in modo che il centro abbia ascissa {@code X}
      *
      * @param X la nuova coordinata X del centro
      */
-    public void setCenterX(double X) {
+    public void setShapeX(double X) {
         setX(X - getWidth() / 2.0);
     }
 
     /**
-     * Sposta il rettangolo in modo che il centro abbia ordinata {@code cy},
-     * mantenendo invariata la larghezza e la rotazione.
+     * Sposta il rettangolo in modo che il centro abbia ordinata {@code cy}
      *
-     * @param cy la nuova coordinata Y del centro
+     * @param Y la nuova coordinata Y del centro
      */
-    public void setCenterY(double cy) {
-        setY(cy - getHeight() / 2.0);
+    public void setShapeY(double Y) {
+        setY(Y - getHeight() / 2.0);
     }
 
     /**
@@ -88,9 +86,9 @@ public class RectangleShape extends Rectangle implements Shape2D {
      * @param width la nuova larghezza
      */
     public void setShapeWidth(double width) {
-        double cx = getCenterX();
+        double cx = getShapeX();
         setWidth(width);
-        setCenterX(cx);
+        setShapeX(cx);
     }
 
     /**
@@ -99,9 +97,9 @@ public class RectangleShape extends Rectangle implements Shape2D {
      * @param height la nuova altezza
      */
     public void setShapeHeight(double height) {
-        double cy = getCenterY();
+        double cy = getShapeY();
         setHeight(height);
-        setCenterY(cy);
+        setShapeY(cy);
     }
 
     /**
@@ -146,7 +144,7 @@ public class RectangleShape extends Rectangle implements Shape2D {
      * @return la stringa CSV descrittiva del rettangolo
      */
     public String toString() {
-        return "Shape2D;RectangleShape;" + getCenterX() + ";" + getCenterY() + ";" + getStrokeColor() + ";" + getFillColor() + ";" + getHeight() + ";" + getFillColor();
+        return "Shape2D;RectangleShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeWidth() + ";" + getShapeHeight() + ";" + getFillColor();
     }
 
 }
