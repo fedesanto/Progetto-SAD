@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -35,6 +36,8 @@ public class ViewController implements Initializable {
     private ColorPicker fillColorPicker;
     @FXML
     private Pane workspace;
+    @FXML
+    private MenuItem saveButton;
 
     private Shape highlightedShape;
     private ShapeCreator chosenShape;
@@ -138,6 +141,11 @@ public class ViewController implements Initializable {
                 ((Shape2DCreator) chosenShape).setFillColor(fillColorPicker.getValue());
             }
         }
+    }
+
+    @FXML
+    protected void onClickFile() {
+        saveButton.setDisable(workspace.getChildren().isEmpty());
     }
 
     @FXML
