@@ -109,7 +109,7 @@ public class SegmentShape extends Line implements Shape1D {
         double dx = getEndX() - getStartX();
         double dy = getEndY() - getStartY();
 
-        return Math.hypot(dx, dy) / 2;
+        return Math.hypot(dx, dy);
     }
 
     /**

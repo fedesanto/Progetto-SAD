@@ -16,7 +16,7 @@ class RectangleShapeTest {
     }
 
     @Test
-    void testGetCenterXAndGetShapeY() {
+    void testGetShapeXAndGetShapeY() {
         assertEquals(0, rect.getShapeX());
         assertEquals(0, rect.getShapeY());
 
@@ -24,22 +24,20 @@ class RectangleShapeTest {
         rect.setShapeY(15);
         rect.setShapeWidth(50);
         rect.setShapeHeight(30);
-        assertEquals(10 + 50 / 2.0, rect.getShapeX());
-        assertEquals(15 + 30 / 2.0, rect.getShapeY());
+        assertEquals(10, rect.getShapeX());
+        assertEquals(15, rect.getShapeY());
     }
 
     @Test
     void testSetShapeX() {
         rect.setShapeX(100);
         assertEquals(100, rect.getShapeX());
-        assertEquals(100 - rect.getShapeWidth() / 2.0, rect.getShapeX());
     }
 
     @Test
     void testSetShapeY() {
         rect.setShapeY(80);
         assertEquals(80, rect.getShapeY());
-        assertEquals(80 - rect.getShapeHeight() / 2.0, rect.getShapeY());
     }
 
     @Test
@@ -82,7 +80,7 @@ class RectangleShapeTest {
         assertEquals(Double.toString(rect.getShapeX()), parts[2]);
         assertEquals(Double.toString(rect.getShapeY()), parts[3]);
         assertEquals(rect.getStrokeColor().toString(), parts[4]);
-        assertEquals(rect.getFillColor().toString(), parts[5]);
+        assertEquals(Double.toString(rect.getShapeWidth()), parts[5]);
         assertEquals(Double.toString(rect.getShapeHeight()), parts[6]);
         assertEquals(rect.getFillColor().toString(), parts[7]);
     }

@@ -11,7 +11,7 @@ class SegmentShapeTest {
 
     @BeforeEach
     void setUp() {
-        SegmentShape segment = new SegmentShape(50, 50, Color.BLUE, 100);
+        segment = new SegmentShape(50, 50, Color.BLUE, 100);
     }
 
     @Test
@@ -32,7 +32,7 @@ class SegmentShapeTest {
 
     @Test
     void setShapeY() {
-        segment.setShapeX(100);
+        segment.setShapeY(100);
         assertEquals(100, segment.getShapeY());
     }
 
@@ -55,6 +55,14 @@ class SegmentShapeTest {
 
     @Test
     void testToString() {
-        assertEquals("Shape1D;SegmentShape;50.0;50.0;0xff0000ff;100.0", segment.toString());
+        String s = segment.toString();
+
+        String[] parts = s.split(";");
+        assertEquals("Shape1D", parts[0]);
+        assertEquals("SegmentShape", parts[1]);
+        assertEquals(Double.toString(segment.getShapeX()), parts[2]);
+        assertEquals(Double.toString(segment.getShapeY()), parts[3]);
+        assertEquals(segment.getStrokeColor().toString(), parts[4]);
+        assertEquals(Double.toString(segment.getShapeLength()), parts[5]);
     }
 }

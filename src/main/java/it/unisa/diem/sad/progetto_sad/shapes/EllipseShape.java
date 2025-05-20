@@ -144,6 +144,7 @@ public class EllipseShape extends Ellipse implements Shape2D {
      * @return la stringa CSV descrittiva del rettangolo
      */
     public String toString() {
-        return "Shape2D;EllipseShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeWidth() + ";" + getShapeHeight() + ";" + getFillColor();    }
+        return "Shape2D;EllipseShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeWidth() + ";" + getShapeHeight() + ";" + getFillColor();
+    }
 
 }

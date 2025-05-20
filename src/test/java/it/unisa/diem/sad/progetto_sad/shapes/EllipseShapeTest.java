@@ -16,7 +16,7 @@ class EllipseShapeTest {
     }
 
     @Test
-    void testGetCenterXAndGetShapeY() {
+    void testGetShapeXAndGetShapeY() {
         assertEquals(0, ellipse.getShapeX());
         assertEquals(0, ellipse.getShapeY());
 
@@ -24,22 +24,20 @@ class EllipseShapeTest {
         ellipse.setShapeY(15);
         ellipse.setShapeWidth(50);
         ellipse.setShapeHeight(30);
-        assertEquals(10 + 50 / 2.0, ellipse.getShapeX());
-        assertEquals(15 + 30 / 2.0, ellipse.getShapeY());
+        assertEquals(10, ellipse.getShapeX());
+        assertEquals(15, ellipse.getShapeY());
     }
 
     @Test
     void testSetShapeX() {
         ellipse.setShapeX(100);
         assertEquals(100, ellipse.getShapeX());
-        assertEquals(100 - ellipse.getShapeWidth() / 2.0, ellipse.getShapeX());
     }
 
     @Test
     void testSetShapeY() {
         ellipse.setShapeY(80);
         assertEquals(80, ellipse.getShapeY());
-        assertEquals(80 - ellipse.getShapeHeight() / 2.0, ellipse.getShapeY());
     }
 
     @Test
@@ -82,7 +80,7 @@ class EllipseShapeTest {
         assertEquals(Double.toString(ellipse.getShapeX()), parts[2]);
         assertEquals(Double.toString(ellipse.getShapeY()), parts[3]);
         assertEquals(ellipse.getStrokeColor().toString(), parts[4]);
-        assertEquals(ellipse.getFillColor().toString(), parts[5]);
+        assertEquals(Double.toString(ellipse.getShapeWidth()), parts[5]);
         assertEquals(Double.toString(ellipse.getShapeHeight()), parts[6]);
         assertEquals(ellipse.getFillColor().toString(), parts[7]);
     }
