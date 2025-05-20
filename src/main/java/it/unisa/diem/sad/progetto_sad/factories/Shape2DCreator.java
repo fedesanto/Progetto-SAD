@@ -11,8 +11,8 @@ import javafx.scene.paint.Color;
  * Implementa l'interfaccia ShapeCreator per generare oggetti ShapeInterface.
  */
 public class Shape2DCreator implements ShapeCreator {
-    private final double D2_WIDTH = 30;
-    private final double D2_HEIGHT = 20;
+    private final double D2_WIDTH = 80;
+    private final double D2_HEIGHT = 50;
 
     /**
      * Tipo della forma 2D da creare.
