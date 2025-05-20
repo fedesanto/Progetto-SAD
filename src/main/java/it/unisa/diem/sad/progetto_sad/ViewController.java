@@ -53,15 +53,15 @@ public class ViewController implements Initializable {
     /**
      * Evidenzia la forma selezionata
      *
-     * @param chosenShape riferimento alla shape cliccata
+     * @param shape riferimento alla shape cliccata
      */
-    private void highlightShape(Shape chosenShape) {
+    private void highlightShape(Shape shape) {
         DropShadow highlight = new DropShadow(20, Color.BLUE);  // effetto di evidenziazione
 
         if (highlightedShape != null) {         // disattivo l'effetto alla forma attualmente evidenziata
             highlightedShape.setEffect(null);
         }
-        highlightedShape = chosenShape;       // evidenzio la forma cliccata
+        highlightedShape = shape;       // evidenzio la forma cliccata
         highlightedShape.setEffect(highlight);
     }
 
@@ -112,8 +112,8 @@ public class ViewController implements Initializable {
         if(chosenShape != null) {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ShapeInterface shape = chosenShape.createShape();
-                shape.setCenterX(event.getX());
-                shape.setCenterY(event.getY());
+                shape.setShapeX(event.getX());
+                shape.setShapeY(event.getY());
                 workspace.getChildren().add((Shape) shape);
             }
         }
