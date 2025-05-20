@@ -1,79 +1,150 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
 import javafx.scene.paint.Color;
 
-public abstract class EllipseShape implements Shape2D {
-    private double X;
-    private double Y;
-    private Color stroke;
-    private double width;
-    private double heigth;
-    private Color fill;
+import javafx.scene.shape.Ellipse;
 
-    public EllipseShape(double X, double Y, Color stroke, double width, double heigth, Color fill) {
-        this.X = X;
-        this.Y = Y;
-        this.stroke = stroke;
-        this.width = width;
-        this.heigth = heigth;
-        this.fill = fill;
+public class EllipseShape extends Ellipse implements Shape2D {
+
+    /**
+     * Crea una nuova ellisse
+     *
+     * @param X         la coordinata X del centro dell'elllisse
+     * @param Y         la coordinata Y del centro dell'ellisse
+     * @param stroke    il colore del bordo (stroke) dell'ellisse
+     * @param width     la larghezza dell'ellisse (lunghezza diametro X)
+     * @param height    l’altezza dell'ellisse (lunghezza diametro Y)
+     * @param fill      il colore di riempimento (fill) dell'ellisse
+     */
+    public EllipseShape(double X, double Y, Color stroke, double width, double height, Color fill) {
+        super(0., 0., 0., 0.);
+
+        setShapeX(X);
+        setShapeY(Y);
+        setStrokeColor(stroke);
+        setShapeWidth(width);
+        setShapeHeight(height);
+        setFillColor(fill);
     }
 
-    public double getCenterX() {
-        return X;
+    /**
+     * Restituisce la coordinata X del centro dell'ellisse
+     *
+     * @return la coordinata X del punto centrale
+     */
+    public double getShapeX() {
+        return getCenterX();
     }
 
-    public void setCenterX(double X) {
-        this.X = X;
+    /**
+     * Restituisce la coordinata Y del centro dell'ellisse
+     *
+     * @return la coordinata Y del punto centrale
+     */
+    public double getShapeY() {
+        return getCenterY();
     }
 
-    public double getCenterY() {
-        return Y;
+    /**
+     * Imposta la coordintata X del centro
+     *
+     * @param X la nuova coordinata X del centro
+     */
+    public void setShapeX(double X) {
+        setCenterX(X);
     }
 
-    public void setCenterY(double Y) {
-        this.Y = Y;
+    /**
+     * Imposta la coordintata Y del centro
+     *
+     * @param Y la nuova coordinata Y del centro
+     */
+    public void setShapeY(double Y) {
+        setCenterY(Y);
     }
 
-    public Color getStroke() {
-        return stroke;
-    }
-
-    public void setStroke(Color stroke) {
-        this.stroke = stroke;
-    }
-
+    /**
+     * Restituisce la larghezza corrente dell'ellisse.
+     *
+     * @return la larghezza
+     */
     public double getShapeWidth() {
-        return width;
+        return getRadiusX() * 2;
     }
 
-    public void setShapeWidth(double width) {
-        this.width = width;
-    }
-
+    /**
+     * Restituisce l’altezza corrente dell'ellisse.
+     *
+     * @return l’altezza
+     */
     public double getShapeHeight() {
-        return heigth;
+        return getRadiusY() * 2;
     }
 
-    public void setShapeHeight(double heigth) {
-        this.heigth = heigth;
+    /**
+     * Imposta la larghezza dell'elllisse mantenendo fisso il centro orizzontale.
+     *
+     * @param width la nuova larghezza
+     */
+    public void setShapeWidth(double width) {
+        double cx = getShapeX();
+        setRadiusX(width/2);
+        setShapeX(cx);
     }
 
-    public Color getFill() {
-        return fill;
+    /**
+     * Imposta l'altezza dell'elllisse mantenendo fisso il centro orizzontale.
+     *
+     * @param height la nuova altezza
+     */
+    public void setShapeHeight(double height) {
+        double cy = getShapeY();
+        setRadiusY(height/2);
+        setShapeY(cy);
     }
 
-    public void setFill(Color fill) {
-        this.fill = fill;
+    /**
+     * Restituisce il colore del bordo (stroke) dell'ellisse.
+     *
+     * @return il colore di contorno
+     */
+    public Color getStrokeColor() {
+        return (Color) getStroke();
     }
-    @Override
+
+    /**
+     * Imposta il colore del bordo (stroke) dell'ellisse.
+     *
+     * @param stroke il nuovo colore di contorno
+     */
+    public void setStrokeColor(Color stroke) {
+        setStroke(stroke);
+    }
+
+    /**
+     * Restituisce il colore di riempimento (fill) dell'ellisse.
+     *
+     * @return il colore di riempimento
+     */
+    public Color getFillColor() {
+        return (Color) getFill();
+    }
+
+    /**
+     * Imposta il colore di riempimento (fill) dell'ellisse.
+     *
+     * @param fill il nuovo colore di riempimento
+     */
+    public void setFillColor(Color fill) {
+        setFill(fill);
+    }
+
+    /**
+     * Restituisce una rappresentazione testuale dell'ellisse in formato CSV
+     *
+     * @return la stringa CSV descrittiva del rettangolo
+     */
     public String toString() {
-        return "EllipseShape;" +
-                X + ";" +
-                Y + ";" +
-                stroke.toString() + ";" +
-                width + ";" +
-                heigth + ";" +
-                fill.toString();
+        return "Shape2D;EllipseShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeWidth() + ";" + getShapeHeight() + ";" + getFillColor();
     }
 
 }

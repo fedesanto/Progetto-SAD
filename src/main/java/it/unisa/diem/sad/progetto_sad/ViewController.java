@@ -105,8 +105,8 @@ public class ViewController implements Initializable {
         if(selectedShape != null) {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ShapeInterface shape = selectedShape.createShape();
-                shape.setCenterX(event.getX());
-                shape.setCenterY(event.getY());
+                shape.setShapeX(event.getX());
+                shape.setShapeY(event.getY());
                 workspace.getChildren().add((Shape) shape);
             }
         }
