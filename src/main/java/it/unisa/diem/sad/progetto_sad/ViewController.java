@@ -44,6 +44,9 @@ public class ViewController implements Initializable {
     private ShapeCreator chosenShape;
     private boolean isDrawingMode = false;
 
+    private double dragStartX;
+    private double dragStartY;
+
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
      *
@@ -80,6 +83,41 @@ public class ViewController implements Initializable {
             highlightedShape = null;
         }
     }
+
+    /**
+     * Abilita la possibilità di trascinare una forma all'interno dell'area di lavoro.
+     * Quando l'utente preme il tasto sinistro del mouse sulla forma, memorizza
+     * la posizione iniziale per calcolare lo spostamento.
+     * Durante il trascinamento, aggiorna dinamicamente la posizione della forma.
+     * All'inizio del drag, la forma viene anche evidenziata visivamente.
+     *
+     * @param node la forma (istanza di Node) sulla quale abilitare il trascinamento
+     */
+    private void enableDrag(Node node) {
+        node.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                dragStartX = event.getSceneX() - node.getLayoutX();
+                dragStartY = event.getSceneY() - node.getLayoutY();
+                highlightShape((Shape) node);
+            }
+        });
+
+        node.setOnMouseDragged(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                double newX = event.getSceneX() - dragStartX;
+                double newY = event.getSceneY() - dragStartY;
+                node.setLayoutX(newX);
+                node.setLayoutY(newY);
+            }
+        });
+
+        node.setOnMouseReleased(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                event.consume();
+            }
+        });
+    }
+
 
     /**
      * Seleziona una linea come forma corrente da disegnare.
@@ -163,17 +201,20 @@ public class ViewController implements Initializable {
             ShapeInterface shape = chosenShape.createShape();
             shape.setShapeX(event.getX());
             shape.setShapeY(event.getY());
+
+            Shape shapeNode = (Shape) shape;
+            enableDrag(shapeNode);   // abilita il trascinamento della forma
             workspace.getChildren().add((Shape) shape);
 
             chosenShape = null;
             isDrawingMode = false;
-            clearHighlightShape(); // deseleziona se necessario
+            clearHighlightShape();  // deseleziona le forme selezionate
         } else {
             // Modalità SELEZIONE
             if (clickedNode instanceof Shape && workspace.getChildren().contains(clickedNode)) {
-                highlightShape((Shape) clickedNode); // seleziona forma
+                highlightShape((Shape) clickedNode); // evidenzia la forma cliccata
             } else {
-                clearHighlightShape(); // clic fuori → deseleziona
+                clearHighlightShape(); // cliccando sullo spazio vuoto viene deselezionata la forma
             }
         }
     }
