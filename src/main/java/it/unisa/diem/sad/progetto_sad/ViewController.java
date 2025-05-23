@@ -42,15 +42,11 @@ public class ViewController implements Initializable {
 
     private Shape highlightedShape;
     private ShapeCreator chosenShape;
-    private boolean isDrawingMode = false;
-
-    private double dragStartX;
-    private double dragStartY;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
      *
-     * @param url URL utilizzato per inizializzare l'oggetto.
+     * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
      */
     @Override
@@ -73,68 +69,17 @@ public class ViewController implements Initializable {
         highlightedShape = shape;       // evidenzio la forma cliccata
         highlightedShape.setEffect(highlight);
     }
-    /**
-     Deseleziona la forma precedentemente selezionata
-     */
-
-    private void clearHighlightShape() {
-        if (highlightedShape != null) {
-            highlightedShape.setEffect(null);
-            highlightedShape = null;
-        }
-    }
-
-    /**
-     * Abilita la possibilità di trascinare una forma all'interno dell'area di lavoro.
-     * Quando l'utente preme il tasto sinistro del mouse sulla forma, memorizza
-     * la posizione iniziale per calcolare lo spostamento.
-     * Durante il trascinamento, aggiorna dinamicamente la posizione della forma.
-     * All'inizio del drag, la forma viene anche evidenziata visivamente.
-     *
-     * @param node la forma (istanza di Node) sulla quale abilitare il trascinamento
-     */
-    private void enableDrag(Node node) {
-        node.setOnMousePressed(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                dragStartX = event.getSceneX() - node.getLayoutX();
-                dragStartY = event.getSceneY() - node.getLayoutY();
-                highlightShape((Shape) node);
-            }
-        });
-
-        node.setOnMouseDragged(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                double newX = event.getSceneX() - dragStartX;
-                double newY = event.getSceneY() - dragStartY;
-                node.setLayoutX(newX);
-                node.setLayoutY(newY);
-            }
-        });
-
-        node.setOnMouseReleased(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                event.consume();
-            }
-        });
-    }
-
 
     /**
      * Seleziona una linea come forma corrente da disegnare.
      * Imposta il colore del bordo preso dal color picker.
-     * Gestisce la selezione della linea dalla palette degli strumenti.
-     * Imposta la linea come forma corrente da disegnare, attivando la modalità di disegno.
-     * Applica l'effetto di evidenziazione sulla forma selezionata nella palette.
-     * Se c'è una forma selezionata nello spazio di lavoro, viene deselezionata.
      *
      * @param event riferimento all'evento di click
      */
     @FXML
     protected void chosenLine(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY) {
+        if (event.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
-            isDrawingMode = true;
-            clearHighlightShape(); // deseleziona forma nel workspace
             highlightShape((Shape) event.getTarget());
         }
     }
@@ -142,19 +87,13 @@ public class ViewController implements Initializable {
     /**
      * Seleziona un rettangolo come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
-     * Gestisce la selezione del rettangolo dalla palette degli strumenti.
-     * Imposta il rettangolo come forma corrente da disegnare, attivando la modalità di disegno.
-     * Applica l'effetto di evidenziazione sulla forma selezionata nella palette.
-     * Se c'è una forma selezionata nello spazio di lavoro, viene deselezionata.
      *
      * @param event riferimento all'evento di click
      */
     @FXML
     protected void chosenRectangle(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY) {
+        if (event.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-            isDrawingMode = true;
-            clearHighlightShape(); // deseleziona forma nel workspace
             highlightShape((Shape) event.getTarget());
         }
     }
@@ -162,59 +101,31 @@ public class ViewController implements Initializable {
     /**
      * Seleziona un'ellisse come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
-     * Gestisce la selezione dell'ellisse dalla palette degli strumenti.
-     * Imposta l'ellisse come forma corrente da disegnare, attivando la modalità di disegno.
-     * Applica l'effetto di evidenziazione sulla forma selezionata nella palette.
-     * Se c'è una forma selezionata nello spazio di lavoro, viene deselezionata.
      *
-     * @param event riferimento all'evento di click
+     * @param e riferimento all'evento di click
      */
     @FXML
-    protected void chosenEllipse(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY) {
+    protected void chosenEllipse(MouseEvent e) {
+        if (e.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-            isDrawingMode = true;
-            clearHighlightShape(); //deseleziona forma nel workspace
-            highlightShape((Shape) event.getTarget());
+            highlightShape((Shape) e.getTarget());
         }
     }
 
     /**
      * Aggiunge una nuova forma nel punto cliccato dal mouse se è stato selezionato uno strumento.
      * Solo il tasto sinistro del mouse attiva questa azione.
-     * Gestisce il click del mouse all'interno dello spazio di lavoro.
-     * Se è attiva la modalità di disegno e una forma è stata selezionata dalla barra degli strumenti,
-     * viene creata una nuova istanza della forma in corrispondenza del punto cliccato e aggiunta al workspace.
-     * Se la modalità di disegno non è attiva, interpreta il click come un tentativo di selezione:
-     * -se si clicca su una forma presente nel workspace, essa viene evidenziata.
-     * -se si clicca in un punto vuoto, eventuali selezioni precedenti vengono rimosse.
      *
      * @param event evento di click del mouse
      */
     @FXML
     protected void addShape(MouseEvent event) {
-        if (event.getButton() != MouseButton.PRIMARY) return;
-
-        Node clickedNode = event.getPickResult().getIntersectedNode();
-
-        if (isDrawingMode && chosenShape != null) {
-            ShapeInterface shape = chosenShape.createShape();
-            shape.setShapeX(event.getX());
-            shape.setShapeY(event.getY());
-
-            Shape shapeNode = (Shape) shape;
-            enableDrag(shapeNode);   // abilita il trascinamento della forma
-            workspace.getChildren().add((Shape) shape);
-
-            chosenShape = null;
-            isDrawingMode = false;
-            clearHighlightShape();  // deseleziona le forme selezionate
-        } else {
-            // Modalità SELEZIONE
-            if (clickedNode instanceof Shape && workspace.getChildren().contains(clickedNode)) {
-                highlightShape((Shape) clickedNode); // evidenzia la forma cliccata
-            } else {
-                clearHighlightShape(); // cliccando sullo spazio vuoto viene deselezionata la forma
+        if (chosenShape != null) {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                ShapeInterface shape = chosenShape.createShape();
+                shape.setShapeX(event.getX());
+                shape.setShapeY(event.getY());
+                workspace.getChildren().add((Shape) shape);
             }
         }
     }
@@ -224,7 +135,7 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedStrokeColor() {
-        if(chosenShape != null)
+        if (chosenShape != null)
             chosenShape.setStrokeColor(strokeColorPicker.getValue());
     }
 
@@ -233,8 +144,8 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedFillColor() {
-        if(chosenShape != null){
-            if(chosenShape instanceof Shape2DCreator) {
+        if (chosenShape != null) {
+            if (chosenShape instanceof Shape2DCreator) {
                 ((Shape2DCreator) chosenShape).setFillColor(fillColorPicker.getValue());
             }
         }
