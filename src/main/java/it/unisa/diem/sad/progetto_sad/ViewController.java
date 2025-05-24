@@ -5,6 +5,7 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
+import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -54,12 +55,17 @@ public class ViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contextMenu = new ContextMenu();
         MenuItem deleteItem = new MenuItem("Elimina");
+        MenuItem resizeItem = new MenuItem("Ridimensiona");
 
         deleteItem.setOnAction(e -> {
             workspace.getChildren().remove((Shape) selectedShape);
         });
+        resizeItem.setOnAction(e -> {
+            VisitorResize resizeVisitor = new VisitorResize();
+            selectedShape.accept(resizeVisitor);  // chiama il visit appropriato
+        });
 
-        contextMenu.getItems().add(deleteItem);
+        contextMenu.getItems().addAll(deleteItem, resizeItem);
     }
 
     /**
