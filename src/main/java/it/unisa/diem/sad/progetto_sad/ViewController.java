@@ -48,7 +48,7 @@ public class ViewController implements Initializable {
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
      *
-     * @param url URL utilizzato per inizializzare l'oggetto.
+     * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
      */
     @Override
@@ -80,7 +80,7 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void chosenLine(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY) {
+        if (event.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
             highlightShape((Shape) event.getTarget());
         }
@@ -94,7 +94,7 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void chosenRectangle(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY) {
+        if (event.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
             highlightShape((Shape) event.getTarget());
         }
@@ -104,13 +104,13 @@ public class ViewController implements Initializable {
      * Seleziona un'ellisse come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
      *
-     * @param event riferimento all'evento di click
+     * @param e riferimento all'evento di click
      */
     @FXML
-    protected void chosenEllipse(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY) {
+    protected void chosenEllipse(MouseEvent e) {
+        if (e.getButton() == MouseButton.PRIMARY) {
             chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-            highlightShape((Shape) event.getTarget());
+            highlightShape((Shape) e.getTarget());
         }
     }
 
@@ -122,7 +122,7 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void addShape(MouseEvent event) {
-        if(chosenShape != null) {
+        if (chosenShape != null) {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ShapeInterface shape = chosenShape.createShape();
                 shape.setShapeX(event.getX());
@@ -137,7 +137,7 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedStrokeColor() {
-        if(chosenShape != null)
+        if (chosenShape != null)
             chosenShape.setStrokeColor(strokeColorPicker.getValue());
     }
 
@@ -146,8 +146,8 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedFillColor() {
-        if(chosenShape != null){
-            if(chosenShape instanceof Shape2DCreator) {
+        if (chosenShape != null) {
+            if (chosenShape instanceof Shape2DCreator) {
                 ((Shape2DCreator) chosenShape).setFillColor(fillColorPicker.getValue());
             }
         }
