@@ -5,14 +5,10 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
-import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -42,34 +38,53 @@ public class ViewController implements Initializable {
     @FXML
     private MenuItem saveButton;
 
-    private Shape highlightedShape;
+    private Button highlightedButton;
     private ShapeCreator chosenShape;
+    private ContextMenu contextMenu;
+    private ShapeInterface selectedShape;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
+     * Crea il contex menu che sarà utilizzato dalle forme
      *
      * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Elimina");
 
+        deleteItem.setOnAction(e -> {
+            workspace.getChildren().remove((Shape) selectedShape);
+        });
+
+        contextMenu.getItems().add(deleteItem);
     }
 
     /**
-     * Evidenzia visivamente la forma selezionata applicando un effetto visivo.
-     * Se un'altra forma era precedentemente evidenziata, rimuove l'effetto.
+     * Evidenzia visivamente il bottone selezionata applicando un effetto visivo.
+     * Se un altro bottone era precedentemente evidenziato, rimuove l'effetto a quello precedente.
+     * Se il metodo viene chiamato sul bottne attualmente evidenziato, gli rimuove l'effetto
      *
-     * @param shape forma da evidenziare
+     * @param button bottone da evidenziare
+     * @return restistuisce true se è stato cliccato un nuovo bottone, altrimenti false
      */
-    private void highlightShape(Shape shape) {
-        DropShadow highlight = new DropShadow(20, Color.BLUE);  // effetto di evidenziazione
+    private boolean highlightButton(Button button) {
+        DropShadow highlight = new DropShadow(13, Color.BLUE);  // effetto di evidenziazione
 
-        if (highlightedShape != null) {         // disattivo l'effetto alla forma attualmente evidenziata
-            highlightedShape.setEffect(null);
+        if (highlightedButton != null) {         // disattivo l'effetto alla forma attualmente evidenziata
+            highlightedButton.setEffect(null);
         }
-        highlightedShape = shape;       // evidenzio la forma cliccata
-        highlightedShape.setEffect(highlight);
+
+        if(button != highlightedButton){
+            highlightedButton = button;       // evidenzio la forma cliccata
+            highlightedButton.setEffect(highlight);
+            return true;
+        }else{
+            highlightedButton = null;
+            return false;
+        }
     }
 
     /**
@@ -81,8 +96,11 @@ public class ViewController implements Initializable {
     @FXML
     protected void chosenLine(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
-            highlightShape((Shape) event.getTarget());
+            boolean isNewRequest = highlightButton((Button) event.getTarget()); //Evidenzia o disevidenzia il bottone cliccato
+            if(isNewRequest)
+                chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
+            else
+                chosenShape = null;
         }
     }
 
@@ -95,8 +113,11 @@ public class ViewController implements Initializable {
     @FXML
     protected void chosenRectangle(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-            highlightShape((Shape) event.getTarget());
+            boolean isNewRequest = highlightButton((Button) event.getTarget());     //Evidenzia o disevidenzia il bottone cliccato
+            if(isNewRequest)
+                chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+            else
+                chosenShape = null;
         }
     }
 
@@ -104,13 +125,16 @@ public class ViewController implements Initializable {
      * Seleziona un'ellisse come forma corrente da disegnare.
      * Imposta i colori del bordo e del riempimento presi dai color picker.
      *
-     * @param e riferimento all'evento di click
+     * @param event riferimento all'evento di click
      */
     @FXML
-    protected void chosenEllipse(MouseEvent e) {
-        if (e.getButton() == MouseButton.PRIMARY) {
-            chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
-            highlightShape((Shape) e.getTarget());
+    protected void chosenEllipse(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            boolean isNewRequest = highlightButton((Button) event.getTarget());     //Evidenzia o disevidenzia il bottone cliccato
+            if(isNewRequest)
+                chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
+            else
+                chosenShape = null;
         }
     }
 
@@ -127,9 +151,31 @@ public class ViewController implements Initializable {
                 ShapeInterface shape = chosenShape.createShape();
                 shape.setShapeX(event.getX());
                 shape.setShapeY(event.getY());
+
+                addShapeEvents(shape);  //Aggiunge tutti gli eventi di interesse per la forma appena creata
+
                 workspace.getChildren().add((Shape) shape);
             }
         }
+
+        if(contextMenu.isShowing())
+            contextMenu.hide();
+    }
+
+
+    /**
+     * Metodo di comodo che aggiunge tutti gli eventi necessari ad una forma creata
+     *
+     * @param shape forma a cui aggiungere gli eventi
+     */
+    private void addShapeEvents(ShapeInterface shape){
+        ((Shape) shape).setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
+                selectedShape = shape;
+                contextMenu.show((Shape) shape, e.getScreenX(), e.getScreenY());    //Mostra menu contestuale
+                e.consume();
+            }
+        });
     }
 
     /**
