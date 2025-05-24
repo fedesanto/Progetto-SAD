@@ -11,4 +11,6 @@ module it.unisa.diem.sad.progetto_sad {
     opens it.unisa.diem.sad.progetto_sad.factories to javafx.fxml;
     exports it.unisa.diem.sad.progetto_sad.fileHandlers;
     opens it.unisa.diem.sad.progetto_sad.fileHandlers to javafx.fxml;
+    exports it.unisa.diem.sad.progetto_sad.visitors;
+    opens it.unisa.diem.sad.progetto_sad.visitors to javafx.fxml;
 }

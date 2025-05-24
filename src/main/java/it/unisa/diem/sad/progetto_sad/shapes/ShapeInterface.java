@@ -1,5 +1,6 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
 
+import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
 
 /**
@@ -55,4 +56,12 @@ public interface ShapeInterface {
      * @return una stringa che descrive la forma
      */
     String toString();
+
+    /**
+     * Accetta un oggetto Visitor che implementa l'interfaccia VisitorShape
+     * e consente di eseguire un'operazione su questa forma senza modificarne la struttura.
+     *
+     * @param visitor il visitor da applicare alla forma
+     */
+    void accetta(VisitorShape visitor);
 }

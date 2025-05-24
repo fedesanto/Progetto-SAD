@@ -1,4 +1,5 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
+import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
 
 import javafx.scene.shape.Ellipse;
@@ -147,4 +148,12 @@ public class EllipseShape extends Ellipse implements Shape2D {
         return "Shape2D;EllipseShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeWidth() + ";" + getShapeHeight() + ";" + getFillColor();
     }
 
+    /**
+     * Applica un oggetto Visitor a questa forma.
+     *
+     * @param visitor il visitor da applicare a questa forma
+     */
+    public void accetta(VisitorShape visitor) {
+        visitor.visita(this);
+    }
 }

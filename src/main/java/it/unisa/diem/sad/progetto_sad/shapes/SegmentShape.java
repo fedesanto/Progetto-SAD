@@ -1,5 +1,6 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
 
+import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -143,5 +144,14 @@ public class SegmentShape extends Line implements Shape1D {
      */
     public String toString() {
         return "Shape1D;SegmentShape;" + getShapeX() + ";" + getShapeY() + ";" + getStrokeColor() + ";" + getShapeLength();
+    }
+
+    /**
+     * Applica un oggetto Visitor a questa forma.
+     *
+     * @param visitor il visitor da applicare a questa forma
+     */
+    public void accetta(VisitorShape visitor) {
+        visitor.visita(this);
     }
 }
