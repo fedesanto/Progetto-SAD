@@ -151,7 +151,7 @@ public class SegmentShape extends Line implements Shape1D {
      *
      * @param visitor il visitor da applicare a questa forma
      */
-    public void accetta(VisitorShape visitor) {
-        visitor.visita(this);
+    public void accept(VisitorShape visitor) {
+        visitor.visit(this);
     }
 }

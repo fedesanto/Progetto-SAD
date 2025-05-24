@@ -153,7 +153,7 @@ public class EllipseShape extends Ellipse implements Shape2D {
      *
      * @param visitor il visitor da applicare a questa forma
      */
-    public void accetta(VisitorShape visitor) {
-        visitor.visita(this);
+    public void accept(VisitorShape visitor) {
+        visitor.visit(this);
     }
 }

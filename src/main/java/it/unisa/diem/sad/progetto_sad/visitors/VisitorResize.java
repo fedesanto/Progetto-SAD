@@ -10,6 +10,7 @@ import javafx.scene.layout.GridPane;
 
 /**
  * Visitor concreto per il ridimensionamento delle forme geometriche.
+ *
  * Implementa l'interfaccia VisitorShape e fornisce un'interfaccia
  * grafica per modificare le dimensioni delle forme Shape1D e Shape2D.
  */
@@ -20,13 +21,14 @@ public class VisitorResize implements VisitorShape {
 
     /**
      * Visualizza una finestra di dialogo per ridimensionare una forma 1D.
+     *
      * La finestra consente all'utente di inserire una nuova lunghezza. Il valore inserito viene validato
      * per assicurarsi che sia un numero decimale positivo. Se la validazione ha successo, la lunghezza
      * della forma viene aggiornata di conseguenza.
      *
      * @param shape1D la forma 1D da ridimensionare
      */
-    public void visita(Shape1D shape1D) {
+    public void visit(Shape1D shape1D) {
         Dialog<Void> dialog = createDialog("Ridimensiona forma 1D", "Inserisci lunghezza");
 
         // Campo input con la lunghezza corrente della forma
@@ -62,14 +64,15 @@ public class VisitorResize implements VisitorShape {
     }
 
     /**
-     * Visualizza una finestra di dialogo per ridimensionare una forma 2D-
+     * Visualizza una finestra di dialogo per ridimensionare una forma 2D.
+     *
      * La finestra consente all'utente di inserire nuove dimensioni di larghezza e altezza. I valori inseriti
      * vengono validati per assicurarsi che siano numeri decimali positivi. Se la validazione ha successo,
      * le dimensioni della forma vengono aggiornate di conseguenza.
      *
      * @param shape2D la forma 2D da ridimensionare
      */
-    public void visita(Shape2D shape2D) {
+    public void visit(Shape2D shape2D) {
         Dialog<Void> dialog = createDialog("Ridimensiona forma 2D", "Inserisci larghezza e altezza");
 
         // Campi input con larghezza e altezza correnti.

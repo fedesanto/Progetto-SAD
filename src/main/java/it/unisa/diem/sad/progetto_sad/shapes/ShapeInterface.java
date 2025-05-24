@@ -63,5 +63,5 @@ public interface ShapeInterface {
      *
      * @param visitor il visitor da applicare alla forma
      */
-    void accetta(VisitorShape visitor);
+    void accept(VisitorShape visitor);
 }
