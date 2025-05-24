@@ -42,7 +42,7 @@ public class ViewController implements Initializable {
     private Button highlightedButton;
     private ShapeCreator chosenShape;
     private ContextMenu contextMenu;
-    private ShapeInterface selectedShape;
+    private ShapeInterface menuShape;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -58,11 +58,11 @@ public class ViewController implements Initializable {
         MenuItem resizeItem = new MenuItem("Ridimensiona");
 
         deleteItem.setOnAction(e -> {
-            workspace.getChildren().remove((Shape) selectedShape);
+            workspace.getChildren().remove((Shape) menuShape);
         });
         resizeItem.setOnAction(e -> {
             VisitorResize resizeVisitor = new VisitorResize();
-            selectedShape.accept(resizeVisitor);  // chiama il visit appropriato
+            menuShape.accept(resizeVisitor);  // chiama il visit appropriato
         });
 
         contextMenu.getItems().addAll(deleteItem, resizeItem);
@@ -151,7 +151,7 @@ public class ViewController implements Initializable {
      * @param event evento di click del mouse
      */
     @FXML
-    protected void addShape(MouseEvent event) {
+    protected void clickOnWorkspace(MouseEvent event) {
         if (chosenShape != null) {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ShapeInterface shape = chosenShape.createShape();
@@ -163,9 +163,6 @@ public class ViewController implements Initializable {
                 workspace.getChildren().add((Shape) shape);
             }
         }
-
-        if(contextMenu.isShowing())
-            contextMenu.hide();
     }
 
 
@@ -175,11 +172,12 @@ public class ViewController implements Initializable {
      * @param shape forma a cui aggiungere gli eventi
      */
     private void addShapeEvents(ShapeInterface shape){
-        ((Shape) shape).setOnMouseClicked(e -> {
-            if (e.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
-                selectedShape = shape;
-                contextMenu.show((Shape) shape, e.getScreenX(), e.getScreenY());    //Mostra menu contestuale
-                e.consume();
+        Shape shapeEvent = (Shape) shape;
+
+        shapeEvent.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
+                contextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
+                menuShape = shape;
             }
         });
     }

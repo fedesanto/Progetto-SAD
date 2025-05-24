@@ -95,7 +95,7 @@
          </VBox.margin></Line>
       <ScrollPane focusTraversable="false" prefHeight="570.0" prefWidth="800.0">
         <content>
-          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" onMouseClicked="#addShape" prefHeight="398.0" prefWidth="796.0" />
+          <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" onMouseClicked="#clickOnWorkspace" prefHeight="398.0" prefWidth="796.0" />
         </content>
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
