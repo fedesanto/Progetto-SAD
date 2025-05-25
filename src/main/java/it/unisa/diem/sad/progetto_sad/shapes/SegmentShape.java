@@ -13,14 +13,16 @@ public class SegmentShape extends Line implements Shape1D {
      * @param Y coordinata Y del centro della linea
      * @param stroke colore della linea
      * @param length lunghezza della linea
+     * @param strokeWidth larghezza della linea
      */
-    public SegmentShape(double X, double Y, Color stroke, double length) {
+    public SegmentShape(double X, double Y, Color stroke, double length, double strokeWidth) {
         super(0., 0., 0., 0.);
 
         setShapeX(X);
         setShapeY(Y);
         setShapeLength(length);
         setStrokeColor(stroke);
+        setStrokeWidth(strokeWidth);
     }
 
     /**

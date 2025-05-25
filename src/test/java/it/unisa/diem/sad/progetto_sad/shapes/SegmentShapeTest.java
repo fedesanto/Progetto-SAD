@@ -11,7 +11,7 @@ class SegmentShapeTest {
 
     @BeforeEach
     void setUp() {
-        segment = new SegmentShape(50, 50, Color.BLUE, 100);
+        segment = new SegmentShape(50, 50, Color.BLUE, 100, 5);
     }
 
     @Test
