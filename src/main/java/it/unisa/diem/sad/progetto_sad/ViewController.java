@@ -8,6 +8,7 @@ import it.unisa.diem.sad.progetto_sad.shapes.*;
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -42,7 +43,6 @@ public class ViewController implements Initializable {
     private Button highlightedButton;
     private ShapeCreator chosenShape;
     private ContextMenu contextMenu;
-    private ShapeInterface menuShape;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -58,11 +58,12 @@ public class ViewController implements Initializable {
         MenuItem resizeItem = new MenuItem("Ridimensiona");
 
         deleteItem.setOnAction(e -> {
-            workspace.getChildren().remove((Shape) menuShape);
+            workspace.getChildren().remove((Shape) selectedShape);
         });
+
         resizeItem.setOnAction(e -> {
             VisitorResize resizeVisitor = new VisitorResize();
-            menuShape.accept(resizeVisitor);  // chiama il visit appropriato
+            selectedShape.accept(resizeVisitor);  // chiama il visit appropriato
         });
 
         contextMenu.getItems().addAll(deleteItem, resizeItem);
@@ -177,7 +178,8 @@ public class ViewController implements Initializable {
         shapeEvent.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
                 contextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
-                menuShape = shape;
+                selectShape(shape);
+                event.consume();
             }
         });
     }
