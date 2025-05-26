@@ -47,6 +47,8 @@ public class ViewController implements Initializable {
     private double workspaceY;
     private ShapeInterface copiedShape;
 
+    private double startDragX;
+    private double startDragY;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -216,6 +218,27 @@ public class ViewController implements Initializable {
                 event.consume();
             }
         });
+
+        shapeEvent.setOnMousePressed(event -> {
+            if(event.getButton() == MouseButton.PRIMARY){
+                contextMenu.hide();
+
+                if (chosenShape == null){
+                    startDragX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
+                    startDragY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
+
+                    selectShape(shape);
+                }
+            }
+        });
+
+        shapeEvent.setOnMouseDragged(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
+                shape.setShapeX(event.getX() + startDragX); // aggiorna posizione X in base al cursore
+                shape.setShapeY(event.getY() + startDragY); // aggiorna posizione Y in base al cursore
+            }
+        });
+
     }
 
     /**
@@ -223,8 +246,13 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedStrokeColor() {
+        Color selectedColor = strokeColorPicker.getValue();
+
         if (chosenShape != null)
-            chosenShape.setStrokeColor(strokeColorPicker.getValue());
+            chosenShape.setStrokeColor(selectedColor);
+
+        if(selectedShape != null)
+            selectedShape.setStrokeColor(selectedColor);
     }
 
     /**
