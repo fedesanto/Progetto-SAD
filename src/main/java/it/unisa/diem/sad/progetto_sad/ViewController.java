@@ -239,9 +239,14 @@ public class ViewController implements Initializable {
 
 
     /**
-     * Metodo di comodo che aggiunge tutti gli eventi necessari ad una forma creata
+     * Registra tutti gli eventi interattivi necessari per una forma geometrica.
      *
-     * @param shape forma a cui aggiungere gli eventi.
+     * Gli eventi gestiscono:
+     *      La selezione della forma tramite click sinistro o destro.
+     *     La visualizzazione del menu contestuale al click destro.
+     *     Il trascinamento della forma con il mouse (drag and drop).
+     *
+     * @param shape la forma a cui associare gli eventi di interazione.
      */
     private void addShapeEvents(ShapeInterface shape){
         Shape shapeEvent = (Shape) shape;
@@ -281,7 +286,13 @@ public class ViewController implements Initializable {
     }
 
     /**
-     * Aggiorna il colore del bordo della forma selezionata.
+     * Gestisce l’evento di selezione di un nuovo colore per il bordo della forma.
+     * Se una forma è attualmente selezionata nello spazio di lavoro, il metodo aggiorna
+     * il colore del suo bordo con il colore scelto dall’utente tramite il color picker
+     * dedicato ai bordi.
+     * Sono gestiti due casi di selezione:
+     *     chosenShape: la forma attivamente selezionata e controllata.
+     *     selectedShape: eventuale altra forma evidenziata per operazioni precedenti.
      */
     @FXML
     protected void pickedStrokeColor() {
