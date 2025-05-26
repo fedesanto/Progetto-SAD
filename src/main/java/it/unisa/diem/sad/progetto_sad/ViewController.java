@@ -8,7 +8,6 @@ import it.unisa.diem.sad.progetto_sad.shapes.*;
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -43,6 +42,9 @@ public class ViewController implements Initializable {
     private Button highlightedButton;
     private ShapeCreator chosenShape;
     private ContextMenu contextMenu;
+    private ContextMenu workspaceContextMenu;
+    private double workspaceX;
+    private double workspaceY;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -58,15 +60,31 @@ public class ViewController implements Initializable {
         MenuItem resizeItem = new MenuItem("Ridimensiona");
 
         deleteItem.setOnAction(e -> {
-            workspace.getChildren().remove((Shape) selectedShape);
+            workspace.getChildren().remove(contextMenu.getOwnerNode());
         });
 
         resizeItem.setOnAction(e -> {
             VisitorResize resizeVisitor = new VisitorResize();
-            selectedShape.accept(resizeVisitor);  // chiama il visit appropriato
+            ((ShapeInterface) contextMenu.getOwnerNode()).accept(resizeVisitor);  // chiama il visit appropriato
         });
 
         contextMenu.getItems().addAll(deleteItem, resizeItem);
+
+
+
+        workspaceContextMenu = new ContextMenu();
+        MenuItem pasteItem = new MenuItem("Incolla");
+        pasteItem.setOnAction(e -> {
+            ShapeInterface newShape = copiedShape.clone();
+            newShape.setShapeX(workspaceX);
+            newShape.setShapeY(workspaceY);
+            workspace.getChildren().add((Shape) copiedShape);
+        });
+
+        workspaceContextMenu.setOnShown(e -> {
+            pasteItem.setDisable(copiedShape == null);
+        });
+        workspaceContextMenu.getItems().add(pasteItem);
     }
 
     /**
@@ -153,8 +171,8 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void clickOnWorkspace(MouseEvent event) {
-        if (chosenShape != null) {
-            if (event.getButton() == MouseButton.PRIMARY) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (chosenShape != null) {
                 ShapeInterface shape = chosenShape.createShape();
                 shape.setShapeX(event.getX());
                 shape.setShapeY(event.getY());
@@ -163,6 +181,10 @@ public class ViewController implements Initializable {
 
                 workspace.getChildren().add((Shape) shape);
             }
+        }else if (event.getButton() == MouseButton.SECONDARY){
+            workspaceX = event.getX();
+            workspaceY = event.getY();
+            workspaceContextMenu.show(workspace.getScene().getWindow(), event.getScreenX(), event.getScreenY());
         }
     }
 
@@ -178,7 +200,7 @@ public class ViewController implements Initializable {
         shapeEvent.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
                 contextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
-                selectShape(shape);
+                //selectShape(shape);
                 event.consume();
             }
         });
