@@ -76,12 +76,13 @@ public class ViewController implements Initializable {
         });
 
         copyItem.setOnAction(e -> {
-            copiedShape = selectedShape.clone();
+            copiedShape = ((ShapeInterface) contextMenu.getOwnerNode()).clone();
         });
 
         cutItem.setOnAction(e -> {
-            copiedShape = selectedShape.clone();
-            workspace.getChildren().remove((Shape) selectedShape);
+            ShapeInterface toCut  = (ShapeInterface) contextMenu.getOwnerNode();
+            copiedShape = toCut.clone();
+            workspace.getChildren().remove((Shape) toCut);
         });
 
         contextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem);
@@ -93,7 +94,8 @@ public class ViewController implements Initializable {
             ShapeInterface newShape = copiedShape.clone();
             newShape.setShapeX(workspaceX);
             newShape.setShapeY(workspaceY);
-            workspace.getChildren().add((Shape) copiedShape);
+            addShapeEvents(newShape);
+            workspace.getChildren().add((Shape) newShape);
         });
 
         workspaceContextMenu.setOnShown(e -> {
@@ -247,7 +249,7 @@ public class ViewController implements Initializable {
         shapeEvent.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
                 contextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
-                //selectShape(shape);
+                selectShape(shape);
                 event.consume();
             }else if(event.getButton() == MouseButton.PRIMARY && chosenShape == null){
                 selectShape(shape);
@@ -258,7 +260,6 @@ public class ViewController implements Initializable {
 
         shapeEvent.setOnMousePressed(event -> {
             if(event.getButton() == MouseButton.PRIMARY){
-                contextMenu.hide();
 
                 if (chosenShape == null){
                     startDragX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
@@ -274,6 +275,7 @@ public class ViewController implements Initializable {
                 shape.setShapeX(event.getX() + startDragX); // aggiorna posizione X in base al cursore
                 shape.setShapeY(event.getY() + startDragY); // aggiorna posizione Y in base al cursore
             }
+            contextMenu.hide();
         });
 
     }
