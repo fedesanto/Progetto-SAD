@@ -64,4 +64,17 @@ public interface ShapeInterface {
      * @param visitor il visitor da applicare alla forma
      */
     void accept(VisitorShape visitor);
+
+    /**
+     * Restituisce una copia dell'oggetto che implementa questa interfaccia.
+     * La copia dovrebbe contenere gli stessi attributi dell'istanza originale,
+     * ma essere indipendente da essa (modificare la copia non deve influire sull'originale).
+     *
+     * @return una nuova istanza di ShapeInterface con gli stessi valori dell'oggetto corrente
+     */
+    ShapeInterface clone();
+
+
 }
+
+

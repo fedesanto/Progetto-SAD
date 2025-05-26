@@ -156,4 +156,24 @@ public class EllipseShape extends Ellipse implements Shape2D {
     public void accept(VisitorShape visitor) {
         visitor.visit(this);
     }
+
+    /**
+     * Crea e restituisce una copia dell'oggetto EllipseShape corrente.
+     * La copia è una nuova istanza con gli stessi valori per posizione, dimensioni,
+     * colore del contorno e colore di riempimento dell'istanza originale.
+     * *
+     * @return una nuova istanza di  EllipseShape con gli stessi attributi dell'oggetto corrente
+     */
+    public ShapeInterface clone() {
+        return new EllipseShape(
+                getShapeX(),
+                getShapeY(),
+                getStrokeColor(),
+                getShapeWidth(),
+                getShapeHeight(),
+                getFillColor()
+        );
+    }
+
+
 }

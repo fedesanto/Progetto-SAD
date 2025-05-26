@@ -156,4 +156,22 @@ public class RectangleShape extends Rectangle implements Shape2D {
     public void accept(VisitorShape visitor) {
         visitor.visit(this);
     }
+
+    /**
+     * Crea e restituisce una copia dell'oggetto RectangleShape corrente.
+     * La copia è una nuova istanza con gli stessi valori per posizione, dimensioni,
+     * colore del contorno e colore di riempimento dell'istanza originale.
+     * *
+     * @return una nuova istanza di RectangleShape con gli stessi attributi dell'oggetto corrente
+     */
+    public ShapeInterface clone() {
+        return new RectangleShape(
+                getShapeX(),
+                getShapeY(),
+                getStrokeColor(),
+                getShapeWidth(),
+                getShapeHeight(),
+                getFillColor()
+        );
+    }
 }

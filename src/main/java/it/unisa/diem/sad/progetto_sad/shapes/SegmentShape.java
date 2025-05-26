@@ -156,4 +156,21 @@ public class SegmentShape extends Line implements Shape1D {
     public void accept(VisitorShape visitor) {
         visitor.visit(this);
     }
+
+    /**
+     * Crea e restituisce una copia dell'oggetto SegmentShape corrente.
+     * La copia è una nuova istanza con gli stessi valori per posizione, dimensioni,
+     * colore del contorno e colore di riempimento dell'istanza originale.
+     * *
+     * @return una nuova istanza di SegmentShape con gli stessi attributi dell'oggetto corrente
+     */
+    public ShapeInterface clone() {
+        return new SegmentShape(
+                getShapeX(),
+                getShapeY(),
+                getStrokeColor(),
+                getShapeLength(),
+                getStrokeWidth()
+        );
+    }
 }
