@@ -45,6 +45,8 @@ public class ViewController implements Initializable {
     private ContextMenu workspaceContextMenu;
     private double workspaceX;
     private double workspaceY;
+    private ShapeInterface copiedShape;
+
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -58,6 +60,8 @@ public class ViewController implements Initializable {
         contextMenu = new ContextMenu();
         MenuItem deleteItem = new MenuItem("Elimina");
         MenuItem resizeItem = new MenuItem("Ridimensiona");
+        MenuItem copyItem = new MenuItem("Copia");
+        MenuItem cutItem = new MenuItem("Taglia");
 
         deleteItem.setOnAction(e -> {
             workspace.getChildren().remove(contextMenu.getOwnerNode());
@@ -68,8 +72,16 @@ public class ViewController implements Initializable {
             ((ShapeInterface) contextMenu.getOwnerNode()).accept(resizeVisitor);  // chiama il visit appropriato
         });
 
-        contextMenu.getItems().addAll(deleteItem, resizeItem);
+        copyItem.setOnAction(e -> {
+            copiedShape = selectedShape.clone();
+        });
 
+        cutItem.setOnAction(e -> {
+            copiedShape = selectedShape.clone();
+            workspace.getChildren().remove((Shape) selectedShape);
+        });
+
+        contextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem);
 
 
         workspaceContextMenu = new ContextMenu();
