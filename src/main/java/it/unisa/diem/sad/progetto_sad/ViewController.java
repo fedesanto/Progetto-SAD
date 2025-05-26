@@ -49,6 +49,7 @@ public class ViewController implements Initializable {
 
     private double startDragX;
     private double startDragY;
+    private ShapeInterface selectedShape;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -127,6 +128,34 @@ public class ViewController implements Initializable {
     }
 
     /**
+     * Seleziona la forma che gli viene passata e deseleziona quella precedentemente selezionata.
+     * Applica un effetto visivo alla forma selezionata
+     *
+     * @param shape forma da selezionare
+     */
+    private void selectShape(ShapeInterface shape) {
+        DropShadow highlight = new DropShadow(20, Color.BLUE);
+
+        if (selectedShape != null) {
+            ((Shape) selectedShape).setEffect(null);
+        }
+
+        selectedShape = shape;
+        ((Shape) selectedShape).setEffect(highlight);
+    }
+
+    /**
+     * Deseleziona la forma attualmente selezionata nello spazio di lavoro, rimuovendo l'effetto visivo di evidenziazione.
+     * Se non c'è nessuna forma selezionata, non esegue alcuna operazione.
+     */
+    private void deselectShape() {
+        if (selectedShape != null) {
+            ((Shape) selectedShape).setEffect(null);
+            selectedShape = null;
+        }
+    }
+
+    /**
      * Seleziona una linea come forma corrente da disegnare.
      * Imposta il colore del bordo preso dal color picker.
      *
@@ -140,6 +169,7 @@ public class ViewController implements Initializable {
                 chosenShape = new Shape1DCreator(Shape1D.TYPE_1D.LINE, strokeColorPicker.getValue());
             else
                 chosenShape = null;
+            deselectShape();
         }
     }
 
@@ -157,6 +187,7 @@ public class ViewController implements Initializable {
                 chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.RECTANGLE, strokeColorPicker.getValue(), fillColorPicker.getValue());
             else
                 chosenShape = null;
+            deselectShape();
         }
     }
 
@@ -174,6 +205,7 @@ public class ViewController implements Initializable {
                 chosenShape = new Shape2DCreator(Shape2D.TYPE_2D.ELLIPSE, strokeColorPicker.getValue(), fillColorPicker.getValue());
             else
                 chosenShape = null;
+            deselectShape();
         }
     }
 
@@ -200,6 +232,7 @@ public class ViewController implements Initializable {
             workspaceY = event.getY();
             workspaceContextMenu.show(workspace.getScene().getWindow(), event.getScreenX(), event.getScreenY());
         }
+        deselectShape();
     }
 
 
@@ -216,6 +249,10 @@ public class ViewController implements Initializable {
                 contextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
                 //selectShape(shape);
                 event.consume();
+            }else if(event.getButton() == MouseButton.PRIMARY && chosenShape == null){
+                selectShape(shape);
+                event.consume();
+
             }
         });
 
@@ -260,11 +297,13 @@ public class ViewController implements Initializable {
      */
     @FXML
     protected void pickedFillColor() {
-        if (chosenShape != null) {
-            if (chosenShape instanceof Shape2DCreator) {
-                ((Shape2DCreator) chosenShape).setFillColor(fillColorPicker.getValue());
-            }
-        }
+        Color selectedColor = fillColorPicker.getValue();
+
+        if (chosenShape instanceof Shape2DCreator)
+            ((Shape2DCreator) chosenShape).setFillColor(selectedColor);
+
+        if (selectedShape instanceof Shape2D)
+            ((Shape2D) selectedShape).setFillColor(selectedColor);
     }
 
     /**
