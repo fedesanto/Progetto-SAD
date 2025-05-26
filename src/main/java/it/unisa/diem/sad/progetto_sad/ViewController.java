@@ -206,7 +206,7 @@ public class ViewController implements Initializable {
     /**
      * Metodo di comodo che aggiunge tutti gli eventi necessari ad una forma creata
      *
-     * @param shape forma a cui aggiungere gli eventi
+     * @param shape forma a cui aggiungere gli eventi.
      */
     private void addShapeEvents(ShapeInterface shape){
         Shape shapeEvent = (Shape) shape;
