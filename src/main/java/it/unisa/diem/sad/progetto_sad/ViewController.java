@@ -130,16 +130,16 @@ public class ViewController implements Initializable {
     }
 
     /**
-     * Seleziona la forma che gli viene passata e deseleziona quella precedentemente selezionata.
-     * Applica un effetto visivo alla forma selezionata
+     * Seleziona la forma specificata come attualmente selezionata nello spazio di lavoro,
+     * deselezionando eventuali forme precedentemente selezionate.
      *
-     * @param shape forma da selezionare
+     * @param shape la forma da selezionare e evidenziare
      */
     private void selectShape(ShapeInterface shape) {
         DropShadow highlight = new DropShadow(20, Color.BLUE);
 
         if (selectedShape != null) {
-            ((Shape) selectedShape).setEffect(null);
+            ((Shape) selectedShape).setEffect(null); //Rimuove l'effetto visivo dalla forma precedentemente selezionata
         }
 
         selectedShape = shape;
@@ -152,7 +152,7 @@ public class ViewController implements Initializable {
      */
     private void deselectShape() {
         if (selectedShape != null) {
-            ((Shape) selectedShape).setEffect(null);
+            ((Shape) selectedShape).setEffect(null); // Rimuove l'effetto visivo dalla forma
             selectedShape = null;
         }
     }
@@ -305,8 +305,13 @@ public class ViewController implements Initializable {
             selectedShape.setStrokeColor(selectedColor);
     }
 
+
     /**
-     * Aggiorna il colore di riempimento della forma selezionata, se si tratta di una forma bidimensionale.
+     * Cambia il colore di riempimento della forma selezionata:
+     * - Se è attiva la modalità di disegno,
+     *   imposta il colore di riempimento per la prossima forma da disegnare.
+     * - Se una forma 2D è attualmente selezionata nello spazio di lavoro,
+     *   aggiorna visivamente il suo colore di riempimento con quello scelto dall'utente.
      */
     @FXML
     protected void pickedFillColor() {
