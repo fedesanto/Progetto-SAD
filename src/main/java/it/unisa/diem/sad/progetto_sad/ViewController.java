@@ -257,20 +257,22 @@ public class ViewController implements Initializable {
                 selectShape(shape);
                 event.consume();
             }else if(event.getButton() == MouseButton.PRIMARY && chosenShape == null){
-                selectShape(shape);
+                selectShape(shape); // seleziona la forma solo se nessun'altra è già selezionata
                 event.consume();
 
             }
         });
 
+        // Evento di pressione del mouse per iniziare il trascinamento
         shapeEvent.setOnMousePressed(event -> {
             if(event.getButton() == MouseButton.PRIMARY){
 
                 if (chosenShape == null){
+                    // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
                     startDragX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
                     startDragY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
 
-                    selectShape(shape);
+                    selectShape(shape); // Seleziona la forma
                 }
             }
         });
