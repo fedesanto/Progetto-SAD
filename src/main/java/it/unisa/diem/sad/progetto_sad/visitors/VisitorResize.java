@@ -17,7 +17,7 @@ import javafx.scene.layout.GridPane;
 public class VisitorResize implements VisitorShape {
 
     // Espressione regolare per numeri decimali positivi
-    private static final String DECIMAL_REGEX = "\\d*(\\.\\d+)?";
+    private final String DECIMAL_REGEX = "\\d*(\\.\\d+)?";
 
     /**
      * Visualizza una finestra di dialogo per ridimensionare una forma 1D.
