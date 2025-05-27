@@ -39,67 +39,73 @@ public class ViewController implements Initializable {
     @FXML
     private MenuItem saveButton;
 
-    private Button highlightedButton;
-    private ShapeCreator chosenShape;
-    private ContextMenu contextMenu;
-    private ContextMenu workspaceContextMenu;
-    private double workspaceX;
-    private double workspaceY;
-    private ShapeInterface copiedShape;
+    private final double BUTTON_SHADOW_RADIUS    = 13;              // Dimensione effetto evidenziazione dei bottoni
+    private final Color  BUTTON_SHADOW_COLOR     = Color.BLUE;      // Colore effetto evidenziazione dei bottoni
+    private final double SELECTION_SHADOW_RADIUS = 20;              // Dimensione effetto evidenziazione delle forme selezionate
+    private final Color  SELECTION_SHADOW_COLOR  = Color.BLUE;      // Colore effetto evidenziazione delle forme selezionate
 
-    private double startDragX;
-    private double startDragY;
-    private ShapeInterface selectedShape;
+    private Button highlightedButton;               // Bottone di scelta delle forme evidenziato
+    private ShapeCreator chosenShape;               // Forma scelta da creare 
+    private ContextMenu shapeContextMenu;           // Menu contestuale delle forme
+    private ContextMenu workspaceContextMenu;       // Menu contestuale dello spazio di lavoro
+    private double workspaceContextMenuX;           // Coordinata X del punto di apparizione del menu contestuale dello spazio di lavoro
+    private double workspaceContextMenuY;           // Coordinata Y del punto di apparizione del menu contestuale dello spazio di lavoro
+    private ShapeInterface copiedShape;             // Forma copiata
+
+    private double startDragX;                      // Coordinata X del mouse quando inizia a trascinare una forma
+    private double startDragY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
+    private ShapeInterface selectedShape;           // Riferimento alla forma selezionata
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
-     * Crea il contex menu che sarà utilizzato dalle forme
+     * Crea il menu contesuale che sarà utilizzato per le forme.
+     * Crea il menu contestuale che sarà utilizzato per lo spazio di lavoro.
      *
      * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        contextMenu = new ContextMenu();
+        shapeContextMenu = new ContextMenu();
         MenuItem deleteItem = new MenuItem("Elimina");
         MenuItem resizeItem = new MenuItem("Ridimensiona");
         MenuItem copyItem = new MenuItem("Copia");
         MenuItem cutItem = new MenuItem("Taglia");
 
         deleteItem.setOnAction(e -> {
-            workspace.getChildren().remove(contextMenu.getOwnerNode());
+            workspace.getChildren().remove(shapeContextMenu.getOwnerNode());
         });
 
         resizeItem.setOnAction(e -> {
             VisitorResize resizeVisitor = new VisitorResize();
-            ((ShapeInterface) contextMenu.getOwnerNode()).accept(resizeVisitor);  // chiama il visit appropriato
+            ((ShapeInterface) shapeContextMenu.getOwnerNode()).accept(resizeVisitor);  // chiama il visit appropriato
         });
 
         copyItem.setOnAction(e -> {
-            copiedShape = ((ShapeInterface) contextMenu.getOwnerNode()).clone();
+            copiedShape = ((ShapeInterface) shapeContextMenu.getOwnerNode()).clone();
         });
 
         cutItem.setOnAction(e -> {
-            ShapeInterface toCut  = (ShapeInterface) contextMenu.getOwnerNode();
+            ShapeInterface toCut  = (ShapeInterface) shapeContextMenu.getOwnerNode();
             copiedShape = toCut.clone();
             workspace.getChildren().remove((Shape) toCut);
         });
 
-        contextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem);
+        shapeContextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem);
 
 
         workspaceContextMenu = new ContextMenu();
         MenuItem pasteItem = new MenuItem("Incolla");
         pasteItem.setOnAction(e -> {
-            ShapeInterface newShape = copiedShape.clone();
-            newShape.setShapeX(workspaceX);
-            newShape.setShapeY(workspaceY);
-            addShapeEvents(newShape);
+            ShapeInterface newShape = copiedShape.clone();          // Clona la shape copiata
+            newShape.setShapeX(workspaceContextMenuX);              // la posiziona nelle coordinata del menu contestuale
+            newShape.setShapeY(workspaceContextMenuY);
+            addShapeEvents(newShape);                               // aggiunta degli eventi alla nuova forma clonata
             workspace.getChildren().add((Shape) newShape);
         });
 
         workspaceContextMenu.setOnShown(e -> {
-            pasteItem.setDisable(copiedShape == null);
+            pasteItem.setDisable(copiedShape == null);          // disabilitazione della voce 'Incolla' nel caso in cui non fosse stata copiata nessuna forma
         });
         workspaceContextMenu.getItems().add(pasteItem);
     }
@@ -113,7 +119,7 @@ public class ViewController implements Initializable {
      * @return restistuisce true se è stato cliccato un nuovo bottone, altrimenti false
      */
     private boolean highlightButton(Button button) {
-        DropShadow highlight = new DropShadow(13, Color.BLUE);  // effetto di evidenziazione
+        DropShadow highlight = new DropShadow(BUTTON_SHADOW_RADIUS, BUTTON_SHADOW_COLOR);  // effetto di evidenziazione
 
         if (highlightedButton != null) {         // disattivo l'effetto alla forma attualmente evidenziata
             highlightedButton.setEffect(null);
@@ -136,7 +142,7 @@ public class ViewController implements Initializable {
      * @param shape la forma da selezionare e evidenziare
      */
     private void selectShape(ShapeInterface shape) {
-        DropShadow highlight = new DropShadow(20, Color.BLUE);
+        DropShadow highlight = new DropShadow(SELECTION_SHADOW_RADIUS, SELECTION_SHADOW_COLOR);
 
         if (selectedShape != null) {
             ((Shape) selectedShape).setEffect(null); //Rimuove l'effetto visivo dalla forma precedentemente selezionata
@@ -220,7 +226,7 @@ public class ViewController implements Initializable {
     @FXML
     protected void clickOnWorkspace(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            if (chosenShape != null) {
+            if (chosenShape != null) {      // Se sono in modalità di disegno, creo una nuova forma e la inserisco nello spazio di lavoro
                 ShapeInterface shape = chosenShape.createShape();
                 shape.setShapeX(event.getX());
                 shape.setShapeY(event.getY());
@@ -229,20 +235,20 @@ public class ViewController implements Initializable {
 
                 workspace.getChildren().add((Shape) shape);
             }
-        }else if (event.getButton() == MouseButton.SECONDARY){
-            workspaceX = event.getX();
-            workspaceY = event.getY();
+        }else if (event.getButton() == MouseButton.SECONDARY){      // Se viene effettuato un clic destro sullo spazio di lavoro, viene fatto apparire il suo menu contestuale
+            workspaceContextMenuX = event.getX();
+            workspaceContextMenuY = event.getY();
             workspaceContextMenu.show(workspace.getScene().getWindow(), event.getScreenX(), event.getScreenY());
         }
-        deselectShape();
+
+        deselectShape();        // Deselezionamento della forma selezionata ogni volta che si clicca nello spazio di lavoro
     }
 
 
     /**
      * Registra tutti gli eventi interattivi necessari per una forma geometrica.
-     *
      * Gli eventi gestiscono:
-     *      La selezione della forma tramite click sinistro o destro.
+     *     La selezione della forma tramite click sinistro o destro.
      *     La visualizzazione del menu contestuale al click destro.
      *     Il trascinamento della forma con il mouse (drag and drop).
      *
@@ -253,7 +259,7 @@ public class ViewController implements Initializable {
 
         shapeEvent.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
-                contextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
+                shapeContextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
                 selectShape(shape);
                 event.consume();
             }else if(event.getButton() == MouseButton.PRIMARY && chosenShape == null){
@@ -282,7 +288,7 @@ public class ViewController implements Initializable {
                 shape.setShapeX(event.getX() + startDragX); // aggiorna posizione X in base al cursore
                 shape.setShapeY(event.getY() + startDragY); // aggiorna posizione Y in base al cursore
             }
-            contextMenu.hide();
+            shapeContextMenu.hide();
         });
 
     }
