@@ -58,7 +58,7 @@ public class ViewController implements Initializable {
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
-     * Crea il menu contesuale che sarà utilizzato per le forme.
+     * Crea il menu contestuale che sarà utilizzato per le forme.
      * Crea il menu contestuale che sarà utilizzato per lo spazio di lavoro.
      *
      * @param url            URL utilizzato per inizializzare l'oggetto.
@@ -98,7 +98,7 @@ public class ViewController implements Initializable {
         MenuItem pasteItem = new MenuItem("Incolla");
         pasteItem.setOnAction(e -> {
             ShapeInterface newShape = copiedShape.clone();          // Clona la shape copiata
-            newShape.setShapeX(workspaceContextMenuX);              // la posiziona nelle coordinata del menu contestuale
+            newShape.setShapeX(workspaceContextMenuX);              // la posiziona nelle coordinate del menu contestuale
             newShape.setShapeY(workspaceContextMenuY);
             addShapeEvents(newShape);                               // aggiunta degli eventi alla nuova forma clonata
             workspace.getChildren().add((Shape) newShape);
@@ -113,10 +113,10 @@ public class ViewController implements Initializable {
     /**
      * Evidenzia visivamente il bottone selezionata applicando un effetto visivo.
      * Se un altro bottone era precedentemente evidenziato, rimuove l'effetto a quello precedente.
-     * Se il metodo viene chiamato sul bottne attualmente evidenziato, gli rimuove l'effetto
+     * Se il metodo viene chiamato sul bottone attualmente evidenziato, gli rimuove l'effetto
      *
      * @param button bottone da evidenziare
-     * @return restistuisce true se è stato cliccato un nuovo bottone, altrimenti false
+     * @return restituisce true se è stato cliccato un nuovo bottone, altrimenti false
      */
     private boolean highlightButton(Button button) {
         DropShadow highlight = new DropShadow(BUTTON_SHADOW_RADIUS, BUTTON_SHADOW_COLOR);  // effetto di evidenziazione
@@ -139,7 +139,7 @@ public class ViewController implements Initializable {
      * Seleziona la forma specificata come attualmente selezionata nello spazio di lavoro,
      * deselezionando eventuali forme precedentemente selezionate.
      *
-     * @param shape la forma da selezionare e evidenziare
+     * @param shape la forma da selezionare ed evidenziare
      */
     private void selectShape(ShapeInterface shape) {
         DropShadow highlight = new DropShadow(SELECTION_SHADOW_RADIUS, SELECTION_SHADOW_COLOR);
