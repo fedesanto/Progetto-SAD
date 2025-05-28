@@ -52,8 +52,8 @@ public class ViewController implements Initializable {
     private double workspaceContextMenuY;           // Coordinata Y del punto di apparizione del menu contestuale dello spazio di lavoro
     private ShapeInterface copiedShape;             // Forma copiata
 
-    private double startDragX;                      // Coordinata X del mouse quando inizia a trascinare una forma
-    private double startDragY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
+    private double dragOffsetX;                      // Coordinata X del mouse quando inizia a trascinare una forma
+    private double dragOffsetY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
     private ShapeInterface selectedShape;           // Riferimento alla forma selezionata
 
     /**
@@ -275,8 +275,8 @@ public class ViewController implements Initializable {
 
                 if (chosenShape == null){
                     // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
-                    startDragX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
-                    startDragY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
+                    dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
+                    dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
 
                     selectShape(shape); // Seleziona la forma
                 }
@@ -285,8 +285,8 @@ public class ViewController implements Initializable {
 
         shapeEvent.setOnMouseDragged(event -> {
             if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
-                shape.setShapeX(event.getX() + startDragX); // aggiorna posizione X in base al cursore
-                shape.setShapeY(event.getY() + startDragY); // aggiorna posizione Y in base al cursore
+                shape.setShapeX(event.getX() + dragOffsetX); // aggiorna posizione X in base al cursore
+                shape.setShapeY(event.getY() + dragOffsetY); // aggiorna posizione Y in base al cursore
             }
             shapeContextMenu.hide();
         });
@@ -385,8 +385,10 @@ public class ViewController implements Initializable {
                 if (shapeList != null) {
                     // Rimuove tutte le forme precedenti e aggiunge le nuove
                     workspace.getChildren().clear();
-                    for (ShapeInterface shape : shapeList)
+                    for (ShapeInterface shape : shapeList) {
+                        addShapeEvents(shape);
                         workspace.getChildren().add((Shape) shape);
+                    }
                 } else {
                     // Generazione alert in caso di errore nel caricamento
                     showAlert("Errore", "Impossibile caricare il file.");
