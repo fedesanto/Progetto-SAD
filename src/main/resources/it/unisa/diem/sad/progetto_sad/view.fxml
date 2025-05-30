@@ -154,7 +154,7 @@
          <VBox.margin>
             <Insets />
          </VBox.margin></Line>
-      <ScrollPane focusTraversable="false" prefHeight="570.0" prefWidth="800.0">
+      <ScrollPane fx:id="scrollPane" focusTraversable="false" prefHeight="570.0" prefWidth="800.0">
         <content>
           <AnchorPane fx:id="workspace" minHeight="0.0" minWidth="0.0" onMouseClicked="#clickOnWorkspace" prefHeight="398.0" prefWidth="796.0" />
         </content>
