@@ -1,5 +1,7 @@
 package it.unisa.diem.sad.progetto_sad;
 
+import it.unisa.diem.sad.progetto_sad.commands.Command;
+import it.unisa.diem.sad.progetto_sad.commands.InsertCommand;
 import it.unisa.diem.sad.progetto_sad.factories.Shape1DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
@@ -227,13 +229,14 @@ public class ViewController implements Initializable {
     protected void clickOnWorkspace(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             if (chosenShape != null) {      // Se sono in modalità di disegno, creo una nuova forma e la inserisco nello spazio di lavoro
-                ShapeInterface shape = chosenShape.createShape();
-                shape.setShapeX(event.getX());
-                shape.setShapeY(event.getY());
+                ShapeInterface newShape = chosenShape.createShape();
+                newShape.setShapeX(event.getX());
+                newShape.setShapeY(event.getY());
 
-                addShapeEvents(shape);  //Aggiunge tutti gli eventi di interesse per la forma appena creata
+                addShapeEvents(newShape);  //Aggiunge tutti gli eventi di interesse per la forma appena creata
 
-                workspace.getChildren().add((Shape) shape);
+                Command insert = new InsertCommand(workspace, newShape);    //Creo ed eseguo il comando per l'inserimento
+                insert.execute();
             }
         }else if (event.getButton() == MouseButton.SECONDARY){      // Se viene effettuato un clic destro sullo spazio di lavoro, viene fatto apparire il suo menu contestuale
             workspaceContextMenuX = event.getX();
