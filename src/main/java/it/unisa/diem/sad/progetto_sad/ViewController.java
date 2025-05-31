@@ -6,8 +6,6 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -83,8 +81,6 @@ public class ViewController implements Initializable {
 
     // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
     private static final double EXPANSION_MARGIN = 50;
-
-    private final CommandHistory history = new CommandHistory();    //History dei comandi
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -450,22 +446,17 @@ public class ViewController implements Initializable {
 
         // Evento di pressione del mouse per iniziare il trascinamento
         shapeEvent.setOnMousePressed(event -> {
-            if(event.getButton() == MouseButton.PRIMARY && chosenShape == null)
-                selectShape(shape); // Seleziona la forma
-        });
+            if(event.getButton() == MouseButton.PRIMARY){
 
-        shapeEvent.setOnDragDetected(event -> {
-            DragCommand drag = new DragCommand(shape);
-            executeCommand(drag);
+                if (chosenShape == null){
+                    // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
+                    dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
+                    dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
 
-            if (chosenShape == null){
-                // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
-                dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
-                dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
-
-                selectShape(shape); // Seleziona la forma
+                    selectShape(shape); // Seleziona la forma
+                }
+                isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
             }
-            isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
         });
 
         shapeEvent.setOnMouseDragged(event -> {
@@ -661,20 +652,7 @@ public class ViewController implements Initializable {
      */
     private void executeCommand(Command command){
         command.execute();
-        history.push(command);
+        // commandhistory.push(command)
     }
 
-
-    /**
-     * Evento associato alla pressione del bottone di annullamento.
-     * Deve annullare l'ultimo command eseguito
-     *
-     */
-    @FXML
-    void undo() {
-        if (!history.isEmpty()){
-            Command command = history.pop();
-            command.undo();
-        }
-    }
 }
