@@ -26,7 +26,7 @@ public class ChangeFillColorCommand implements Command{
      * Esegue il comando impostando il nuovo colore di riempimento sulla forma.
      */
     public void execute() {
-        prevFillColor = fillColor;
+        prevFillColor = shape.getFillColor();
         shape.setFillColor(fillColor);
     }
 

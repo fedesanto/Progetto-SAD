@@ -26,14 +26,14 @@ public class ResizeCommand implements Command {
      * Esegue il comando applicando il ridimensionamento alla forma.
      */
     public void execute() {
-        shape.accept(new VisitorResize());
-
         if (shape instanceof Shape1D)
             dim1 = ((Shape1D) shape).getShapeLength();
         else{
             dim1 = ((Shape2D) shape).getShapeWidth();
             dim2 = ((Shape2D) shape).getShapeHeight();
         }
+
+        shape.accept(new VisitorResize());
 
     }
 

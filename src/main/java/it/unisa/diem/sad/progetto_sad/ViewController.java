@@ -450,17 +450,22 @@ public class ViewController implements Initializable {
 
         // Evento di pressione del mouse per iniziare il trascinamento
         shapeEvent.setOnMousePressed(event -> {
-            if(event.getButton() == MouseButton.PRIMARY){
+            if(event.getButton() == MouseButton.PRIMARY && chosenShape == null)
+                selectShape(shape); // Seleziona la forma
+        });
 
-                if (chosenShape == null){
-                    // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
-                    dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
-                    dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
+        shapeEvent.setOnDragDetected(event -> {
+            DragCommand drag = new DragCommand(shape);
+            executeCommand(drag);
 
-                    selectShape(shape); // Seleziona la forma
-                }
-                isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
+            if (chosenShape == null){
+                // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
+                dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
+                dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
+
+                selectShape(shape); // Seleziona la forma
             }
+            isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
         });
 
         shapeEvent.setOnMouseDragged(event -> {
