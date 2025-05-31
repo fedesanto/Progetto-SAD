@@ -84,4 +84,25 @@ class EllipseShapeTest {
         assertEquals(Double.toString(ellipse.getShapeHeight()), parts[6]);
         assertEquals(ellipse.getFillColor().toString(), parts[7]);
     }
+
+
+    @Test
+    void testClone() {
+        // Clona l'oggetto
+        ShapeInterface cloned = ellipse.clone();
+
+        // Verifica che il clone sia un'altra istanza
+        assertNotSame(ellipse, cloned);
+        assertInstanceOf(EllipseShape.class, cloned);
+
+        // Cast per confronto
+        EllipseShape copy = (EllipseShape) cloned;
+
+        // Verifica che gli attributi siano identici
+        assertEquals(ellipse.getShapeX(), copy.getShapeX());
+        assertEquals(ellipse.getShapeY(), copy.getShapeY());
+        assertEquals(ellipse.getStrokeColor(), copy.getStrokeColor());
+        assertEquals(ellipse.getShapeWidth(), copy.getShapeWidth());
+        assertEquals(ellipse.getShapeHeight(), copy.getShapeHeight());
+    }
 }

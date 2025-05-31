@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
  */
 public class Shape1DCreator  implements ShapeCreator {
     private final double D1_LENGTH = 80;
-    private final double D1_STROKE_WIDTH = 4;
 
     /**
      * Tipo della forma 1D da creare.
@@ -43,7 +42,7 @@ public class Shape1DCreator  implements ShapeCreator {
     @Override
     public ShapeInterface createShape(){
         if (this.type == Shape1D.TYPE_1D.LINE) {
-            return new SegmentShape(0, 0, this.stroke, D1_LENGTH, D1_STROKE_WIDTH);
+            return new SegmentShape(0, 0, this.stroke, D1_LENGTH);
         } else {
             return null;
         }
