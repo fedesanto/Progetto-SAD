@@ -1,7 +1,6 @@
 package it.unisa.diem.sad.progetto_sad;
 
-import it.unisa.diem.sad.progetto_sad.commands.Command;
-import it.unisa.diem.sad.progetto_sad.commands.InsertCommand;
+import it.unisa.diem.sad.progetto_sad.commands.*;
 import it.unisa.diem.sad.progetto_sad.factories.Shape1DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
@@ -105,12 +104,13 @@ public class ViewController implements Initializable {
         MenuItem cutItem = new MenuItem("Taglia");
 
         deleteItem.setOnAction(e -> {
-            workspace.getChildren().remove(shapeContextMenu.getOwnerNode());
+            DeleteCommand delete = new DeleteCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per l'eliminazione
+            executeCommand(delete);
         });
 
         resizeItem.setOnAction(e -> {
-            VisitorResize resizeVisitor = new VisitorResize();
-            ((ShapeInterface) shapeContextMenu.getOwnerNode()).accept(resizeVisitor);  // chiama il visit appropriato
+            ResizeCommand resize = new ResizeCommand((ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per il ridimensionamento
+            executeCommand(resize);
         });
 
         copyItem.setOnAction(e -> {
@@ -120,7 +120,8 @@ public class ViewController implements Initializable {
         cutItem.setOnAction(e -> {
             ShapeInterface toCut  = (ShapeInterface) shapeContextMenu.getOwnerNode();
             copiedShape = toCut.clone();
-            workspace.getChildren().remove((Shape) toCut);
+            DeleteCommand delete = new DeleteCommand(workspace, toCut);  //Creo ed eseguo il comando per l'eliminazione
+            executeCommand(delete);
         });
 
         shapeContextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem);
@@ -129,11 +130,12 @@ public class ViewController implements Initializable {
         workspaceContextMenu = new ContextMenu();
         MenuItem pasteItem = new MenuItem("Incolla");
         pasteItem.setOnAction(e -> {
-            ShapeInterface newShape = copiedShape.clone();          // Clona la shape copiata
-            newShape.setShapeX(workspaceContextMenuX);              // la posiziona nelle coordinate del menu contestuale
+            ShapeInterface newShape = copiedShape.clone();              // Clona la shape copiata
+            newShape.setShapeX(workspaceContextMenuX);                  // la posiziona nelle coordinate del menu contestuale
             newShape.setShapeY(workspaceContextMenuY);
-            addShapeEvents(newShape);                               // aggiunta degli eventi alla nuova forma clonata
-            workspace.getChildren().add((Shape) newShape);
+            addShapeEvents(newShape);                                   // aggiunta degli eventi alla nuova forma clonata
+            Command insert = new InsertCommand(workspace, newShape);    //Creo ed eseguo il comando per l'inserimento
+            executeCommand(insert);
         });
 
         workspaceContextMenu.setOnShown(e -> {
@@ -361,7 +363,7 @@ public class ViewController implements Initializable {
                 addShapeEvents(newShape);  //Aggiunge tutti gli eventi di interesse per la forma appena creata
 
                 Command insert = new InsertCommand(workspace, newShape);    //Creo ed eseguo il comando per l'inserimento
-                insert.execute();
+                executeCommand(insert);
             }
         }else if (event.getButton() == MouseButton.SECONDARY){      // Se viene effettuato un clic destro sullo spazio di lavoro, viene fatto apparire il suo menu contestuale
             workspaceContextMenuX = event.getX();
@@ -467,8 +469,10 @@ public class ViewController implements Initializable {
         if (chosenShape != null)
             chosenShape.setStrokeColor(selectedColor);
 
-        if(selectedShape != null)
-            selectedShape.setStrokeColor(selectedColor);
+        if(selectedShape != null){
+            ChangeStrokeColorCommand changeStrokeColor = new ChangeStrokeColorCommand(selectedShape, selectedColor); //Creo ed eseguo il comando per il cambio colore bordi
+            executeCommand(changeStrokeColor);
+        }
     }
 
 
@@ -486,8 +490,10 @@ public class ViewController implements Initializable {
         if (chosenShape instanceof Shape2DCreator)
             ((Shape2DCreator) chosenShape).setFillColor(selectedColor);
 
-        if (selectedShape instanceof Shape2D)
-            ((Shape2D) selectedShape).setFillColor(selectedColor);
+        if (selectedShape instanceof Shape2D){
+            ChangeFillColorCommand changeFillColor = new ChangeFillColorCommand((Shape2D) selectedShape, selectedColor); //Creo ed eseguo il comando per il cambio colore riempimento
+            executeCommand(changeFillColor);
+        }
     }
 
     /**
@@ -606,6 +612,11 @@ public class ViewController implements Initializable {
     void handleZoom200() {
         setZoomScale(2.0);
 
+    }
+
+    private void executeCommand(Command command){
+        command.execute();
+        // commandhistory.push(command)
     }
 
 }
