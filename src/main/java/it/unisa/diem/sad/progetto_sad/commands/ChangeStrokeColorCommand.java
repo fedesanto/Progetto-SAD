@@ -27,7 +27,7 @@ public class ChangeStrokeColorCommand implements Command{
      * Esegue il comando impostando il nuovo colore del bordo sulla forma.
      */
     public void execute() {
-        prevStrokeColor = strokeColor;
+        prevStrokeColor = shape.getStrokeColor();
         shape.setStrokeColor(strokeColor);
     }
 
