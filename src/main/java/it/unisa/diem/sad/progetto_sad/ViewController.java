@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -40,9 +41,10 @@ public class ViewController implements Initializable {
     private Pane workspace;
     @FXML
     private MenuItem saveButton;
-
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Group group;
 
     @FXML
     private RadioButton Zoom50;
@@ -80,12 +82,6 @@ public class ViewController implements Initializable {
     // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
     private static final double EXPANSION_MARGIN = 100;
 
-    // Offset per lo spostamento del workspace (utilizzati nel panning)
-    private double offsetX = 0;
-    private double offsetY = 0;
-
-    // Velocità di scorrimento della ScrollPane durante l'auto-scroll (drag verso i bordi)
-    private static final double SCROLL_SPEED = 0.01;
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
      * Crea il menu contestuale che sarà utilizzato per le forme.
@@ -211,18 +207,14 @@ public class ViewController implements Initializable {
         double viewRight = scrollPane.getHvalue() * (workspace.getWidth() - scrollPane.getViewportBounds().getWidth());
         double viewBottom = scrollPane.getVvalue() * (workspace.getHeight() - scrollPane.getViewportBounds().getHeight());
 
-        boolean expanded = false;
-
         // Se siamo vicini al bordo destro visibile, aumenta la larghezza del workspace
         if (viewRight + scrollPane.getViewportBounds().getWidth() >= workspace.getWidth() - EXPANSION_MARGIN) {
             workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);  // Espandi orizzontalmente
-            expanded = true;
         }
 
         // Se siamo vicini al bordo inferiore visibile, aumenta l'altezza del workspace
         if (viewBottom + scrollPane.getViewportBounds().getHeight() >= workspace.getHeight() - EXPANSION_MARGIN) {
             workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);  // Espandi verticalmente
-            expanded = true;
         }
     }
 
