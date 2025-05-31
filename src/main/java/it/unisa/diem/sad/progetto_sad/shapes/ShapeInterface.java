@@ -83,7 +83,6 @@ public interface ShapeInterface {
      * Porta la forma in fondo nel contesto grafico.
      */
     void shapeToBack();
-
 }
 
 

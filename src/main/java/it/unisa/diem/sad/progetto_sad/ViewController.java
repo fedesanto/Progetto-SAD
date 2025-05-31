@@ -117,12 +117,12 @@ public class ViewController implements Initializable {
         MenuItem toBackItem = new MenuItem("Porta dietro");
 
         deleteItem.setOnAction(e -> {
-            DeleteCommand delete = new DeleteCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per l'eliminazione
+            Command delete = new DeleteCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per l'eliminazione
             executeCommand(delete);
         });
 
         resizeItem.setOnAction(e -> {
-            ResizeCommand resize = new ResizeCommand((ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per il ridimensionamento
+            Command resize = new ResizeCommand((ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per il ridimensionamento
             executeCommand(resize);
         });
 
@@ -133,7 +133,7 @@ public class ViewController implements Initializable {
         cutItem.setOnAction(e -> {
             ShapeInterface toCut  = (ShapeInterface) shapeContextMenu.getOwnerNode();
             copiedShape = toCut.clone();
-            DeleteCommand delete = new DeleteCommand(workspace, toCut);  //Creo ed eseguo il comando per l'eliminazione
+            Command delete = new DeleteCommand(workspace, toCut);  //Creo ed eseguo il comando per l'eliminazione
             executeCommand(delete);
         });
 
@@ -486,7 +486,7 @@ public class ViewController implements Initializable {
         });
 
         shapeEvent.setOnDragDetected(event -> {
-            DragCommand drag = new DragCommand(shape);
+            Command drag = new DragCommand(shape);
             executeCommand(drag);
         });
 
@@ -558,7 +558,7 @@ public class ViewController implements Initializable {
             chosenShape.setStrokeColor(selectedColor);
 
         if(selectedShape != null){
-            ChangeStrokeColorCommand changeStrokeColor = new ChangeStrokeColorCommand(selectedShape, selectedColor); //Creo ed eseguo il comando per il cambio colore bordi
+            Command changeStrokeColor = new ChangeStrokeColorCommand(selectedShape, selectedColor); //Creo ed eseguo il comando per il cambio colore bordi
             executeCommand(changeStrokeColor);
         }
     }
@@ -579,7 +579,7 @@ public class ViewController implements Initializable {
             ((Shape2DCreator) chosenShape).setFillColor(selectedColor);
 
         if (selectedShape instanceof Shape2D){
-            ChangeFillColorCommand changeFillColor = new ChangeFillColorCommand((Shape2D) selectedShape, selectedColor); //Creo ed eseguo il comando per il cambio colore riempimento
+            Command changeFillColor = new ChangeFillColorCommand((Shape2D) selectedShape, selectedColor); //Creo ed eseguo il comando per il cambio colore riempimento
             executeCommand(changeFillColor);
         }
     }
