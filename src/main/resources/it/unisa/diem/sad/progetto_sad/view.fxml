@@ -122,14 +122,14 @@
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ZOOM" textAlignment="CENTER" wrappingWidth="69.662109375" />
                   <Separator opacity="0.0" prefHeight="12.0" prefWidth="112.0" />
-                  <RadioButton fx:id="Zoom50" focusTraversable="false" mnemonicParsing="false" onAction="#handleZoom50" prefWidth="70.0" text="50%">
+                  <RadioButton fx:id="Zoom50" focusTraversable="false" mnemonicParsing="false" prefWidth="70.0" text="50%">
                      <toggleGroup>
                         <ToggleGroup fx:id="zoom" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="Zoom100" focusTraversable="false" mnemonicParsing="false" onAction="#handleZoom100" prefWidth="70.0" selected="true" text="100%" toggleGroup="$zoom" />
-                  <RadioButton fx:id="Zoom150" focusTraversable="false" mnemonicParsing="false" onAction="#handleZoom150" prefWidth="70.0" text="150%" toggleGroup="$zoom" />
-                  <RadioButton fx:id="Zoom200" focusTraversable="false" mnemonicParsing="false" onAction="#handleZoom200" prefWidth="70.0" text="200%" toggleGroup="$zoom" />
+                  <RadioButton fx:id="Zoom100" focusTraversable="false" mnemonicParsing="false" prefWidth="70.0" selected="true" text="100%" toggleGroup="$zoom" />
+                  <RadioButton fx:id="Zoom150" focusTraversable="false" mnemonicParsing="false" prefWidth="70.0" text="150%" toggleGroup="$zoom" />
+                  <RadioButton fx:id="Zoom200" focusTraversable="false" mnemonicParsing="false" prefWidth="70.0" text="200%" toggleGroup="$zoom" />
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
