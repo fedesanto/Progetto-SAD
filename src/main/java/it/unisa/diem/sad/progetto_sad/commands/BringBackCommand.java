@@ -8,8 +8,8 @@ import javafx.scene.shape.Shape;
  * Command per portare una forma in fondo all'interno di un Pane.
  */
 public class BringBackCommand implements Command{
-    private final ShapeInterface shape;
     private final Pane workspace;
+    private final ShapeInterface shape;
     private int oldIndex;
 
     /**
@@ -18,9 +18,9 @@ public class BringBackCommand implements Command{
      * @param shape     la forma da portare in fondo
      * @param workspace il pane che contiene la forma
      */
-    public BringBackCommand(ShapeInterface shape, Pane workspace){
-        this.shape = shape;
+    public BringBackCommand(Pane workspace, ShapeInterface shape){
         this.workspace = workspace;
+        this.shape = shape;
     }
 
     /**
@@ -28,7 +28,7 @@ public class BringBackCommand implements Command{
      */
     public void execute(){
         oldIndex = workspace.getChildren().indexOf((Shape) shape);
-        shape.ShapetoBack();
+        shape.shapeToBack();
     }
 
     /**

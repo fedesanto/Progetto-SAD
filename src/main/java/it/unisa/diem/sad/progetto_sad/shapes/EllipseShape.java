@@ -178,14 +178,14 @@ public class EllipseShape extends Ellipse implements Shape2D {
     /**
      * Porta l'ellisse in primo piano nel contesto grafico.
      */
-    public void ShapetoFront(){
+    public void shapeToFront(){
         toFront();
     }
 
     /**
      * Porta l'ellisse in fondo nel contesto grafico.
      */
-    public void ShapetoBack(){
+    public void shapeToBack(){
         toBack();
     }
 

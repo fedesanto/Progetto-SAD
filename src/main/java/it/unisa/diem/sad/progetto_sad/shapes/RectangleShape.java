@@ -178,14 +178,14 @@ public class RectangleShape extends Rectangle implements Shape2D {
     /**
      * Porta il rettangolo in primo piano nel contesto grafico.
      */
-    public void ShapetoFront(){
+    public void shapeToFront(){
         toFront();
     }
 
     /**
      * Porta il rettangolo in fondo nel contesto grafico.
      */
-    public void ShapetoBack(){
+    public void shapeToBack(){
         toBack();
     }
 }

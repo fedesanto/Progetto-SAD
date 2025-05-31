@@ -8,8 +8,9 @@ import javafx.scene.shape.Shape;
  * Command per portare una forma in primo piano all'interno di un Pane.
  */
 public class BringFrontCommand implements Command{
-    private final ShapeInterface shape;
+
     private final Pane workspace;
+    private final ShapeInterface shape;
     private int oldIndex;
 
     /**
@@ -18,9 +19,9 @@ public class BringFrontCommand implements Command{
      * @param shape     la forma da portare in primo piano
      * @param workspace il pane che contiene la forma
      */
-    public BringFrontCommand(ShapeInterface shape, Pane workspace){
-        this.shape = shape;
+    public BringFrontCommand(Pane workspace, ShapeInterface shape){
         this.workspace = workspace;
+        this.shape = shape;
     }
 
     /**
@@ -28,7 +29,7 @@ public class BringFrontCommand implements Command{
      */
     public void execute(){
         oldIndex = workspace.getChildren().indexOf((Shape) shape);
-        shape.ShapetoFront();
+        shape.shapeToFront();
     }
 
     /**
