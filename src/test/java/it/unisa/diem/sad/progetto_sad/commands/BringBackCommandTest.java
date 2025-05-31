@@ -31,7 +31,7 @@ class BringBackCommandTest {
                 (Shape) otherShape2
         );
 
-        bringBackCommand = new BringBackCommand(testShape, workspace);
+        bringBackCommand = new BringBackCommand(workspace, testShape);
     }
 
     @Test

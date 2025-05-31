@@ -77,12 +77,12 @@ public interface ShapeInterface {
     /**
      * Porta la forma in primo piano nel contesto grafico.
      */
-    void ShapetoFront();
+    void shapeToFront();
 
     /**
      * Porta la forma in fondo nel contesto grafico.
      */
-    void ShapetoBack();
+    void shapeToBack();
 
 }
 

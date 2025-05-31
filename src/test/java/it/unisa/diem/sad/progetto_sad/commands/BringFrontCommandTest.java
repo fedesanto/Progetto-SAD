@@ -31,7 +31,7 @@ class BringFrontCommandTest {
                 (Shape) otherShape2
         );
 
-        bringFrontCommand = new BringFrontCommand(testShape, workspace);
+        bringFrontCommand = new BringFrontCommand(workspace, testShape);
     }
 
     @Test
