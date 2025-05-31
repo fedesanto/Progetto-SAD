@@ -1,5 +1,7 @@
 package it.unisa.diem.sad.progetto_sad;
 
+import it.unisa.diem.sad.progetto_sad.commands.Command;
+import it.unisa.diem.sad.progetto_sad.commands.InsertCommand;
 import it.unisa.diem.sad.progetto_sad.factories.Shape1DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
@@ -8,6 +10,8 @@ import it.unisa.diem.sad.progetto_sad.shapes.*;
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
@@ -39,6 +43,18 @@ public class ViewController implements Initializable {
     @FXML
     private MenuItem saveButton;
 
+    @FXML
+    private ScrollPane scrollPane;
+
+    @FXML
+    private RadioButton Zoom50;
+    @FXML
+    private RadioButton Zoom100;
+    @FXML
+    private RadioButton Zoom150;
+    @FXML
+    private RadioButton Zoom200;
+
     private final double BUTTON_SHADOW_RADIUS    = 13;              // Dimensione effetto evidenziazione dei bottoni
     private final Color  BUTTON_SHADOW_COLOR     = Color.BLUE;      // Colore effetto evidenziazione dei bottoni
     private final double SELECTION_SHADOW_RADIUS = 20;              // Dimensione effetto evidenziazione delle forme selezionate
@@ -56,6 +72,22 @@ public class ViewController implements Initializable {
     private double dragOffsetY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
     private ShapeInterface selectedShape;           // Riferimento alla forma selezionata
 
+    // Coordinate del mouse al momento dell'ultimo evento mouse press (utili per il panning)
+    private double lastMouseX;
+    private double lastMouseY;
+
+    // Indica se l'utente sta trascinando attivamente una forma (usato per distinguere tra panning e drag di forme)
+    private boolean isDraggingShape = false;
+
+    // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
+    private static final double EXPANSION_MARGIN = 100;
+
+    // Offset per lo spostamento del workspace (utilizzati nel panning)
+    private double offsetX = 0;
+    private double offsetY = 0;
+
+    // Velocità di scorrimento della ScrollPane durante l'auto-scroll (drag verso i bordi)
+    private static final double SCROLL_SPEED = 0.01;
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
      * Crea il menu contestuale che sarà utilizzato per le forme.
@@ -108,7 +140,91 @@ public class ViewController implements Initializable {
             pasteItem.setDisable(copiedShape == null);          // disabilitazione della voce 'Incolla' nel caso in cui non fosse stata copiata nessuna forma
         });
         workspaceContextMenu.getItems().add(pasteItem);
+
+        setupPanning(); // Inizializza la logica per il panning del workspace con trascinamento del mouse su aree vuote
     }
+
+    /**
+     * Imposta il comportamento di panning dello spazio di lavoro.
+     * Quando l'utente clicca e trascina su un'area vuota del workspace con il tasto sinistro del mouse,
+     * la visualizzazione viene spostata (scrollata) nella direzione del trascinamento.
+     * Durante il trascinamento, se il bordo visibile viene raggiunto, il workspace si espande automaticamente.
+     */
+    private void setupPanning() {
+        scrollPane.setPannable(false);  // Disabilita il panning automatico di ScrollPane
+
+        // Registra le coordinate iniziali quando il mouse viene premuto
+        workspace.setOnMousePressed(event -> {
+            if (event.isPrimaryButtonDown()) {
+                lastMouseX = event.getSceneX();  // Salva la posizione X iniziale del mouse
+                lastMouseY = event.getSceneY();  // Salva la posizione Y iniziale del mouse
+            }
+        });
+
+        // Sposta la vista scrollPane quando si trascina con il mouse
+        workspace.setOnMouseDragged(event -> {
+            if (isDraggingShape) {
+                return;  // Non eseguire panning se si sta trascinando una forma
+            }
+
+            // Calcola quanto è stato spostato il mouse rispetto all'ultima posizione
+            double deltaX = event.getSceneX() - lastMouseX;
+            double deltaY = event.getSceneY() - lastMouseY;
+
+            // Calcola nuove posizioni di scroll normalizzate (0-1)
+            double hValue = scrollPane.getHvalue() - deltaX / workspace.getWidth();
+            double vValue = scrollPane.getVvalue() - deltaY / workspace.getHeight();
+
+            // Applica le nuove posizioni di scroll con limiti
+            scrollPane.setHvalue(clamp(hValue, 0, 1));
+            scrollPane.setVvalue(clamp(vValue, 0, 1));
+
+            // Aggiorna le coordinate del mouse per il prossimo evento
+            lastMouseX = event.getSceneX();
+            lastMouseY = event.getSceneY();
+
+            // Espande dinamicamente il workspace se si arriva vicino ai bordi
+            expandWorkspace();
+        });
+    }
+
+    /**
+     * Limita un valore all'interno di un intervallo definito.
+     *
+     * @param value valore da limitare
+     * @param min   valore minimo consentito
+     * @param max   valore massimo consentito
+     * @return valore limitato all'intervallo [min, max]
+     */
+    private double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));  // Restituisce il valore limitato
+    }
+
+    /**
+     * Espande dinamicamente le dimensioni del workspace se il bordo visibile viene raggiunto.
+     * Aggiunge margine extra a destra o in basso per consentire all'utente di continuare
+     * a spostarsi nello spazio di lavoro senza restrizioni visive.
+     */
+    private void expandWorkspace() {
+        // Calcola la distanza del bordo destro e inferiore visibile rispetto all'intero workspace
+        double viewRight = scrollPane.getHvalue() * (workspace.getWidth() - scrollPane.getViewportBounds().getWidth());
+        double viewBottom = scrollPane.getVvalue() * (workspace.getHeight() - scrollPane.getViewportBounds().getHeight());
+
+        boolean expanded = false;
+
+        // Se siamo vicini al bordo destro visibile, aumenta la larghezza del workspace
+        if (viewRight + scrollPane.getViewportBounds().getWidth() >= workspace.getWidth() - EXPANSION_MARGIN) {
+            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);  // Espandi orizzontalmente
+            expanded = true;
+        }
+
+        // Se siamo vicini al bordo inferiore visibile, aumenta l'altezza del workspace
+        if (viewBottom + scrollPane.getViewportBounds().getHeight() >= workspace.getHeight() - EXPANSION_MARGIN) {
+            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);  // Espandi verticalmente
+            expanded = true;
+        }
+    }
+
 
     /**
      * Evidenzia visivamente il bottone selezionata applicando un effetto visivo.
@@ -162,6 +278,17 @@ public class ViewController implements Initializable {
             selectedShape = null;
         }
     }
+
+    /**
+     * Applica uno zoom allo spazio di lavoro impostando la scala sui due assi.
+     *
+     * @param scale è il fattore di scala da applicare
+     */
+    private void setZoomScale(double scale) {
+        workspace.setScaleX(scale);
+        workspace.setScaleY(scale);
+    }
+
 
     /**
      * Seleziona una linea come forma corrente da disegnare.
@@ -227,13 +354,14 @@ public class ViewController implements Initializable {
     protected void clickOnWorkspace(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             if (chosenShape != null) {      // Se sono in modalità di disegno, creo una nuova forma e la inserisco nello spazio di lavoro
-                ShapeInterface shape = chosenShape.createShape();
-                shape.setShapeX(event.getX());
-                shape.setShapeY(event.getY());
+                ShapeInterface newShape = chosenShape.createShape();
+                newShape.setShapeX(event.getX());
+                newShape.setShapeY(event.getY());
 
-                addShapeEvents(shape);  //Aggiunge tutti gli eventi di interesse per la forma appena creata
+                addShapeEvents(newShape);  //Aggiunge tutti gli eventi di interesse per la forma appena creata
 
-                workspace.getChildren().add((Shape) shape);
+                Command insert = new InsertCommand(workspace, newShape);    //Creo ed eseguo il comando per l'inserimento
+                insert.execute();
             }
         }else if (event.getButton() == MouseButton.SECONDARY){      // Se viene effettuato un clic destro sullo spazio di lavoro, viene fatto apparire il suo menu contestuale
             workspaceContextMenuX = event.getX();
@@ -280,6 +408,7 @@ public class ViewController implements Initializable {
 
                     selectShape(shape); // Seleziona la forma
                 }
+                isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
             }
         });
 
@@ -287,10 +416,39 @@ public class ViewController implements Initializable {
             if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
                 shape.setShapeX(event.getX() + dragOffsetX); // aggiorna posizione X in base al cursore
                 shape.setShapeY(event.getY() + dragOffsetY); // aggiorna posizione Y in base al cursore
+
+                double margin = 30;         // Margine dai bordi per attivare lo scroll
+                double scrollSpeed = 0.01;  // Velocità dello scroll automatico
+
+                // Ottiene coordinate del mouse all'interno dello scrollPane
+                Bounds viewportBounds = scrollPane.getViewportBounds();
+                Point2D mouseInScrollPane = scrollPane.screenToLocal(event.getScreenX(), event.getScreenY());
+
+                double mouseX = mouseInScrollPane.getX();
+                double mouseY = mouseInScrollPane.getY();
+
+                // Scroll orizzontale se vicino ai bordi destro o sinistro
+                if (mouseX > viewportBounds.getWidth() - margin) {
+                    scrollPane.setHvalue(Math.min(1.0, scrollPane.getHvalue() + scrollSpeed));  // Scroll a destra
+                } else if (mouseX < margin) {
+                    scrollPane.setHvalue(Math.max(0.0, scrollPane.getHvalue() - scrollSpeed));  // Scroll a sinistra
+                }
+
+                // Scroll verticale se vicino ai bordi inferiore o superiore
+                if (mouseY > viewportBounds.getHeight() - margin) {
+                    scrollPane.setVvalue(Math.min(1.0, scrollPane.getVvalue() + scrollSpeed));  // Scroll in basso
+                } else if (mouseY < margin) {
+                    scrollPane.setVvalue(Math.max(0.0, scrollPane.getVvalue() - scrollSpeed));  // Scroll in alto
+                }
             }
-            shapeContextMenu.hide();
+
+            shapeContextMenu.hide();  // Nasconde il menu contestuale se presente
         });
 
+        // Gestione rilascio del mouse dopo un trascinamento
+        shapeEvent.setOnMouseReleased(event -> {
+            isDraggingShape = false;  // Segnala che il trascinamento è terminato
+        });
     }
 
     /**
@@ -410,4 +568,44 @@ public class ViewController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    /**
+     * Imposta il livello di zoom dello spazio di lavoro al 50%.
+     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
+     */
+    @FXML
+    void handleZoom50() {
+        setZoomScale(0.5);
+
+    }
+
+    /**
+     * Imposta il livello di zoom dello spazio di lavoro al 100%.
+     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
+     */
+    @FXML
+    void handleZoom100() {
+        setZoomScale(1.0);
+
+    }
+
+    /**
+     * Imposta il livello di zoom dello spazio di lavoro al 150%.
+     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
+     */
+    @FXML
+    void handleZoom150() {
+        setZoomScale(1.5);
+
+    }
+
+    /**
+     * Imposta il livello di zoom dello spazio di lavoro al 200%.
+     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
+     */
+    @FXML
+    void handleZoom200() {
+        setZoomScale(2.0);
+
+    }
+
 }
