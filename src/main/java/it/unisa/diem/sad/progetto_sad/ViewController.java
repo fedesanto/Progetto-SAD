@@ -82,7 +82,7 @@ public class ViewController implements Initializable {
     private boolean isDraggingShape = false;
 
     // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
-    private static final double EXPANSION_MARGIN = 100;
+    private static final double EXPANSION_MARGIN = 50;
 
     private final CommandHistory history = new CommandHistory();    //History dei comandi
 
@@ -184,8 +184,33 @@ public class ViewController implements Initializable {
             lastMouseX = event.getSceneX();
             lastMouseY = event.getSceneY();
 
-            // Espande dinamicamente il workspace se si arriva vicino ai bordi
-            expandWorkspace();
+            // Espansione dinamica solo se il mouse è vicino ai bordi
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+
+            Bounds viewportBounds = scrollPane.getViewportBounds();
+
+            if (mouseX >= workspace.getWidth() - EXPANSION_MARGIN) {
+                workspace.setPrefWidth(workspace.getWidth() + EXPANSION_MARGIN);
+            }
+
+            if (mouseY >= workspace.getHeight() - EXPANSION_MARGIN) {
+                workspace.setPrefHeight(workspace.getHeight() + EXPANSION_MARGIN);
+            }
+
+            if (mouseX <= EXPANSION_MARGIN) {
+                double oldWidth = workspace.getWidth();
+                workspace.setPrefWidth(oldWidth + EXPANSION_MARGIN);
+                shiftContent(EXPANSION_MARGIN, 0);
+                scrollPane.setHvalue((scrollPane.getHvalue() * (oldWidth - viewportBounds.getWidth()) + EXPANSION_MARGIN) / (workspace.getWidth() - viewportBounds.getWidth()));
+            }
+
+            if (mouseY <= EXPANSION_MARGIN) {
+                double oldHeight = workspace.getHeight();
+                workspace.setPrefHeight(oldHeight + EXPANSION_MARGIN);
+                shiftContent(0, EXPANSION_MARGIN);
+                scrollPane.setVvalue((scrollPane.getVvalue() * (oldHeight - viewportBounds.getHeight()) + EXPANSION_MARGIN) / (workspace.getHeight() - viewportBounds.getHeight()));
+            }
         });
     }
 
@@ -207,18 +232,57 @@ public class ViewController implements Initializable {
      * a spostarsi nello spazio di lavoro senza restrizioni visive.
      */
     private void expandWorkspace() {
-        // Calcola la distanza del bordo destro e inferiore visibile rispetto all'intero workspace
-        double viewRight = scrollPane.getHvalue() * (workspace.getWidth() - scrollPane.getViewportBounds().getWidth());
-        double viewBottom = scrollPane.getVvalue() * (workspace.getHeight() - scrollPane.getViewportBounds().getHeight());
+        Bounds viewportBounds = scrollPane.getViewportBounds();
+        double viewportWidth = viewportBounds.getWidth();
+        double viewportHeight = viewportBounds.getHeight();
 
-        // Se siamo vicini al bordo destro visibile, aumenta la larghezza del workspace
-        if (viewRight + scrollPane.getViewportBounds().getWidth() >= workspace.getWidth() - EXPANSION_MARGIN) {
-            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);  // Espandi orizzontalmente
+        double hValue = scrollPane.getHvalue();
+        double vValue = scrollPane.getVvalue();
+
+        double contentWidth = workspace.getWidth();
+        double contentHeight = workspace.getHeight();
+
+        double viewLeft = hValue * (contentWidth - viewportWidth);
+        double viewRight = viewLeft + viewportWidth;
+
+        double viewTop = vValue * (contentHeight - viewportHeight);
+        double viewBottom = viewTop + viewportHeight;
+
+        boolean expanded = false;
+
+        // Espansione verso destra
+        if (viewRight >= contentWidth - EXPANSION_MARGIN) {
+            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);
+            expanded = true;
         }
 
-        // Se siamo vicini al bordo inferiore visibile, aumenta l'altezza del workspace
-        if (viewBottom + scrollPane.getViewportBounds().getHeight() >= workspace.getHeight() - EXPANSION_MARGIN) {
-            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);  // Espandi verticalmente
+        // Espansione verso il basso
+        if (viewBottom >= contentHeight - EXPANSION_MARGIN) {
+            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);
+            expanded = true;
+        }
+
+        // Espansione verso sinistra
+        if (viewLeft <= EXPANSION_MARGIN) {
+            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);
+            shiftContent(EXPANSION_MARGIN, 0); // Sposta i contenuti a destra
+            scrollPane.setHvalue((viewLeft + EXPANSION_MARGIN) / (workspace.getWidth() - viewportWidth));
+            expanded = true;
+        }
+
+        // Espansione verso l’alto
+        if (viewTop <= EXPANSION_MARGIN) {
+            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);
+            shiftContent(0, EXPANSION_MARGIN); // Sposta i contenuti in basso
+            scrollPane.setVvalue((viewTop + EXPANSION_MARGIN) / (workspace.getHeight() - viewportHeight));
+            expanded = true;
+        }
+    }
+
+    private void shiftContent(double deltaX, double deltaY) {
+        for (Node node : group.getChildren()) {
+            node.setLayoutX(node.getLayoutX() + deltaX);
+            node.setLayoutY(node.getLayoutY() + deltaY);
         }
     }
 
@@ -274,16 +338,6 @@ public class ViewController implements Initializable {
             ((Shape) selectedShape).setEffect(null); // Rimuove l'effetto visivo dalla forma
             selectedShape = null;
         }
-    }
-
-    /**
-     * Applica uno zoom allo spazio di lavoro impostando la scala sui due assi.
-     *
-     * @param scale è il fattore di scala da applicare
-     */
-    private void setZoomScale(double scale) {
-        workspace.setScaleX(scale);
-        workspace.setScaleY(scale);
     }
 
 
@@ -570,43 +624,28 @@ public class ViewController implements Initializable {
         alert.showAndWait();
     }
     /**
-     * Imposta il livello di zoom dello spazio di lavoro al 50%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
+     * Gestisce la modifica del livello di zoom dello spazio di lavoro in base al RadioButton selezionato.
+     * Il metodo controlla quale RadioButton è attualmente selezionato tra i quattro disponibili (50%, 100%, 150%, 200%)
+     * e imposta la scala (zoom) del workspace di conseguenza.
+     * Viene applicato sia all'asse X che all'asse Y del workspace, per mantenere le proporzioni.
      */
+
     @FXML
-    void handleZoom50() {
-        setZoomScale(0.5);
+    protected void handleZoomChange() {
+        double scale = 1.0;
 
-    }
+        if (Zoom50.isSelected()) {
+            scale = 0.5;
+        } else if (Zoom100.isSelected()) {
+            scale = 1.0;
+        } else if (Zoom150.isSelected()) {
+            scale = 1.5;
+        } else if (Zoom200.isSelected()) {
+            scale = 2.0;
+        }
 
-    /**
-     * Imposta il livello di zoom dello spazio di lavoro al 100%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
-     */
-    @FXML
-    void handleZoom100() {
-        setZoomScale(1.0);
-
-    }
-
-    /**
-     * Imposta il livello di zoom dello spazio di lavoro al 150%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
-     */
-    @FXML
-    void handleZoom150() {
-        setZoomScale(1.5);
-
-    }
-
-    /**
-     * Imposta il livello di zoom dello spazio di lavoro al 200%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
-     */
-    @FXML
-    void handleZoom200() {
-        setZoomScale(2.0);
-
+        workspace.setScaleX(scale);
+        workspace.setScaleY(scale);
     }
 
     /**
