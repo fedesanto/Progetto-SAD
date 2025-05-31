@@ -6,6 +6,8 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -81,6 +83,8 @@ public class ViewController implements Initializable {
 
     // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
     private static final double EXPANSION_MARGIN = 100;
+
+    private final CommandHistory history = new CommandHistory();    //History dei comandi
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -613,7 +617,20 @@ public class ViewController implements Initializable {
      */
     private void executeCommand(Command command){
         command.execute();
-        // commandhistory.push(command)
+        history.push(command);
     }
 
+
+    /**
+     * Evento associato alla pressione del bottone di annullamento.
+     * Deve annullare l'ultimo command eseguito
+     *
+     */
+    @FXML
+    void undo() {
+        if (!history.isEmpty()){
+            Command command = history.pop();
+            command.undo();
+        }
+    }
 }
