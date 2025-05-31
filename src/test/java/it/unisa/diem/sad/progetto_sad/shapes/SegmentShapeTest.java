@@ -11,7 +11,7 @@ class SegmentShapeTest {
 
     @BeforeEach
     void setUp() {
-        segment = new SegmentShape(50, 50, Color.BLUE, 100, 5);
+        segment = new SegmentShape(50, 50, Color.BLUE, 100);
     }
 
     @Test
@@ -64,5 +64,25 @@ class SegmentShapeTest {
         assertEquals(Double.toString(segment.getShapeY()), parts[3]);
         assertEquals(segment.getStrokeColor().toString(), parts[4]);
         assertEquals(Double.toString(segment.getShapeLength()), parts[5]);
+    }
+
+
+    @Test
+    void testClone() {
+        // Clona l'oggetto
+        ShapeInterface cloned = segment.clone();
+
+        // Verifica che il clone sia un'altra istanza
+        assertNotSame(segment, cloned);
+        assertInstanceOf(SegmentShape.class, cloned);
+
+        // Cast per confronto
+        SegmentShape copy = (SegmentShape) cloned;
+
+        // Verifica che gli attributi siano identici
+        assertEquals(segment.getShapeX(), copy.getShapeX());
+        assertEquals(segment.getShapeY(), copy.getShapeY());
+        assertEquals(segment.getStrokeColor(), copy.getStrokeColor());
+        assertEquals(segment.getShapeLength(), copy.getShapeLength());
     }
 }

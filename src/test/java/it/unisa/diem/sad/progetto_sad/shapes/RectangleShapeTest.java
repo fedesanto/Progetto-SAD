@@ -1,6 +1,7 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -83,5 +84,25 @@ class RectangleShapeTest {
         assertEquals(Double.toString(rect.getShapeWidth()), parts[5]);
         assertEquals(Double.toString(rect.getShapeHeight()), parts[6]);
         assertEquals(rect.getFillColor().toString(), parts[7]);
+    }
+
+    @Test
+    void testClone() {
+        // Clona l'oggetto
+        ShapeInterface cloned = rect.clone();
+
+        // Verifica che il clone sia un'altra istanza
+        assertNotSame(rect, cloned);
+        assertInstanceOf(RectangleShape.class, cloned);
+
+        // Cast per confronto
+        RectangleShape copy = (RectangleShape) cloned;
+
+        // Verifica che gli attributi siano identici
+        assertEquals(rect.getShapeX(), copy.getShapeX());
+        assertEquals(rect.getShapeY(), copy.getShapeY());
+        assertEquals(rect.getStrokeColor(), copy.getStrokeColor());
+        assertEquals(rect.getShapeWidth(), copy.getShapeWidth());
+        assertEquals(rect.getShapeHeight(), copy.getShapeHeight());
     }
 }
