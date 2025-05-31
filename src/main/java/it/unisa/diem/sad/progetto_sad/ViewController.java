@@ -80,7 +80,7 @@ public class ViewController implements Initializable {
     private boolean isDraggingShape = false;
 
     // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
-    private static final double EXPANSION_MARGIN = 100;
+    private static final double EXPANSION_MARGIN = 50;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -180,8 +180,33 @@ public class ViewController implements Initializable {
             lastMouseX = event.getSceneX();
             lastMouseY = event.getSceneY();
 
-            // Espande dinamicamente il workspace se si arriva vicino ai bordi
-            expandWorkspace();
+            // Espansione dinamica solo se il mouse è vicino ai bordi
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+
+            Bounds viewportBounds = scrollPane.getViewportBounds();
+
+            if (mouseX >= workspace.getWidth() - EXPANSION_MARGIN) {
+                workspace.setPrefWidth(workspace.getWidth() + EXPANSION_MARGIN);
+            }
+
+            if (mouseY >= workspace.getHeight() - EXPANSION_MARGIN) {
+                workspace.setPrefHeight(workspace.getHeight() + EXPANSION_MARGIN);
+            }
+
+            if (mouseX <= EXPANSION_MARGIN) {
+                double oldWidth = workspace.getWidth();
+                workspace.setPrefWidth(oldWidth + EXPANSION_MARGIN);
+                shiftContent(EXPANSION_MARGIN, 0);
+                scrollPane.setHvalue((scrollPane.getHvalue() * (oldWidth - viewportBounds.getWidth()) + EXPANSION_MARGIN) / (workspace.getWidth() - viewportBounds.getWidth()));
+            }
+
+            if (mouseY <= EXPANSION_MARGIN) {
+                double oldHeight = workspace.getHeight();
+                workspace.setPrefHeight(oldHeight + EXPANSION_MARGIN);
+                shiftContent(0, EXPANSION_MARGIN);
+                scrollPane.setVvalue((scrollPane.getVvalue() * (oldHeight - viewportBounds.getHeight()) + EXPANSION_MARGIN) / (workspace.getHeight() - viewportBounds.getHeight()));
+            }
         });
     }
 
@@ -203,18 +228,57 @@ public class ViewController implements Initializable {
      * a spostarsi nello spazio di lavoro senza restrizioni visive.
      */
     private void expandWorkspace() {
-        // Calcola la distanza del bordo destro e inferiore visibile rispetto all'intero workspace
-        double viewRight = scrollPane.getHvalue() * (workspace.getWidth() - scrollPane.getViewportBounds().getWidth());
-        double viewBottom = scrollPane.getVvalue() * (workspace.getHeight() - scrollPane.getViewportBounds().getHeight());
+        Bounds viewportBounds = scrollPane.getViewportBounds();
+        double viewportWidth = viewportBounds.getWidth();
+        double viewportHeight = viewportBounds.getHeight();
 
-        // Se siamo vicini al bordo destro visibile, aumenta la larghezza del workspace
-        if (viewRight + scrollPane.getViewportBounds().getWidth() >= workspace.getWidth() - EXPANSION_MARGIN) {
-            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);  // Espandi orizzontalmente
+        double hValue = scrollPane.getHvalue();
+        double vValue = scrollPane.getVvalue();
+
+        double contentWidth = workspace.getWidth();
+        double contentHeight = workspace.getHeight();
+
+        double viewLeft = hValue * (contentWidth - viewportWidth);
+        double viewRight = viewLeft + viewportWidth;
+
+        double viewTop = vValue * (contentHeight - viewportHeight);
+        double viewBottom = viewTop + viewportHeight;
+
+        boolean expanded = false;
+
+        // Espansione verso destra
+        if (viewRight >= contentWidth - EXPANSION_MARGIN) {
+            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);
+            expanded = true;
         }
 
-        // Se siamo vicini al bordo inferiore visibile, aumenta l'altezza del workspace
-        if (viewBottom + scrollPane.getViewportBounds().getHeight() >= workspace.getHeight() - EXPANSION_MARGIN) {
-            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);  // Espandi verticalmente
+        // Espansione verso il basso
+        if (viewBottom >= contentHeight - EXPANSION_MARGIN) {
+            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);
+            expanded = true;
+        }
+
+        // Espansione verso sinistra
+        if (viewLeft <= EXPANSION_MARGIN) {
+            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);
+            shiftContent(EXPANSION_MARGIN, 0); // Sposta i contenuti a destra
+            scrollPane.setHvalue((viewLeft + EXPANSION_MARGIN) / (workspace.getWidth() - viewportWidth));
+            expanded = true;
+        }
+
+        // Espansione verso l’alto
+        if (viewTop <= EXPANSION_MARGIN) {
+            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);
+            shiftContent(0, EXPANSION_MARGIN); // Sposta i contenuti in basso
+            scrollPane.setVvalue((viewTop + EXPANSION_MARGIN) / (workspace.getHeight() - viewportHeight));
+            expanded = true;
+        }
+    }
+
+    private void shiftContent(double deltaX, double deltaY) {
+        for (Node node : group.getChildren()) {
+            node.setLayoutX(node.getLayoutX() + deltaX);
+            node.setLayoutY(node.getLayoutY() + deltaY);
         }
     }
 
