@@ -74,6 +74,15 @@ public interface ShapeInterface {
      */
     ShapeInterface clone();
 
+    /**
+     * Porta la forma in primo piano nel contesto grafico.
+     */
+    void ShapetoFront();
+
+    /**
+     * Porta la forma in fondo nel contesto grafico.
+     */
+    void ShapetoBack();
 
 }
 

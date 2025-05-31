@@ -174,4 +174,18 @@ public class RectangleShape extends Rectangle implements Shape2D {
                 getFillColor()
         );
     }
+
+    /**
+     * Porta il rettangolo in primo piano nel contesto grafico.
+     */
+    public void ShapetoFront(){
+        toFront();
+    }
+
+    /**
+     * Porta il rettangolo in fondo nel contesto grafico.
+     */
+    public void ShapetoBack(){
+        toBack();
+    }
 }

@@ -173,4 +173,18 @@ public class SegmentShape extends Line implements Shape1D {
                 getStrokeWidth()
         );
     }
+
+    /**
+     * Porta il segmento in primo piano nel contesto grafico.
+     */
+    public void ShapetoFront(){
+        toFront();
+    }
+
+    /**
+     * Porta il segmento in fondo nel contesto grafico.
+     */
+    public void ShapetoBack(){
+        toBack();
+    }
 }

@@ -6,7 +6,6 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
-import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
