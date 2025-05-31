@@ -129,7 +129,7 @@ public class ViewController implements Initializable {
         });
 
         toBackItem.setOnAction(e -> {
-            Command toBack = new BringFrontCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode());    // Creo ed eseguo il comando per portare dietro la forma cliccata
+            Command toBack = new BringBackCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode());    // Creo ed eseguo il comando per portare dietro la forma cliccata
             executeCommand(toBack);
         });
 
