@@ -6,8 +6,6 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableStringValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -101,6 +99,8 @@ public class ViewController implements Initializable {
         MenuItem resizeItem = new MenuItem("Ridimensiona");
         MenuItem copyItem = new MenuItem("Copia");
         MenuItem cutItem = new MenuItem("Taglia");
+        MenuItem toFrontItem = new MenuItem("Porta avanti");
+        MenuItem toBackItem = new MenuItem("Porta dietro");
 
         deleteItem.setOnAction(e -> {
             DeleteCommand delete = new DeleteCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode()); //Creo ed eseguo il comando per l'eliminazione
@@ -123,7 +123,17 @@ public class ViewController implements Initializable {
             executeCommand(delete);
         });
 
-        shapeContextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem);
+        toFrontItem.setOnAction(e -> {
+            Command toFront = new BringFrontCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode());    // Creo ed eseguo il comando per portare avanti la forma cliccata
+            executeCommand(toFront);
+        });
+
+        toBackItem.setOnAction(e -> {
+            Command toBack = new BringFrontCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode());    // Creo ed eseguo il comando per portare dietro la forma cliccata
+            executeCommand(toBack);
+        });
+
+        shapeContextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem, toFrontItem, toBackItem);
 
 
         workspaceContextMenu = new ContextMenu();
@@ -450,22 +460,22 @@ public class ViewController implements Initializable {
 
         // Evento di pressione del mouse per iniziare il trascinamento
         shapeEvent.setOnMousePressed(event -> {
-            if(event.getButton() == MouseButton.PRIMARY && chosenShape == null)
-                selectShape(shape); // Seleziona la forma
+            if(event.getButton() == MouseButton.PRIMARY){
+
+                if (chosenShape == null){
+                    // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
+                    dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
+                    dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
+
+                    selectShape(shape); // Seleziona la forma
+                }
+                isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
+            }
         });
 
         shapeEvent.setOnDragDetected(event -> {
             DragCommand drag = new DragCommand(shape);
             executeCommand(drag);
-
-            if (chosenShape == null){
-                // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
-                dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
-                dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
-
-                selectShape(shape); // Seleziona la forma
-            }
-            isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
         });
 
         shapeEvent.setOnMouseDragged(event -> {
