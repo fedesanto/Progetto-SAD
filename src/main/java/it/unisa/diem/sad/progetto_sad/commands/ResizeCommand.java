@@ -5,16 +5,26 @@ import it.unisa.diem.sad.progetto_sad.shapes.Shape2D;
 import it.unisa.diem.sad.progetto_sad.shapes.ShapeInterface;
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorResize;
 
-
+/**
+ * Comando che consente di ridimensionare una forma.
+ */
 public class ResizeCommand implements Command {
     private final ShapeInterface shape;
     private double dim1;
     private double dim2;
 
+    /**
+     * Crea un nuovo comando di ridimensionamento per la forma specificata.
+     *
+     * @param shape la forma da ridimensionare
+     */
     public ResizeCommand(ShapeInterface shape) {
         this.shape = shape;
     }
 
+    /**
+     * Esegue il comando applicando il ridimensionamento alla forma.
+     */
     public void execute() {
         shape.accept(new VisitorResize());
 
@@ -27,6 +37,9 @@ public class ResizeCommand implements Command {
 
     }
 
+    /**
+     * Annulla il comando ripristinando le dimensioni precedenti della forma.
+     */
     public void undo() {
         if (shape instanceof Shape1D)
             ((Shape1D) shape).setShapeLength(dim1);

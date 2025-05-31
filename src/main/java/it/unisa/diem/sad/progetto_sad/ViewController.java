@@ -614,6 +614,12 @@ public class ViewController implements Initializable {
 
     }
 
+    /**
+     * Esegue il comando specificato invocandone il metodo
+     * e lo aggiunge allo storico dei comandi
+     *
+     * @param command il comando da eseguire.
+     */
     private void executeCommand(Command command){
         command.execute();
         // commandhistory.push(command)
