@@ -272,16 +272,6 @@ public class ViewController implements Initializable {
         }
     }
 
-    /**
-     * Applica uno zoom allo spazio di lavoro impostando la scala sui due assi.
-     *
-     * @param scale è il fattore di scala da applicare
-     */
-    private void setZoomScale(double scale) {
-        workspace.setScaleX(scale);
-        workspace.setScaleY(scale);
-    }
-
 
     /**
      * Seleziona una linea come forma corrente da disegnare.
@@ -566,43 +556,28 @@ public class ViewController implements Initializable {
         alert.showAndWait();
     }
     /**
-     * Imposta il livello di zoom dello spazio di lavoro al 50%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
+     * Gestisce la modifica del livello di zoom dello spazio di lavoro in base al RadioButton selezionato.
+     * Il metodo controlla quale RadioButton è attualmente selezionato tra i quattro disponibili (50%, 100%, 150%, 200%)
+     * e imposta la scala (zoom) del workspace di conseguenza.
+     * Viene applicato sia all'asse X che all'asse Y del workspace, per mantenere le proporzioni.
      */
+
     @FXML
-    void handleZoom50() {
-        setZoomScale(0.5);
+    protected void handleZoomChange() {
+        double scale = 1.0;
 
-    }
+        if (Zoom50.isSelected()) {
+            scale = 0.5;
+        } else if (Zoom100.isSelected()) {
+            scale = 1.0;
+        } else if (Zoom150.isSelected()) {
+            scale = 1.5;
+        } else if (Zoom200.isSelected()) {
+            scale = 2.0;
+        }
 
-    /**
-     * Imposta il livello di zoom dello spazio di lavoro al 100%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
-     */
-    @FXML
-    void handleZoom100() {
-        setZoomScale(1.0);
-
-    }
-
-    /**
-     * Imposta il livello di zoom dello spazio di lavoro al 150%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
-     */
-    @FXML
-    void handleZoom150() {
-        setZoomScale(1.5);
-
-    }
-
-    /**
-     * Imposta il livello di zoom dello spazio di lavoro al 200%.
-     * Metodo chiamato quando l'utente seleziona l'opzione di zoom al 50%.
-     */
-    @FXML
-    void handleZoom200() {
-        setZoomScale(2.0);
-
+        workspace.setScaleX(scale);
+        workspace.setScaleY(scale);
     }
 
     /**
