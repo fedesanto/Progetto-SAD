@@ -348,35 +348,58 @@ public class ViewController implements Initializable {
      * a spostarsi nello spazio di lavoro senza restrizioni visive.
      */
     private void expandWorkspace() {
-        Bounds viewport = scrollPane.getViewportBounds();
-        Bounds content = workspace.getLayoutBounds();
+        Bounds contentBounds = workspace.getLayoutBounds();
 
-        double rightEdge = scrollPane.getHvalue() * (content.getWidth() - viewport.getWidth()) + viewport.getWidth();
-        double bottomEdge = scrollPane.getVvalue() * (content.getHeight() - viewport.getHeight()) + viewport.getHeight();
+        double offsetX = workspace.getTranslateX();
+        double offsetY = workspace.getTranslateY();
 
-        // Espansione a destra
-        if (rightEdge + MARGIN > content.getWidth()) {
-            workspace.setPrefWidth(content.getWidth() + EXPANSION_STEP);
+
+        double scrollH = scrollPane.getHvalue();
+        double scrollV = scrollPane.getVvalue();
+
+        double viewportWidth = scrollPane.getViewportBounds().getWidth();
+        double viewportHeight = scrollPane.getViewportBounds().getHeight();
+
+        double visibleX = scrollH * (contentBounds.getWidth() - viewportWidth);
+        double visibleY = scrollV * (contentBounds.getHeight() - viewportHeight);
+
+        double buffer = 200;
+
+        boolean expandRight = visibleX + viewportWidth > contentBounds.getWidth() - buffer;
+        boolean expandBottom = visibleY + viewportHeight > contentBounds.getHeight() - buffer;
+        boolean expandLeft = visibleX < buffer;
+        boolean expandTop = visibleY < buffer;
+
+        double newWidth = contentBounds.getWidth();
+        double newHeight = contentBounds.getHeight();
+
+        double deltaX = 0, deltaY = 0;
+
+        if (expandRight) newWidth += 400;
+        if (expandBottom) newHeight += 400;
+        if (expandLeft) {
+            newWidth += 400;
+            deltaX = 200;
+        }
+        if (expandTop) {
+            newHeight += 400;
+            deltaY = 200;
         }
 
-        // Espansione in basso
-        if (bottomEdge + MARGIN > content.getHeight()) {
-            workspace.setPrefHeight(content.getHeight() + EXPANSION_STEP);
+        if (newWidth != contentBounds.getWidth() || newHeight != contentBounds.getHeight()) {
+            workspace.setPrefSize(newWidth, newHeight);
+            for (Node node : workspace.getChildren()) {
+                if (node instanceof Shape) {
+                    node.setLayoutX(node.getLayoutX() + deltaX);
+                    node.setLayoutY(node.getLayoutY() + deltaY);
+                }
+            }
+            if (gridGroup.isVisible()) drawGrid();
+            scrollPane.setHvalue((visibleX + deltaX) / (newWidth - viewportWidth));
+            scrollPane.setVvalue((visibleY + deltaY) / (newHeight - viewportHeight));
         }
-
-        // Espansione a sinistra
-        if (scrollPane.getHvalue() < 0.01) {
-            workspace.setPrefWidth(content.getWidth() + EXPANSION_STEP);
-            scrollPane.setHvalue(EXPANSION_STEP / workspace.getWidth());
-        }
-
-        // Espansione in alto
-        if (scrollPane.getVvalue() < 0.01) {
-            workspace.setPrefHeight(content.getHeight() + EXPANSION_STEP);
-            scrollPane.setVvalue(EXPANSION_STEP / workspace.getHeight());
-        }
-
     }
+
 
     /**
      * Evidenzia visivamente il bottone selezionata applicando un effetto visivo.
@@ -558,6 +581,8 @@ public class ViewController implements Initializable {
             if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
                 shape.setShapeX(event.getX() + dragOffsetX); // aggiorna posizione X in base al cursore
                 shape.setShapeY(event.getY() + dragOffsetY); // aggiorna posizione Y in base al cursore
+
+                expandWorkspace(); // chiamata per verificare se espandere il workspace mentre trascino la forma
 
                 double margin = 30;         // Margine dai bordi per attivare lo scroll
                 double scrollSpeed = 0.01;  // Velocità dello scroll automatico
