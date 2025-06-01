@@ -72,31 +72,20 @@ public class ViewController implements Initializable {
     private double dragOffsetY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
     private ShapeInterface selectedShape;           // Riferimento alla forma selezionata
 
-    // Coordinate del mouse al momento dell'ultimo evento mouse press (utili per il panning)
-    private double lastMouseX;
-    private double lastMouseY;
-
-    // Indica se l'utente sta trascinando attivamente una forma (usato per distinguere tra panning e drag di forme)
-    private boolean isDraggingShape = false;
-
-    // Margine oltre il quale lo spazio di lavoro può essere espanso dinamicamente
-    private static final double EXPANSION_MARGIN = 50;
-
-    private static final double EXPANSION_STEP = 300; // Quantità di pixel da aggiungere al workspace durante l'espansione
-    private static final double EXPANSION_THRESHOLD = 0.97; // Soglia oltre la quale si attiva l'espansione (vicinanza al bordo)
-
-    // Indica se il panning è attualmente attivo
-    private boolean isPanning = false;
-
-    // Coordinate iniziali del mouse al momento del click per il panning
-    private double initialMouseX;
-    private double initialMouseY;
-
-    // Valori iniziali di scroll della ScrollPane (orizzontale e verticale)
-    private double initialHValue;
-    private double initialVValue;
-
     private final CommandHistory history = new CommandHistory();    //History dei comandi
+
+    // Coordinate iniziali del panning (quando l'utente inizia a trascinare lo sfondo)
+    private double panStartX;
+    private double panStartY;
+
+    // Valore costante che definisce di quanto si espande il workspace ogni volta che serve più spazio
+    private static final double EXPANSION_STEP = 100; // massimo incremento per volta
+
+    // Margine, in pixel, entro il quale se il mouse si avvicina al bordo durante il panning, si attiva l'espansione automatica
+    private static final double MARGIN = 50; // margine vicino ai bordi per triggerare l'espansione
+
+    // Flag che indica se l'utente sta trascinando una forma (serve per distinguere il panning dal drag delle forme)
+    private boolean isDraggingShape = false;
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -166,87 +155,60 @@ public class ViewController implements Initializable {
         });
         workspaceContextMenu.getItems().add(pasteItem);
 
-        setupPanning(); // Inizializza la logica per il panning del workspace con trascinamento del mouse su aree vuote
-    }
-
-    /**
-     * Imposta il comportamento di panning dello spazio di lavoro.
-     * Quando l'utente clicca e trascina su un'area vuota del workspace con il tasto sinistro del mouse,
-     * la visualizzazione viene spostata (scrollata) nella direzione del trascinamento.
-     * Durante il trascinamento, se il bordo visibile viene raggiunto, il workspace si espande automaticamente.
-     */
-    private void setupPanning() {
+        // Gestore per il mouse press sul workspace: inizia il panning solo se l'utente clicca su uno spazio vuoto (no forma selezionata)
         workspace.setOnMousePressed(event -> {
-            // Solo se si clicca in un'area vuota (non una forma)
-            if (event.getTarget() == workspace) {
-                isPanning = true;
-                initialMouseX = event.getSceneX();
-                initialMouseY = event.getSceneY();
-                initialHValue = scrollPane.getHvalue();
-                initialVValue = scrollPane.getVvalue();
+            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
+                // Salva la posizione iniziale del mouse in coordinate di scena (serve per calcolare lo spostamento)
+                panStartX = event.getSceneX();
+                panStartY = event.getSceneY();
             }
         });
 
+// Gestore per il trascinamento del mouse sul workspace (panning)
         workspace.setOnMouseDragged(event -> {
-            if (!isPanning) return;
+            // Solo se non si sta trascinando una forma e nessuna forma è selezionata
+            if (!isDraggingShape && chosenShape == null && event.getButton() == MouseButton.PRIMARY) {
+                // Calcola lo spostamento del mouse rispetto alla posizione iniziale
+                double deltaX = event.getSceneX() - panStartX;
+                double deltaY = event.getSceneY() - panStartY;
 
-            double deltaX = initialMouseX - event.getSceneX();
-            double deltaY = initialMouseY - event.getSceneY();
+                // Ottiene i valori massimi di scroll orizzontale e verticale
+                double hMax = scrollPane.getHmax();
+                double vMax = scrollPane.getVmax();
 
-            double hMax = scrollPane.getHmax();
-            double vMax = scrollPane.getVmax();
+                // Calcola i nuovi valori di scroll (H e V) in base al movimento del mouse
+                double newH = scrollPane.getHvalue() - deltaX / workspace.getWidth();
+                double newV = scrollPane.getVvalue() - deltaY / workspace.getHeight();
 
-            // Aggiorna i valori di scorrimento in base al movimento
-            scrollPane.setHvalue(clamp(initialHValue + deltaX / workspace.getWidth(), 0, hMax));
-            scrollPane.setVvalue(clamp(initialVValue + deltaY / workspace.getHeight(), 0, vMax));
+                // Applica i nuovi valori di scroll, limitandoli tra 0 e il massimo consentito
+                scrollPane.setHvalue(clamp(newH, 0, hMax));
+                scrollPane.setVvalue(clamp(newV, 0, vMax));
 
-            // Espansione solo se si è vicini ai bordi (ma con limite)
-            boolean expanded = false;
+                // Aggiorna la posizione iniziale del mouse per il prossimo movimento
+                panStartX = event.getSceneX();
+                panStartY = event.getSceneY();
 
-            if (scrollPane.getHvalue() > EXPANSION_THRESHOLD) {
-                workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_STEP);
-                expanded = true;
-            } else if (scrollPane.getHvalue() < (1 - EXPANSION_THRESHOLD) && scrollPane.getHvalue() == 0) {
-                workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_STEP);
-                scrollPane.setHvalue(EXPANSION_STEP / workspace.getPrefWidth());
-                expanded = true;
+                // Controlla se bisogna espandere dinamicamente il workspace (in base alla posizione corrente del mouse)
+                expandWorkspace();
             }
-
-            if (scrollPane.getVvalue() > EXPANSION_THRESHOLD) {
-                workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_STEP);
-                expanded = true;
-            } else if (scrollPane.getVvalue() < (1 - EXPANSION_THRESHOLD) && scrollPane.getVvalue() == 0) {
-                workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_STEP);
-                scrollPane.setVvalue(EXPANSION_STEP / workspace.getPrefHeight());
-                expanded = true;
-            }
-
-            // Se espanso, aggiorna i valori iniziali per evitare ricalcoli eccessivi
-            if (expanded) {
-                initialHValue = scrollPane.getHvalue();
-                initialVValue = scrollPane.getVvalue();
-                initialMouseX = event.getSceneX();
-                initialMouseY = event.getSceneY();
-            }
-        });
-
-        workspace.setOnMouseReleased(event -> {
-            isPanning = false;
         });
     }
 
-
     /**
-     * Limita un valore all'interno di un intervallo definito.
+     * Limita un valore entro un intervallo specificato.
+     * Se il valore è minore del minimo, restituisce il minimo.
+     * Se è maggiore del massimo, restituisce il massimo.
+     * Altrimenti restituisce il valore stesso.
      *
-     * @param value valore da limitare
-     * @param min   valore minimo consentito
-     * @param max   valore massimo consentito
-     * @return valore limitato all'intervallo [min, max]
+     * @param value Valore da limitare.
+     * @param min   Valore minimo consentito.
+     * @param max   Valore massimo consentito.
+     * @return Il valore limitato entro [min, max].
      */
     private double clamp(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));  // Restituisce il valore limitato
+        return Math.max(min, Math.min(value, max));
     }
+
 
     /**
      * Espande dinamicamente le dimensioni del workspace se il bordo visibile viene raggiunto.
@@ -254,60 +216,35 @@ public class ViewController implements Initializable {
      * a spostarsi nello spazio di lavoro senza restrizioni visive.
      */
     private void expandWorkspace() {
-        Bounds viewportBounds = scrollPane.getViewportBounds();
-        double viewportWidth = viewportBounds.getWidth();
-        double viewportHeight = viewportBounds.getHeight();
+        Bounds viewport = scrollPane.getViewportBounds();
+        Bounds content = workspace.getLayoutBounds();
 
-        double hValue = scrollPane.getHvalue();
-        double vValue = scrollPane.getVvalue();
+        double rightEdge = scrollPane.getHvalue() * (content.getWidth() - viewport.getWidth()) + viewport.getWidth();
+        double bottomEdge = scrollPane.getVvalue() * (content.getHeight() - viewport.getHeight()) + viewport.getHeight();
 
-        double contentWidth = workspace.getWidth();
-        double contentHeight = workspace.getHeight();
-
-        double viewLeft = hValue * (contentWidth - viewportWidth);
-        double viewRight = viewLeft + viewportWidth;
-
-        double viewTop = vValue * (contentHeight - viewportHeight);
-        double viewBottom = viewTop + viewportHeight;
-
-        boolean expanded = false;
-
-        // Espansione verso destra
-        if (viewRight >= contentWidth - EXPANSION_MARGIN) {
-            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);
-            expanded = true;
+        // Espansione a destra
+        if (rightEdge + MARGIN > content.getWidth()) {
+            workspace.setPrefWidth(content.getWidth() + EXPANSION_STEP);
         }
 
-        // Espansione verso il basso
-        if (viewBottom >= contentHeight - EXPANSION_MARGIN) {
-            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);
-            expanded = true;
+        // Espansione in basso
+        if (bottomEdge + MARGIN > content.getHeight()) {
+            workspace.setPrefHeight(content.getHeight() + EXPANSION_STEP);
         }
 
-        // Espansione verso sinistra
-        if (viewLeft <= EXPANSION_MARGIN) {
-            workspace.setPrefWidth(workspace.getPrefWidth() + EXPANSION_MARGIN);
-            shiftContent(EXPANSION_MARGIN, 0); // Sposta i contenuti a destra
-            scrollPane.setHvalue((viewLeft + EXPANSION_MARGIN) / (workspace.getWidth() - viewportWidth));
-            expanded = true;
+        // Espansione a sinistra
+        if (scrollPane.getHvalue() < 0.01) {
+            workspace.setPrefWidth(content.getWidth() + EXPANSION_STEP);
+            scrollPane.setHvalue(EXPANSION_STEP / workspace.getWidth());
         }
 
-        // Espansione verso l’alto
-        if (viewTop <= EXPANSION_MARGIN) {
-            workspace.setPrefHeight(workspace.getPrefHeight() + EXPANSION_MARGIN);
-            shiftContent(0, EXPANSION_MARGIN); // Sposta i contenuti in basso
-            scrollPane.setVvalue((viewTop + EXPANSION_MARGIN) / (workspace.getHeight() - viewportHeight));
-            expanded = true;
+        // Espansione in alto
+        if (scrollPane.getVvalue() < 0.01) {
+            workspace.setPrefHeight(content.getHeight() + EXPANSION_STEP);
+            scrollPane.setVvalue(EXPANSION_STEP / workspace.getHeight());
         }
+
     }
-
-    private void shiftContent(double deltaX, double deltaY) {
-        for (Node node : group.getChildren()) {
-            node.setLayoutX(node.getLayoutX() + deltaX);
-            node.setLayoutY(node.getLayoutY() + deltaY);
-        }
-    }
-
 
     /**
      * Evidenzia visivamente il bottone selezionata applicando un effetto visivo.
@@ -483,11 +420,6 @@ public class ViewController implements Initializable {
                 }
                 isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
             }
-        });
-
-        shapeEvent.setOnDragDetected(event -> {
-            Command drag = new DragCommand(shape);
-            executeCommand(drag);
         });
 
         shapeEvent.setOnMouseDragged(event -> {
