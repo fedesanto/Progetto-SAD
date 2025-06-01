@@ -18,6 +18,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 
@@ -43,8 +44,6 @@ public class ViewController implements Initializable {
     private MenuItem saveButton;
     @FXML
     private ScrollPane scrollPane;
-    @FXML
-    private Group group;
 
     @FXML
     private RadioButton Zoom50;
@@ -54,6 +53,8 @@ public class ViewController implements Initializable {
     private RadioButton Zoom150;
     @FXML
     private RadioButton Zoom200;
+    @FXML
+    private ToggleButton gridButton;
 
     private final double BUTTON_SHADOW_RADIUS    = 13;              // Dimensione effetto evidenziazione dei bottoni
     private final Color  BUTTON_SHADOW_COLOR     = Color.BLUE;      // Colore effetto evidenziazione dei bottoni
@@ -86,6 +87,9 @@ public class ViewController implements Initializable {
 
     // Flag che indica se l'utente sta trascinando una forma (serve per distinguere il panning dal drag delle forme)
     private boolean isDraggingShape = false;
+
+    private Group gridGroup = new Group();
+    private final double GRID_SPACING = 50; // Distanza tra le linee della griglia
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -192,7 +196,71 @@ public class ViewController implements Initializable {
                 expandWorkspace();
             }
         });
+
+        // Aggiunge il gruppo della griglia al workspace e lo nasconde inizialmente
+        workspace.getChildren().add(gridGroup);
+        gridGroup.setVisible(false); // Nasconde la griglia all'avvio
+
+// Gestisce il click sul pulsante della griglia
+        gridButton.setOnAction(e -> {
+            if (gridButton.isSelected()) {
+                gridGroup.setVisible(true);  // Mostra la griglia
+                drawGrid();                  // Disegna la griglia
+            } else {
+                gridGroup.setVisible(false); // Nasconde la griglia
+            }
+        });
+
+// Ridisegna la griglia quando la larghezza del workspace cambia (se visibile)
+        workspace.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (gridGroup.isVisible()) {
+                drawGrid();
+            }
+        });
+
+// Ridisegna la griglia quando l'altezza del workspace cambia (se visibile)
+        workspace.heightProperty().addListener((obs, oldVal, newVal) -> {
+            if (gridGroup.isVisible()) {
+                drawGrid();
+            }
+        });
+
     }
+
+    /**
+     * Disegna una griglia sull'area di lavoro, con linee verticali e orizzontali
+     * distanziate secondo la costante GRID_SPACING. La griglia si estende per tutta
+     * l'area visibile del workspace.
+     * Le linee sono aggiunte al gruppo gridGroup.
+     * Viene prima cancellata l'eventuale griglia esistente.
+     */
+    private void drawGrid() {
+        clearGrid(); // Pulisce griglia esistente
+
+        double width = Math.max(workspace.getWidth(), workspace.getBoundsInLocal().getWidth());
+        double height = Math.max(workspace.getHeight(), workspace.getBoundsInLocal().getHeight());
+
+        for (double x = 0; x < width; x += GRID_SPACING) {
+            Line line = new Line(x, 0, x, height);
+            line.setStroke(Color.LIGHTGRAY);
+            gridGroup.getChildren().add(line);
+        }
+
+        for (double y = 0; y < height; y += GRID_SPACING) {
+            Line line = new Line(0, y, width, y);
+            line.setStroke(Color.LIGHTGRAY);
+            gridGroup.getChildren().add(line);
+        }
+    }
+
+    /**
+     * Rimuove tutte le linee presenti nel gruppo gridGroup,
+     * eliminando la griglia visiva dall'area di lavoro.
+     */
+    private void clearGrid() {
+        gridGroup.getChildren().clear();
+    }
+
 
     /**
      * Limita un valore entro un intervallo specificato.
@@ -208,7 +276,6 @@ public class ViewController implements Initializable {
     private double clamp(double value, double min, double max) {
         return Math.max(min, Math.min(value, max));
     }
-
 
     /**
      * Espande dinamicamente le dimensioni del workspace se il bordo visibile viene raggiunto.
@@ -440,14 +507,14 @@ public class ViewController implements Initializable {
                 double oldHValue = scrollPane.getHvalue();
                 double oldVValue = scrollPane.getVvalue();
 
-                // Scroll orizzontale
+                // Scroll orizzontale automatico se il mouse si avvicina ai bordi laterali
                 if (mouseX > viewportBounds.getWidth() - margin) {
                     scrollPane.setHvalue(Math.min(1.0, oldHValue + scrollSpeed));
                 } else if (mouseX < margin) {
                     scrollPane.setHvalue(Math.max(0.0, oldHValue - scrollSpeed));
                 }
 
-                // Scroll verticale
+                // Scroll verticale automatico se il mouse si avvicina ai bordi superiori/inferiori
                 if (mouseY > viewportBounds.getHeight() - margin) {
                     scrollPane.setVvalue(Math.min(1.0, oldVValue + scrollSpeed));
                 } else if (mouseY < margin) {
