@@ -300,8 +300,8 @@ public class ViewController implements Initializable {
         double visibleHeight = scrollPane.getViewportBounds().getHeight() / scale;
 
         // Considera anche la dimensione effettiva del workspace
-        double width = Math.max(workspace.getWidth(), workspace.getBoundsInLocal().getWidth());
-        double height = Math.max(workspace.getHeight(), workspace.getBoundsInLocal().getHeight());
+        double width = Math.max(workspace.getPrefWidth(), visibleWidth);
+        double height = Math.max(workspace.getPrefHeight(), visibleHeight);
 
         for (double x = 0; x < width; x += GRID_SPACING) {
             Line line = new Line(x, 0, x, height);
