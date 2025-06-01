@@ -97,8 +97,9 @@ public class ViewController implements Initializable {
      * Inizializza il controller dopo il caricamento del file FXML.
      * Crea il menu contestuale che sarà utilizzato per le forme.
      * Crea il menu contestuale che sarà utilizzato per lo spazio di lavoro.
-     * Effettua ul setup necessario per abilitare il panning dello spazio di lavoro.
-     * Associa la proprietà di disattivazione dell'undo button alla proprietà 'empty' della history
+     * Effettua il setup necessario per abilitare il panning dello spazio di lavoro.
+     * Effettuo il setup necessario per consentire la visualizzazione della griglia
+     * Associa la proprietà di disattivazione dell'undo button alla proprietà 'empty' della history.
      *
      * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
@@ -112,71 +113,11 @@ public class ViewController implements Initializable {
         // Inizializza il menu contestuale associato al workspace
         initWorkspaceContextMenu();
 
-        // Gestore per il mouse press sul workspace: inizia il panning solo se l'utente clicca su uno spazio vuoto (no forma selezionata)
-        workspace.setOnMousePressed(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
-                // Salva la posizione iniziale del mouse in coordinate di scena (serve per calcolare lo spostamento)
-                panStartX = event.getSceneX();
-                panStartY = event.getSceneY();
-            }
-        });
+        // Effettuo il setup necessario per permettere il panning dello spazio di lavoro
+        setUpPanning();
 
-        // Gestore per il trascinamento del mouse sul workspace (panning)
-        workspace.setOnMouseDragged(event -> {
-            // Solo se non si sta trascinando una forma e nessuna forma è selezionata
-            if (!isDraggingShape && chosenShape == null && event.getButton() == MouseButton.PRIMARY) {
-                // Calcola lo spostamento del mouse rispetto alla posizione iniziale
-                double deltaX = event.getSceneX() - panStartX;
-                double deltaY = event.getSceneY() - panStartY;
-
-                // Ottiene i valori massimi di scroll orizzontale e verticale
-                double hMax = scrollPane.getHmax();
-                double vMax = scrollPane.getVmax();
-
-                // Calcola i nuovi valori di scroll (H e V) in base al movimento del mouse
-                double newH = scrollPane.getHvalue() - deltaX / workspace.getWidth();
-                double newV = scrollPane.getVvalue() - deltaY / workspace.getHeight();
-
-                // Applica i nuovi valori di scroll, limitandoli tra 0 e il massimo consentito
-                scrollPane.setHvalue(clamp(newH, 0, hMax));
-                scrollPane.setVvalue(clamp(newV, 0, vMax));
-
-                // Aggiorna la posizione iniziale del mouse per il prossimo movimento
-                panStartX = event.getSceneX();
-                panStartY = event.getSceneY();
-
-                // Controlla se bisogna espandere dinamicamente il workspace (in base alla posizione corrente del mouse)
-                expandWorkspace();
-            }
-        });
-
-        // Aggiunge il gruppo della griglia al workspace e lo nasconde inizialmente
-        workspace.getChildren().add(gridGroup);
-        gridGroup.setVisible(false); // Nasconde la griglia all'avvio
-
-        // Gestisce il click sul pulsante della griglia
-        gridButton.setOnAction(e -> {
-            if (gridButton.isSelected()) {
-                gridGroup.setVisible(true);  // Mostra la griglia
-                drawGrid();                  // Disegna la griglia
-            } else {
-                gridGroup.setVisible(false); // Nasconde la griglia
-            }
-        });
-
-        // Ridisegna la griglia quando la larghezza del workspace cambia (se visibile)
-        workspace.widthProperty().addListener((obs, oldVal, newVal) -> {
-            if (gridGroup.isVisible()) {
-                drawGrid();
-            }
-        });
-
-        // Ridisegna la griglia quando l'altezza del workspace cambia (se visibile)
-        workspace.heightProperty().addListener((obs, oldVal, newVal) -> {
-            if (gridGroup.isVisible()) {
-                drawGrid();
-            }
-        });
+        // Effettuo il setup necessario per consentire la visualizzazione della griglia
+        setUpGrid();
 
         //Associa la proprietà osservabile 'empty' della history alla proprietà di disattivazione dell'undo button
         undoButton.disableProperty().bind(history.emptyProperty());
@@ -249,6 +190,82 @@ public class ViewController implements Initializable {
         });
 
         workspaceContextMenu.getItems().add(pasteItem);
+    }
+
+    /**
+     * Metodo di comodo per il setup delle operazioni necessaria alla visualizzazione della griglia
+     */
+    private void setUpPanning(){
+        // Gestore per il mouse press sul workspace: inizia il panning solo se l'utente clicca su uno spazio vuoto (no forma selezionata)
+        workspace.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
+                // Salva la posizione iniziale del mouse in coordinate di scena (serve per calcolare lo spostamento)
+                panStartX = event.getSceneX();
+                panStartY = event.getSceneY();
+            }
+        });
+
+        // Gestore per il trascinamento del mouse sul workspace (panning)
+        workspace.setOnMouseDragged(event -> {
+            // Solo se non si sta trascinando una forma e nessuna forma è selezionata
+            if (!isDraggingShape && chosenShape == null && event.getButton() == MouseButton.PRIMARY) {
+                // Calcola lo spostamento del mouse rispetto alla posizione iniziale
+                double deltaX = event.getSceneX() - panStartX;
+                double deltaY = event.getSceneY() - panStartY;
+
+                // Ottiene i valori massimi di scroll orizzontale e verticale
+                double hMax = scrollPane.getHmax();
+                double vMax = scrollPane.getVmax();
+
+                // Calcola i nuovi valori di scroll (H e V) in base al movimento del mouse
+                double newH = scrollPane.getHvalue() - deltaX / workspace.getWidth();
+                double newV = scrollPane.getVvalue() - deltaY / workspace.getHeight();
+
+                // Applica i nuovi valori di scroll, limitandoli tra 0 e il massimo consentito
+                scrollPane.setHvalue(clamp(newH, 0, hMax));
+                scrollPane.setVvalue(clamp(newV, 0, vMax));
+
+                // Aggiorna la posizione iniziale del mouse per il prossimo movimento
+                panStartX = event.getSceneX();
+                panStartY = event.getSceneY();
+
+                // Controlla se bisogna espandere dinamicamente il workspace (in base alla posizione corrente del mouse)
+                expandWorkspace();
+            }
+        });
+    }
+
+    /**
+     * Metodo di comodo per il setup della griglia
+     */
+    private void setUpGrid(){
+        // Aggiunge il gruppo della griglia al workspace e lo nasconde inizialmente
+        workspace.getChildren().add(gridGroup);
+        gridGroup.setVisible(false); // Nasconde la griglia all'avvio
+
+        // Gestisce il click sul pulsante della griglia
+        gridButton.setOnAction(e -> {
+            if (gridButton.isSelected()) {
+                gridGroup.setVisible(true);  // Mostra la griglia
+                drawGrid();                  // Disegna la griglia
+            } else {
+                gridGroup.setVisible(false); // Nasconde la griglia
+            }
+        });
+
+        // Ridisegna la griglia quando la larghezza del workspace cambia (se visibile)
+        workspace.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (gridGroup.isVisible()) {
+                drawGrid();
+            }
+        });
+
+        // Ridisegna la griglia quando l'altezza del workspace cambia (se visibile)
+        workspace.heightProperty().addListener((obs, oldVal, newVal) -> {
+            if (gridGroup.isVisible()) {
+                drawGrid();
+            }
+        });
     }
 
     /**
