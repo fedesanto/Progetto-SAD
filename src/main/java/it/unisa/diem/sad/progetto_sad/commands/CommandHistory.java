@@ -1,5 +1,8 @@
 package it.unisa.diem.sad.progetto_sad.commands;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -8,12 +11,14 @@ import java.util.Stack;
  */
 public class CommandHistory {
     private final Stack<Command> history;
+    private final ReadOnlyBooleanWrapper emptyProperty;     //Proprietà osservabile per verificare se lo stack è vuoto
 
     /**
      * Crea la history dei comandi
      */
     public CommandHistory(){
-        history = new Stack<Command>();
+        history = new Stack<>();
+        emptyProperty = new ReadOnlyBooleanWrapper(true);
     }
 
     /**
@@ -23,6 +28,7 @@ public class CommandHistory {
      */
     public void push(Command command){
         history.push(command);
+        updateState();
     }
 
     /**
@@ -33,7 +39,10 @@ public class CommandHistory {
      * @throws EmptyStackException se la history è vuota
      */
     public Command pop(){
-        return history.pop();
+        Command command = history.pop();
+        updateState();
+
+        return command;
     }
 
     /**
@@ -43,5 +52,22 @@ public class CommandHistory {
      */
     public boolean isEmpty(){
         return history.isEmpty();
+    }
+
+    /**
+     * Restistuisce la proprietà osservabile che consente di verificare se la history è vuota
+     *
+     * @return proprietà booleana osservabile
+     */
+    public ReadOnlyBooleanProperty emptyProperty() {
+        return emptyProperty.getReadOnlyProperty();
+    }
+
+
+    /**
+     * Metodo per aggiornare la proprietà osservabile della history
+     */
+    private void updateState() {
+        emptyProperty.set(history.isEmpty());
     }
 }

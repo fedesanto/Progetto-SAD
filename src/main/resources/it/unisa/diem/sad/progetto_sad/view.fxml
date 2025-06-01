@@ -62,7 +62,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ANNULLA" textAlignment="CENTER" wrappingWidth="69.662109375" />
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#undo">
+                        <Button fx:id="undoButton" focusTraversable="false" mnemonicParsing="false" onAction="#undo">
                            <graphic>
                               <ImageView fitHeight="27.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

@@ -45,6 +45,8 @@ public class ViewController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private Group group;
+    @FXML
+    private Button undoButton;
 
     @FXML
     private RadioButton Zoom50;
@@ -91,12 +93,67 @@ public class ViewController implements Initializable {
      * Inizializza il controller dopo il caricamento del file FXML.
      * Crea il menu contestuale che sarà utilizzato per le forme.
      * Crea il menu contestuale che sarà utilizzato per lo spazio di lavoro.
+     * Effettua ul setup necessario per abilitare il panning dello spazio di lavoro.
+     * Associa la proprietà di disattivazione dell'undo button alla proprietà 'empty' della history
      *
      * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // Inizializza il menu contestuale associato alle forme
+        initShapeContextMenu();
+
+        // Inizializza il menu contestuale associato al workspace
+        initWorkspaceContextMenu();
+
+        // Gestore per il mouse press sul workspace: inizia il panning solo se l'utente clicca su uno spazio vuoto (no forma selezionata)
+        workspace.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
+                // Salva la posizione iniziale del mouse in coordinate di scena (serve per calcolare lo spostamento)
+                panStartX = event.getSceneX();
+                panStartY = event.getSceneY();
+            }
+        });
+
+        // Gestore per il trascinamento del mouse sul workspace (panning)
+        workspace.setOnMouseDragged(event -> {
+            // Solo se non si sta trascinando una forma e nessuna forma è selezionata
+            if (!isDraggingShape && chosenShape == null && event.getButton() == MouseButton.PRIMARY) {
+                // Calcola lo spostamento del mouse rispetto alla posizione iniziale
+                double deltaX = event.getSceneX() - panStartX;
+                double deltaY = event.getSceneY() - panStartY;
+
+                // Ottiene i valori massimi di scroll orizzontale e verticale
+                double hMax = scrollPane.getHmax();
+                double vMax = scrollPane.getVmax();
+
+                // Calcola i nuovi valori di scroll (H e V) in base al movimento del mouse
+                double newH = scrollPane.getHvalue() - deltaX / workspace.getWidth();
+                double newV = scrollPane.getVvalue() - deltaY / workspace.getHeight();
+
+                // Applica i nuovi valori di scroll, limitandoli tra 0 e il massimo consentito
+                scrollPane.setHvalue(clamp(newH, 0, hMax));
+                scrollPane.setVvalue(clamp(newV, 0, vMax));
+
+                // Aggiorna la posizione iniziale del mouse per il prossimo movimento
+                panStartX = event.getSceneX();
+                panStartY = event.getSceneY();
+
+                // Controlla se bisogna espandere dinamicamente il workspace (in base alla posizione corrente del mouse)
+                expandWorkspace();
+            }
+        });
+
+        //Associa la proprietà osservabile 'empty' della history alla proprietà di disattivazione dell'undo button
+        undoButton.disableProperty().bind(history.emptyProperty());
+    }
+
+    /**
+     * Metodo di comodo per l'inizializzazione del menu contestuale associato alle forme
+     */
+    private void initShapeContextMenu(){
         shapeContextMenu = new ContextMenu();
         MenuItem deleteItem = new MenuItem("Elimina");
         MenuItem resizeItem = new MenuItem("Ridimensiona");
@@ -137,10 +194,15 @@ public class ViewController implements Initializable {
         });
 
         shapeContextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem, toFrontItem, toBackItem);
+    }
 
-
+    /**
+     * Metodo di comodo per l'inizializzazione del menu contestuale associato allo spazio di lavoro
+     */
+    private void initWorkspaceContextMenu(){
         workspaceContextMenu = new ContextMenu();
         MenuItem pasteItem = new MenuItem("Incolla");
+
         pasteItem.setOnAction(e -> {
             ShapeInterface newShape = copiedShape.clone();              // Clona la shape copiata
             newShape.setShapeX(workspaceContextMenuX);                  // la posiziona nelle coordinate del menu contestuale
@@ -153,46 +215,10 @@ public class ViewController implements Initializable {
         workspaceContextMenu.setOnShown(e -> {
             pasteItem.setDisable(copiedShape == null);          // disabilitazione della voce 'Incolla' nel caso in cui non fosse stata copiata nessuna forma
         });
+
         workspaceContextMenu.getItems().add(pasteItem);
-
-        // Gestore per il mouse press sul workspace: inizia il panning solo se l'utente clicca su uno spazio vuoto (no forma selezionata)
-        workspace.setOnMousePressed(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
-                // Salva la posizione iniziale del mouse in coordinate di scena (serve per calcolare lo spostamento)
-                panStartX = event.getSceneX();
-                panStartY = event.getSceneY();
-            }
-        });
-
-// Gestore per il trascinamento del mouse sul workspace (panning)
-        workspace.setOnMouseDragged(event -> {
-            // Solo se non si sta trascinando una forma e nessuna forma è selezionata
-            if (!isDraggingShape && chosenShape == null && event.getButton() == MouseButton.PRIMARY) {
-                // Calcola lo spostamento del mouse rispetto alla posizione iniziale
-                double deltaX = event.getSceneX() - panStartX;
-                double deltaY = event.getSceneY() - panStartY;
-
-                // Ottiene i valori massimi di scroll orizzontale e verticale
-                double hMax = scrollPane.getHmax();
-                double vMax = scrollPane.getVmax();
-
-                // Calcola i nuovi valori di scroll (H e V) in base al movimento del mouse
-                double newH = scrollPane.getHvalue() - deltaX / workspace.getWidth();
-                double newV = scrollPane.getVvalue() - deltaY / workspace.getHeight();
-
-                // Applica i nuovi valori di scroll, limitandoli tra 0 e il massimo consentito
-                scrollPane.setHvalue(clamp(newH, 0, hMax));
-                scrollPane.setVvalue(clamp(newV, 0, vMax));
-
-                // Aggiorna la posizione iniziale del mouse per il prossimo movimento
-                panStartX = event.getSceneX();
-                panStartY = event.getSceneY();
-
-                // Controlla se bisogna espandere dinamicamente il workspace (in base alla posizione corrente del mouse)
-                expandWorkspace();
-            }
-        });
     }
+
 
     /**
      * Limita un valore entro un intervallo specificato.
