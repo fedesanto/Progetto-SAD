@@ -6,6 +6,7 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -292,6 +293,13 @@ public class ViewController implements Initializable {
     private void drawGrid() {
         clearGrid(); // Pulisce griglia esistente
 
+        double scale = workspace.getScaleX();
+
+        // Dimensioni reali visibili nello ScrollPane in coordinate NON scalate
+        double visibleWidth = scrollPane.getViewportBounds().getWidth() / scale;
+        double visibleHeight = scrollPane.getViewportBounds().getHeight() / scale;
+
+        // Considera anche la dimensione effettiva del workspace
         double width = Math.max(workspace.getWidth(), workspace.getBoundsInLocal().getWidth());
         double height = Math.max(workspace.getHeight(), workspace.getBoundsInLocal().getHeight());
 
@@ -738,6 +746,12 @@ public class ViewController implements Initializable {
 
         workspace.setScaleX(scale);
         workspace.setScaleY(scale);
+
+        Platform.runLater(() -> { // Esegui dopo il layout per avere dimensioni corrette della viewport
+            if (gridGroup.isVisible()) { // Controlla se la griglia è visibile prima di ridisegnarla
+                drawGrid(); // Ridisegna la griglia sull’intera area visibile
+            }
+        });
     }
 
     /**
