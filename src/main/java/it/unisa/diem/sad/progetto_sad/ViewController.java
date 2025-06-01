@@ -164,9 +164,23 @@ public class ViewController implements Initializable {
         toBackItem.setOnAction(e -> {
             Command toBack = new BringBackCommand(workspace, (ShapeInterface) shapeContextMenu.getOwnerNode());    // Creo ed eseguo il comando per portare dietro la forma cliccata
             executeCommand(toBack);
+            sendGridToBack(); // assicura che la griglia resti sempre dietro le forme
         });
 
         shapeContextMenu.getItems().addAll(deleteItem, resizeItem, copyItem, cutItem, toFrontItem, toBackItem);
+    }
+
+    /**
+     * Invia il gruppo della griglia in fondo allo stack dei nodi del workspace,
+     * assicurando che la griglia non copra le forme visibili.
+     * Se il gruppo gridGroup è presente nel workspace, viene rimosso e riaggiunto
+     * come primo figlio.
+     */
+    private void sendGridToBack() {
+        if (workspace.getChildren().contains(gridGroup)) {
+            workspace.getChildren().remove(gridGroup);
+            workspace.getChildren().add(0, gridGroup); // mette gridGroup come primo figlio → dietro visivamente
+        }
     }
 
     /**
