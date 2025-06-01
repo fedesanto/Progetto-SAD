@@ -6,7 +6,6 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -751,11 +750,11 @@ public class ViewController implements Initializable {
         workspace.setScaleX(scale);
         workspace.setScaleY(scale);
 
-        Platform.runLater(() -> { // Esegui dopo il layout per avere dimensioni corrette della viewport
+
             if (gridGroup.isVisible()) { // Controlla se la griglia è visibile prima di ridisegnarla
                 drawGrid(); // Ridisegna la griglia sull’intera area visibile
-            }
-        });
+
+        }
     }
 
 
@@ -777,7 +776,7 @@ public class ViewController implements Initializable {
                 gridSpacing = value; // Aggiorna la spaziatura della griglia
 
                 if (gridGroup.isVisible()) {
-                    Platform.runLater(() -> drawGrid()); // Ridisegna la griglia se visibile
+                     drawGrid(); // Ridisegna la griglia se visibile
                 }
                 return;
             }
