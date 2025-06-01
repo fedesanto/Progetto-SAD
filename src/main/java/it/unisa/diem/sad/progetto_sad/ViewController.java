@@ -58,6 +58,8 @@ public class ViewController implements Initializable {
     private RadioButton Zoom200;
     @FXML
     private ToggleButton gridButton;
+    @FXML
+    private TextField gridSizeField;
 
     private final double BUTTON_SHADOW_RADIUS    = 13;              // Dimensione effetto evidenziazione dei bottoni
     private final Color  BUTTON_SHADOW_COLOR     = Color.BLUE;      // Colore effetto evidenziazione dei bottoni
@@ -92,7 +94,7 @@ public class ViewController implements Initializable {
     private boolean isDraggingShape = false;
 
     private Group gridGroup = new Group();
-    private final double GRID_SPACING = 50; // Distanza tra le linee della griglia
+    private int gridSpacing = 25; // Spaziatura tra le linee della griglia in pixel
 
     /**
      * Inizializza il controller dopo il caricamento del file FXML.
@@ -122,6 +124,8 @@ public class ViewController implements Initializable {
 
         //Associa la proprietà osservabile 'empty' della history alla proprietà di disattivazione dell'undo button
         undoButton.disableProperty().bind(history.emptyProperty());
+
+        gridSizeField.setText(""); // Imposta nel campo di testo il valore corrente della spaziatura della griglia
     }
 
     /**
@@ -303,13 +307,13 @@ public class ViewController implements Initializable {
         double width = Math.max(workspace.getPrefWidth(), visibleWidth);
         double height = Math.max(workspace.getPrefHeight(), visibleHeight);
 
-        for (double x = 0; x < width; x += GRID_SPACING) {
+        for (double x = 0; x < width; x += gridSpacing) {
             Line line = new Line(x, 0, x, height);
             line.setStroke(Color.LIGHTGRAY);
             gridGroup.getChildren().add(line);
         }
 
-        for (double y = 0; y < height; y += GRID_SPACING) {
+        for (double y = 0; y < height; y += gridSpacing) {
             Line line = new Line(0, y, width, y);
             line.setStroke(Color.LIGHTGRAY);
             gridGroup.getChildren().add(line);
@@ -752,6 +756,36 @@ public class ViewController implements Initializable {
                 drawGrid(); // Ridisegna la griglia sull’intera area visibile
             }
         });
+    }
+
+
+    /**
+     Gestisce il cambiamento della dimensione della griglia quando l'utente inserisce un nuovo valore,
+     nel campo di testo. Valida l'input, aggiorna la spaziatura della griglia e la ridisegna se visibile.,
+     Se l'input non è valido (non numerico o ≤ 0), mostra un messaggio di errore e ripristina il valore precedente.
+     */
+    @FXML
+    private void onGridSizeChanged() {
+        String input = gridSizeField.getText(); // Legge il valore inserito nel campo di testo
+        int oldValue = gridSpacing; // Salva il valore corrente per poterlo ripristinare in caso di errore
+
+        // Controlla che l'input sia composto solo da cifre e non vuoto
+        if (input.matches("\\d+")) {
+            int value = Integer.parseInt(input); // Converti in intero
+
+            if (value > 0) {
+                gridSpacing = value; // Aggiorna la spaziatura della griglia
+
+                if (gridGroup.isVisible()) {
+                    Platform.runLater(() -> drawGrid()); // Ridisegna la griglia se visibile
+                }
+                return;
+            }
+        }
+
+        // Input non valido: ripristina il valore precedente e mostra un errore
+        gridSizeField.setText(String.valueOf(oldValue));
+        showAlert("Valore non valido", "Inserisci un numero intero positivo per la dimensione della griglia.");
     }
 
     /**
