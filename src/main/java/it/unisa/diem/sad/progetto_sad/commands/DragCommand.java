@@ -15,17 +15,18 @@ public class DragCommand implements Command {
      *
      * @param shape forma da trascinare
      */
-    public DragCommand(ShapeInterface shape) {
+    public DragCommand(ShapeInterface shape, double startX, double startY) {
         this.shape = shape;
+        this.startX = startX;
+        this.startY = startY;
     }
 
     /**
      * Metodo di esecuzione del comando.
-     * Registra la posizione attuale della forma
+     * Non effettua nessuna operazione
      */
     public void execute() {
-        this.startX = shape.getShapeX();
-        this.startY = shape.getShapeY();
+
     }
 
     /**

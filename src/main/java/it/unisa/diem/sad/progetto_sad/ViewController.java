@@ -75,7 +75,9 @@ public class ViewController implements Initializable {
 
     private double dragOffsetX;                      // Coordinata X del mouse quando inizia a trascinare una forma
     private double dragOffsetY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
-    private ShapeInterface selectedShape;           // Riferimento alla forma selezionata
+    private double startDragX;                      // Coordinata X del mouse quando inizia a trascinare una forma
+    private double startDragY;
+    private ShapeInterface selectedShape;            // Riferimento alla forma selezionata
 
     private final CommandHistory history = new CommandHistory();    //History dei comandi
 
@@ -100,8 +102,9 @@ public class ViewController implements Initializable {
      * Crea il menu contestuale che sarà utilizzato per le forme.
      * Crea il menu contestuale che sarà utilizzato per lo spazio di lavoro.
      * Effettua il setup necessario per abilitare il panning dello spazio di lavoro.
-     * Effettuo il setup necessario per consentire la visualizzazione della griglia
+     * Effettuo il setup necessario per consentire la visualizzazione della griglia.
      * Associa la proprietà di disattivazione dell'undo button alla proprietà 'empty' della history.
+     * Imposta il valore iniziale al text field della griglia.
      *
      * @param url            URL utilizzato per inizializzare l'oggetto.
      * @param resourceBundle Risorse per l'internazionalizzazione, se presenti.
@@ -124,7 +127,8 @@ public class ViewController implements Initializable {
         //Associa la proprietà osservabile 'empty' della history alla proprietà di disattivazione dell'undo button
         undoButton.disableProperty().bind(history.emptyProperty());
 
-        gridSizeField.setText(""); // Imposta nel campo di testo il valore corrente della spaziatura della griglia
+        // Imposta nel campo di testo il valore corrente della spaziatura della griglia
+        gridSizeField.setText(String.valueOf(gridSpacing));
     }
 
     /**
@@ -550,6 +554,7 @@ public class ViewController implements Initializable {
     private void addShapeEvents(ShapeInterface shape){
         Shape shapeEvent = shape.toJavaFXShape();
 
+
         shapeEvent.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
                 shapeContextMenu.show(shapeEvent, event.getScreenX(), event.getScreenY());    //Mostra menu contestuale
@@ -562,21 +567,28 @@ public class ViewController implements Initializable {
             }
         });
 
+        
         // Evento di pressione del mouse per iniziare il trascinamento
         shapeEvent.setOnMousePressed(event -> {
             if(event.getButton() == MouseButton.PRIMARY){
 
                 if (chosenShape == null){
+                    // Leggo la posizione attuale della forma
+                    startDragX = ((ShapeInterface) event.getTarget()).getShapeX();
+                    startDragY = ((ShapeInterface) event.getTarget()).getShapeY();
+                    
                     // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
-                    dragOffsetX = ((ShapeInterface) event.getTarget()).getShapeX() - event.getX();
-                    dragOffsetY = ((ShapeInterface) event.getTarget()).getShapeY() - event.getY();
+                    dragOffsetX = startDragX - event.getX();
+                    dragOffsetY = startDragY - event.getY();
 
                     selectShape(shape); // Seleziona la forma
                 }
+
                 isDraggingShape = true;  // Segnala che una forma è in fase di trascinamento
             }
         });
 
+        
         shapeEvent.setOnMouseDragged(event -> {
             if (event.getButton() == MouseButton.PRIMARY && chosenShape == null) {
                 shape.setShapeX(event.getX() + dragOffsetX); // aggiorna posizione X in base al cursore
@@ -625,8 +637,15 @@ public class ViewController implements Initializable {
             shapeContextMenu.hide();
         });
 
+        
         shapeEvent.setOnMouseReleased(event -> {
             isDraggingShape = false;
+
+            // Se è avvenuto un drag, creo ed eseguo il comando di drag
+            if (shape.getShapeX() != startDragX || shape.getShapeY() != startDragY){
+                Command drag = new DragCommand(shape, startDragX, startDragY);
+                executeCommand(drag);
+            }
         });
     }
 
@@ -697,7 +716,8 @@ public class ViewController implements Initializable {
 
             // Conversione dei nodi in ShapeInterface
             for (Node node : workspace.getChildren())
-                shapeList.add((ShapeInterface) node);
+                if (node instanceof ShapeInterface)
+                    shapeList.add((ShapeInterface) node);
 
             if (!FileManager.saveFile(shapeList, file.getAbsolutePath())) {
                 // Generazione alert in caso di errore nel salvataggio
@@ -726,6 +746,7 @@ public class ViewController implements Initializable {
                 if (shapeList != null) {
                     // Rimuove tutte le forme precedenti e aggiunge le nuove
                     workspace.getChildren().clear();
+                    workspace.getChildren().add(gridGroup);
                     for (ShapeInterface shape : shapeList) {
                         addShapeEvents(shape);
                         workspace.getChildren().add(shape.toJavaFXShape());
@@ -825,7 +846,6 @@ public class ViewController implements Initializable {
     /**
      * Evento associato alla pressione del bottone di annullamento.
      * Deve annullare l'ultimo command eseguito
-     *
      */
     @FXML
     protected void undo() {

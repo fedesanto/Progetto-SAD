@@ -2,7 +2,6 @@ package it.unisa.diem.sad.progetto_sad.commands;
 
 import it.unisa.diem.sad.progetto_sad.shapes.RectangleShape;
 import it.unisa.diem.sad.progetto_sad.shapes.ShapeInterface;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ class DragCommandTest {
     @BeforeEach
     void setUp() {
         testShape = new RectangleShape(30, 45, Color.RED, 20, 20, Color.RED);
-        dragCommand = new DragCommand(testShape);
+        dragCommand = new DragCommand(testShape, 30, 45);
     }
 
     @Test
