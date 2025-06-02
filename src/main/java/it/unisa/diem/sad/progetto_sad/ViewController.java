@@ -664,8 +664,8 @@ public class ViewController implements Initializable {
         shapeEvent.setOnMouseReleased(event -> {
             isDraggingShape = false;
 
-            // Se è avvenuto un drag, creo ed eseguo il comando di drag
-            if (chosenShape == null && (shape.getShapeX() != startDragX || shape.getShapeY() != startDragY)){
+            // Se è stato rilasciato il tasto sinistro, non mi trovo in modalità di disegno ed è avvenuto un drag, creo ed eseguo il comando di drag
+            if (event.getButton() == MouseButton.PRIMARY && chosenShape == null && (shape.getShapeX() != startDragX || shape.getShapeY() != startDragY)){
                 Command drag = new DragCommand(shape, startDragX, startDragY);
                 executeCommand(drag);
             }
