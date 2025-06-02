@@ -6,6 +6,7 @@ import it.unisa.diem.sad.progetto_sad.factories.Shape2DCreator;
 import it.unisa.diem.sad.progetto_sad.factories.ShapeCreator;
 import it.unisa.diem.sad.progetto_sad.fileHandlers.FileManager;
 import it.unisa.diem.sad.progetto_sad.shapes.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -21,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
@@ -101,6 +103,7 @@ public class ViewController implements Initializable {
      * Inizializza il controller dopo il caricamento del file FXML.
      * Crea il menu contestuale che sarà utilizzato per le forme.
      * Crea il menu contestuale che sarà utilizzato per lo spazio di lavoro.
+     * Inizializza i color picker.
      * Effettua il setup necessario per abilitare il panning dello spazio di lavoro.
      * Effettuo il setup necessario per consentire la visualizzazione della griglia.
      * Associa la proprietà di disattivazione dell'undo button alla proprietà 'empty' della history.
@@ -117,6 +120,10 @@ public class ViewController implements Initializable {
 
         // Inizializza il menu contestuale associato al workspace
         initWorkspaceContextMenu();
+
+        // Inizializza i color picker
+        initColorPicker(strokeColorPicker);
+        initColorPicker(fillColorPicker);
 
         // Effettuo il setup necessario per permettere il panning dello spazio di lavoro
         setUpPanning();
@@ -179,19 +186,6 @@ public class ViewController implements Initializable {
     }
 
     /**
-     * Invia il gruppo della griglia in fondo allo stack dei nodi del workspace,
-     * assicurando che la griglia non copra le forme visibili.
-     * Se il gruppo gridGroup è presente nel workspace, viene rimosso e riaggiunto
-     * come primo figlio.
-     */
-    private void sendGridToBack() {
-        if (workspace.getChildren().contains(gridGroup)) {
-            workspace.getChildren().remove(gridGroup);
-            workspace.getChildren().add(0, gridGroup); // mette gridGroup come primo figlio → dietro visivamente
-        }
-    }
-
-    /**
      * Metodo di comodo per l'inizializzazione del menu contestuale associato allo spazio di lavoro
      */
     private void initWorkspaceContextMenu(){
@@ -212,6 +206,22 @@ public class ViewController implements Initializable {
         });
 
         workspaceContextMenu.getItems().add(pasteItem);
+    }
+
+    /**
+     * Metodo di comodo per l'inizializzazione di un color picker
+     */
+    private void initColorPicker(ColorPicker colorPicker){
+        // Implementazione per risolvere il bug per cui l'applicazione si chiude quando si sceglie un colore personalizzato
+        colorPicker.showingProperty().addListener((obs, wasShowing, isNowShowing) -> {
+            if (wasShowing && !isNowShowing) {
+                // Il ColorPicker è appena stato chiuso (anche se il colore non è cambiato)
+                Platform.runLater(() -> {
+                    Stage stage = (Stage) colorPicker.getScene().getWindow();
+                    stage.toFront();        // Riapre la finesta se è stata chiusa
+                });
+            }
+        });
     }
 
     /**
@@ -329,6 +339,19 @@ public class ViewController implements Initializable {
      */
     private void clearGrid() {
         gridGroup.getChildren().clear();
+    }
+
+    /**
+     * Invia il gruppo della griglia in fondo allo stack dei nodi del workspace,
+     * assicurando che la griglia non copra le forme visibili.
+     * Se il gruppo gridGroup è presente nel workspace, viene rimosso e riaggiunto
+     * come primo figlio.
+     */
+    private void sendGridToBack() {
+        if (workspace.getChildren().contains(gridGroup)) {
+            workspace.getChildren().remove(gridGroup);
+            workspace.getChildren().add(0, gridGroup); // mette gridGroup come primo figlio → dietro visivamente
+        }
     }
 
     /**
@@ -574,8 +597,8 @@ public class ViewController implements Initializable {
 
                 if (chosenShape == null){
                     // Leggo la posizione attuale della forma
-                    startDragX = ((ShapeInterface) event.getTarget()).getShapeX();
-                    startDragY = ((ShapeInterface) event.getTarget()).getShapeY();
+                    startDragX = shape.getShapeX();
+                    startDragY = shape.getShapeY();
                     
                     // Calcola l'offset iniziale tra il punto cliccato e la posizione della forma
                     dragOffsetX = startDragX - event.getX();
@@ -642,7 +665,7 @@ public class ViewController implements Initializable {
             isDraggingShape = false;
 
             // Se è avvenuto un drag, creo ed eseguo il comando di drag
-            if (shape.getShapeX() != startDragX || shape.getShapeY() != startDragY){
+            if (chosenShape == null && (shape.getShapeX() != startDragX || shape.getShapeY() != startDragY)){
                 Command drag = new DragCommand(shape, startDragX, startDragY);
                 executeCommand(drag);
             }
