@@ -28,7 +28,7 @@ public class InsertCommand implements Command{
      * Inserisce la nuova forma nello spazio di lavoro
      */
     public void execute() {
-        workspace.getChildren().add((Shape) shape);
+        workspace.getChildren().add(shape.toJavaFXShape());
     }
 
     /**
@@ -36,6 +36,6 @@ public class InsertCommand implements Command{
      * Elimina dal workspace la forma precedentemente inserita
      */
     public void undo() {
-        workspace.getChildren().remove((Shape) shape);
+        workspace.getChildren().remove(shape.toJavaFXShape());
     }
 }

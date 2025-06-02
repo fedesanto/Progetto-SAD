@@ -26,9 +26,9 @@ class BringFrontCommandTest {
         ShapeInterface otherShape2 = new RectangleShape(60, 60, Color.YELLOW, 15, 15, Color.BLACK);
 
         workspace.getChildren().addAll(
-                (Shape) otherShape1,
-                (Shape) testShape,
-                (Shape) otherShape2
+                otherShape1.toJavaFXShape(),
+                testShape.toJavaFXShape(),
+                otherShape2.toJavaFXShape()
         );
 
         bringFrontCommand = new BringFrontCommand(workspace, testShape);
@@ -36,24 +36,24 @@ class BringFrontCommandTest {
 
     @Test
     void testExecuteBringsShapeToFront() {
-        int initialIndex = workspace.getChildren().indexOf((Shape) testShape);
+        int initialIndex = workspace.getChildren().indexOf(testShape.toJavaFXShape());
         int lastIndex = workspace.getChildren().size() - 1;
         assertNotEquals(lastIndex, initialIndex, "La forma non è inizialmente in primo piano");
 
         bringFrontCommand.execute();
 
-        int newIndex = workspace.getChildren().indexOf((Shape) testShape);
+        int newIndex = workspace.getChildren().indexOf(testShape.toJavaFXShape());
         assertEquals(lastIndex, newIndex, "La forma dovrebbe essere in primo piano dopo execute()");
     }
 
     @Test
     void testUndoRestoresShapeToOriginalPosition() {
-        int originalIndex = workspace.getChildren().indexOf((Shape) testShape);
+        int originalIndex = workspace.getChildren().indexOf(testShape.toJavaFXShape());
 
         bringFrontCommand.execute();
         bringFrontCommand.undo();
 
-        int restoredIndex = workspace.getChildren().indexOf((Shape) testShape);
+        int restoredIndex = workspace.getChildren().indexOf(testShape.toJavaFXShape());
         assertEquals(originalIndex, restoredIndex, "La forma dovrebbe tornare alla posizione originale dopo undo()");
     }
 }

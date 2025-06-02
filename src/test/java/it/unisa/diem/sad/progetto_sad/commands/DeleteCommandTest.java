@@ -20,7 +20,7 @@ class DeleteCommandTest {
     void setUp() {
         workspace = new Pane();
         testShape = new RectangleShape(30, 45, Color.RED, 20, 20, Color.RED);
-        workspace.getChildren().add((Shape) testShape);
+        workspace.getChildren().add(testShape.toJavaFXShape());
         deleteCommand = new DeleteCommand(workspace, testShape);
     }
 

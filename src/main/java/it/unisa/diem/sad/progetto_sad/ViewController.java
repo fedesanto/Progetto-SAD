@@ -436,11 +436,11 @@ public class ViewController implements Initializable {
         DropShadow highlight = new DropShadow(SELECTION_SHADOW_RADIUS, SELECTION_SHADOW_COLOR);
 
         if (selectedShape != null) {
-            ((Shape) selectedShape).setEffect(null); //Rimuove l'effetto visivo dalla forma precedentemente selezionata
+            selectedShape.toJavaFXShape().setEffect(null); //Rimuove l'effetto visivo dalla forma precedentemente selezionata
         }
 
         selectedShape = shape;
-        ((Shape) selectedShape).setEffect(highlight);
+        selectedShape.toJavaFXShape().setEffect(highlight);
     }
 
     /**
@@ -449,7 +449,7 @@ public class ViewController implements Initializable {
      */
     private void deselectShape() {
         if (selectedShape != null) {
-            ((Shape) selectedShape).setEffect(null); // Rimuove l'effetto visivo dalla forma
+            selectedShape.toJavaFXShape().setEffect(null); // Rimuove l'effetto visivo dalla forma
             selectedShape = null;
         }
     }
@@ -548,7 +548,7 @@ public class ViewController implements Initializable {
      * @param shape la forma a cui associare gli eventi di interazione.
      */
     private void addShapeEvents(ShapeInterface shape){
-        Shape shapeEvent = (Shape) shape;
+        Shape shapeEvent = shape.toJavaFXShape();
 
         shapeEvent.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY){     //Evento alla pressione del tasto destro
@@ -728,7 +728,7 @@ public class ViewController implements Initializable {
                     workspace.getChildren().clear();
                     for (ShapeInterface shape : shapeList) {
                         addShapeEvents(shape);
-                        workspace.getChildren().add((Shape) shape);
+                        workspace.getChildren().add(shape.toJavaFXShape());
                     }
                 } else {
                     // Generazione alert in caso di errore nel caricamento
@@ -776,10 +776,8 @@ public class ViewController implements Initializable {
         workspace.setScaleY(scale);
 
 
-            if (gridGroup.isVisible()) { // Controlla se la griglia è visibile prima di ridisegnarla
-                drawGrid(); // Ridisegna la griglia sull’intera area visibile
-
-        }
+        if (gridGroup.isVisible()) // Controlla se la griglia è visibile prima di ridisegnarla
+            drawGrid(); // Ridisegna la griglia sull’intera area visibile
     }
 
 
@@ -830,7 +828,7 @@ public class ViewController implements Initializable {
      *
      */
     @FXML
-    void undo() {
+    protected void undo() {
         if (!history.isEmpty()){
             Command command = history.pop();
             command.undo();

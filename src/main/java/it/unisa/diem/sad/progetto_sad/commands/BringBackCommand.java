@@ -27,7 +27,7 @@ public class BringBackCommand implements Command{
      * Esegue il comando, portando la forma in fondo.
      */
     public void execute(){
-        oldIndex = workspace.getChildren().indexOf((Shape) shape);
+        oldIndex = workspace.getChildren().indexOf(shape.toJavaFXShape());
         shape.shapeToBack();
     }
 
@@ -36,7 +36,7 @@ public class BringBackCommand implements Command{
      * ripristinando la forma alla sua posizione originale nel pane.
      */
     public void undo(){
-        Shape castedShape = (Shape) shape;
+        Shape castedShape = shape.toJavaFXShape();
         workspace.getChildren().remove(castedShape);
         workspace.getChildren().add(oldIndex, castedShape);
     }

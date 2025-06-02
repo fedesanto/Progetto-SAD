@@ -105,4 +105,15 @@ class RectangleShapeTest {
         assertEquals(rect.getShapeWidth(), copy.getShapeWidth());
         assertEquals(rect.getShapeHeight(), copy.getShapeHeight());
     }
+
+    @Test
+    public void testToJavaFXShape() {
+        Rectangle result = rect.toJavaFXShape();
+
+        // Il metodo toJavaFXShape dovrebbe restituire this
+        assertSame(rect, result);
+
+        // Il valore restituito dovrebbe essere un'istanza di Rectangle
+        assertInstanceOf(Rectangle.class, result);
+    }
 }

@@ -1,6 +1,8 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -104,5 +106,17 @@ class EllipseShapeTest {
         assertEquals(ellipse.getStrokeColor(), copy.getStrokeColor());
         assertEquals(ellipse.getShapeWidth(), copy.getShapeWidth());
         assertEquals(ellipse.getShapeHeight(), copy.getShapeHeight());
+    }
+
+
+    @Test
+    public void testToJavaFXShape() {
+        Ellipse result = ellipse.toJavaFXShape();
+
+        // Il metodo toJavaFXShape dovrebbe restituire this
+        assertSame(ellipse, result);
+
+        // Il valore restituito dovrebbe essere un'istanza di Ellipse
+        assertInstanceOf(Ellipse.class, result);
     }
 }

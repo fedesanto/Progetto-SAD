@@ -3,6 +3,7 @@ package it.unisa.diem.sad.progetto_sad.shapes;
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public class RectangleShape extends Rectangle implements Shape2D {
 
@@ -187,5 +188,14 @@ public class RectangleShape extends Rectangle implements Shape2D {
      */
     public void shapeToBack(){
         toBack();
+    }
+
+    /**
+     * Converte la forma nella Shape javafx
+     *
+     * @return forma convertita in Rectangle di javafx
+     */
+    public Rectangle toJavaFXShape() {
+        return this;
     }
 }

@@ -27,13 +27,13 @@ public class DeleteCommand implements Command{
      * Esegue il comando rimuovendo la forma dallo spazio di lavoro.
      */
     public void execute() {
-        this.workspace.getChildren().remove((Shape) this.shape);
+        this.workspace.getChildren().remove(shape.toJavaFXShape());
     }
 
     /**
      * Annulla il comando ripristinando la forma nello spazio di lavoro.
      */
     public void undo() {
-        this.workspace.getChildren().add((Shape) this.shape);
+        this.workspace.getChildren().add(shape.toJavaFXShape());
     }
 }

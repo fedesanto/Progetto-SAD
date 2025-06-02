@@ -2,6 +2,7 @@ package it.unisa.diem.sad.progetto_sad.shapes;
 
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 /**
  * Interfaccia che definisce i metodi di base per tutte le forme geometriche
@@ -83,6 +84,13 @@ public interface ShapeInterface {
      * Porta la forma in fondo nel contesto grafico.
      */
     void shapeToBack();
+
+    /**
+     * Converte la forma nella corrispettiva forma di javafx
+     *
+     * @return forma convertita
+     */
+    Shape toJavaFXShape();
 }
 
 

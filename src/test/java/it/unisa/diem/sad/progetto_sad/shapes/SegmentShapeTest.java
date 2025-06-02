@@ -1,8 +1,12 @@
 package it.unisa.diem.sad.progetto_sad.shapes;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.swing.text.Segment;
 
 import static org.junit.jupiter.api.Assertions.*;
 class SegmentShapeTest {
@@ -84,5 +88,17 @@ class SegmentShapeTest {
         assertEquals(segment.getShapeY(), copy.getShapeY());
         assertEquals(segment.getStrokeColor(), copy.getStrokeColor());
         assertEquals(segment.getShapeLength(), copy.getShapeLength());
+    }
+
+
+    @Test
+    public void testToJavaFXShape() {
+        Line result = segment.toJavaFXShape();
+
+        // Il metodo toJavaFXShape dovrebbe restituire this
+        assertSame(segment, result);
+
+        // Il valore restituito dovrebbe essere un'istanza di Ellipse
+        assertInstanceOf(Line.class, result);
     }
 }

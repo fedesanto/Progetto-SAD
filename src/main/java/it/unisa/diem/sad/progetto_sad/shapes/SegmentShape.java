@@ -3,6 +3,7 @@ package it.unisa.diem.sad.progetto_sad.shapes;
 import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 
 public class SegmentShape extends Line implements Shape1D {
 
@@ -185,5 +186,14 @@ public class SegmentShape extends Line implements Shape1D {
      */
     public void shapeToBack(){
         toBack();
+    }
+
+    /**
+     * Converte la forma nella Shape javafx
+     *
+     * @return forma convertita in Lina di javaFx
+     */
+    public Line toJavaFXShape() {
+        return this;
     }
 }

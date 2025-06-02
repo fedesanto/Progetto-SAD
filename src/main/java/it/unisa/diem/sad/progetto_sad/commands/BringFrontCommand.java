@@ -28,7 +28,7 @@ public class BringFrontCommand implements Command{
      * Esegue il comando, portando la forma in primo piano.
      */
     public void execute(){
-        oldIndex = workspace.getChildren().indexOf((Shape) shape);
+        oldIndex = workspace.getChildren().indexOf(shape.toJavaFXShape());
         shape.shapeToFront();
     }
 
@@ -37,7 +37,7 @@ public class BringFrontCommand implements Command{
      * ripristinando la forma alla sua posizione originale nel pane.
      */
     public void undo(){
-        Shape castedShape = (Shape) shape;
+        Shape castedShape = shape.toJavaFXShape();
         workspace.getChildren().remove(castedShape);
         workspace.getChildren().add(oldIndex, castedShape);
     }

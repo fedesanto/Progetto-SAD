@@ -3,6 +3,7 @@ import it.unisa.diem.sad.progetto_sad.visitors.VisitorShape;
 import javafx.scene.paint.Color;
 
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Shape;
 
 public class EllipseShape extends Ellipse implements Shape2D {
 
@@ -187,5 +188,14 @@ public class EllipseShape extends Ellipse implements Shape2D {
      */
     public void shapeToBack(){
         toBack();
+    }
+
+    /**
+     * Converte la forma nella Shape javafx
+     *
+     * @return forma convertita in Ellipse di javafx
+     */
+    public Ellipse toJavaFXShape() {
+        return this;
     }
 }
