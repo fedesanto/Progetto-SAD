@@ -87,11 +87,12 @@ public class ViewController implements Initializable {
     private double panStartX;
     private double panStartY;
 
-    // Valore costante che definisce di quanto si espande il workspace ogni volta che serve più spazio
-    private static final double EXPANSION_STEP = 100; // massimo incremento per volta
+    private static final double expansionStep = 100; // Valore costante che definisce di quanto si espande il workspace ogni volta che serve più spazi
+    private static final double expasionBuffer = 200.0; // Margine minimo dal bordo visibile per attivare l'espansione del workspace
+    private static final double shiftOffset = expansionStep / 2.0; // Offset applicato agli oggetti nel workspace quando si espande verso l'alto o a sinistra
 
-    // Margine, in pixel, entro il quale se il mouse si avvicina al bordo durante il panning, si attiva l'espansione automatica
-    private static final double MARGIN = 50; // margine vicino ai bordi per triggerare l'espansione
+    private static final double scrollMargin = 30.0; // Margine in pixel dai bordi dello scroll pane per attivare lo scroll automatico
+    private static final double scrollSpeed = 0.01; // Velocità con cui lo scroll pane si sposta quando il cursore si avvicina ai bordi
 
     // Flag che indica se l'utente sta trascinando una forma (serve per distinguere il panning dal drag delle forme)
     private boolean isDraggingShape = false;
@@ -370,16 +371,15 @@ public class ViewController implements Initializable {
     }
 
     /**
-     * Espande dinamicamente le dimensioni del workspace se il bordo visibile viene raggiunto.
-     * Aggiunge margine extra a destra o in basso per consentire all'utente di continuare
-     * a spostarsi nello spazio di lavoro senza restrizioni visive.
+     * Espande dinamicamente le dimensioni del workspace se i bordi visibili vengono raggiunti.
+     * Aggiunge margine extra nelle direzioni necessarie per permettere all’utente di
+     * continuare a esplorare lo spazio di lavoro senza restrizioni visive.
+     * <p>
+     * Se l'espansione avviene a sinistra o in alto, tutte le forme vengono riposizionate
+     * per mantenere la coerenza visiva e funzionale.
      */
     private void expandWorkspace() {
         Bounds contentBounds = workspace.getLayoutBounds();
-
-        double offsetX = workspace.getTranslateX();
-        double offsetY = workspace.getTranslateY();
-
 
         double scrollH = scrollPane.getHvalue();
         double scrollV = scrollPane.getVvalue();
@@ -390,42 +390,54 @@ public class ViewController implements Initializable {
         double visibleX = scrollH * (contentBounds.getWidth() - viewportWidth);
         double visibleY = scrollV * (contentBounds.getHeight() - viewportHeight);
 
-        double buffer = 200;
-
-        boolean expandRight = visibleX + viewportWidth > contentBounds.getWidth() - buffer;
-        boolean expandBottom = visibleY + viewportHeight > contentBounds.getHeight() - buffer;
-        boolean expandLeft = visibleX < buffer;
-        boolean expandTop = visibleY < buffer;
+        boolean expandRight = visibleX + viewportWidth > contentBounds.getWidth() - expasionBuffer;
+        boolean expandBottom = visibleY + viewportHeight > contentBounds.getHeight() - expasionBuffer;
+        boolean expandLeft = visibleX < expasionBuffer;
+        boolean expandTop = visibleY < expasionBuffer;
 
         double newWidth = contentBounds.getWidth();
         double newHeight = contentBounds.getHeight();
 
-        double deltaX = 0, deltaY = 0;
+        double deltaX = 0;
+        double deltaY = 0;
 
-        if (expandRight) newWidth += 400;
-        if (expandBottom) newHeight += 400;
+        if (expandRight) {
+            newWidth += expansionStep;
+        }
+        if (expandBottom) {
+            newHeight += expansionStep;
+        }
         if (expandLeft) {
-            newWidth += 400;
-            deltaX = 200;
+            newWidth += expansionStep;
+            deltaX = shiftOffset;
         }
         if (expandTop) {
-            newHeight += 400;
-            deltaY = 200;
+            newHeight += expansionStep;
+            deltaY = shiftOffset;
         }
 
         if (newWidth != contentBounds.getWidth() || newHeight != contentBounds.getHeight()) {
             workspace.setPrefSize(newWidth, newHeight);
+
+            // Riposizionamento delle forme in caso di espansione verso l'alto o a sinistra
             for (Node node : workspace.getChildren()) {
                 if (node instanceof Shape) {
                     node.setLayoutX(node.getLayoutX() + deltaX);
                     node.setLayoutY(node.getLayoutY() + deltaY);
                 }
             }
-            if (gridGroup.isVisible()) drawGrid();
+
+            // Ridisegna la griglia se visibile
+            if (gridGroup.isVisible()) {
+                drawGrid();
+            }
+
+            // Aggiorna le scrollbar per mantenere la posizione relativa
             scrollPane.setHvalue((visibleX + deltaX) / (newWidth - viewportWidth));
             scrollPane.setVvalue((visibleY + deltaY) / (newHeight - viewportHeight));
         }
     }
+
 
 
     /**
@@ -619,9 +631,6 @@ public class ViewController implements Initializable {
 
                 expandWorkspace(); // chiamata per verificare se espandere il workspace mentre trascino la forma
 
-                double margin = 30;         // Margine dai bordi per attivare lo scroll
-                double scrollSpeed = 0.01;  // Velocità dello scroll automatico
-
                 // Ottiene coordinate del mouse all'interno dello scrollPane
                 Bounds viewportBounds = scrollPane.getViewportBounds();
                 Point2D mouseInScrollPane = scrollPane.screenToLocal(event.getScreenX(), event.getScreenY());
@@ -633,16 +642,16 @@ public class ViewController implements Initializable {
                 double oldVValue = scrollPane.getVvalue();
 
                 // Scroll orizzontale automatico se il mouse si avvicina ai bordi laterali
-                if (mouseX > viewportBounds.getWidth() - margin) {
+                if (mouseX > viewportBounds.getWidth() - scrollMargin) {
                     scrollPane.setHvalue(Math.min(1.0, oldHValue + scrollSpeed));
-                } else if (mouseX < margin) {
+                } else if (mouseX < scrollMargin) {
                     scrollPane.setHvalue(Math.max(0.0, oldHValue - scrollSpeed));
                 }
 
                 // Scroll verticale automatico se il mouse si avvicina ai bordi superiori/inferiori
-                if (mouseY > viewportBounds.getHeight() - margin) {
+                if (mouseY > viewportBounds.getHeight() - scrollMargin) {
                     scrollPane.setVvalue(Math.min(1.0, oldVValue + scrollSpeed));
-                } else if (mouseY < margin) {
+                } else if (mouseY < scrollMargin) {
                     scrollPane.setVvalue(Math.max(0.0, oldVValue - scrollSpeed));
                 }
 

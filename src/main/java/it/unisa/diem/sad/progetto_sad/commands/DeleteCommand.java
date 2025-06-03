@@ -10,7 +10,7 @@ import javafx.scene.shape.Shape;
 public class DeleteCommand implements Command{
     private final Pane workspace;
     private final ShapeInterface shape;
-
+    private int prevIndex;
 
     /**
      * Crea un nuovo comando di eliminazione per una forma specifica.
@@ -27,6 +27,7 @@ public class DeleteCommand implements Command{
      * Esegue il comando rimuovendo la forma dallo spazio di lavoro.
      */
     public void execute() {
+        prevIndex = workspace.getChildren().indexOf(shape.toJavaFXShape());
         this.workspace.getChildren().remove(shape.toJavaFXShape());
     }
 
@@ -34,6 +35,6 @@ public class DeleteCommand implements Command{
      * Annulla il comando ripristinando la forma nello spazio di lavoro.
      */
     public void undo() {
-        this.workspace.getChildren().add(shape.toJavaFXShape());
+        this.workspace.getChildren().add(prevIndex, shape.toJavaFXShape());
     }
 }
