@@ -62,10 +62,10 @@ public class ViewController implements Initializable {
     @FXML
     private TextField gridSizeField;
 
-    private final double BUTTON_SHADOW_RADIUS    = 13;              // Dimensione effetto evidenziazione dei bottoni
-    private final Color  BUTTON_SHADOW_COLOR     = Color.BLUE;      // Colore effetto evidenziazione dei bottoni
-    private final double SELECTION_SHADOW_RADIUS = 20;              // Dimensione effetto evidenziazione delle forme selezionate
-    private final Color  SELECTION_SHADOW_COLOR  = Color.BLUE;      // Colore effetto evidenziazione delle forme selezionate
+    private static final double BUTTON_SHADOW_RADIUS    = 13;              // Dimensione effetto evidenziazione dei bottoni
+    private static final Color  BUTTON_SHADOW_COLOR     = Color.BLUE;      // Colore effetto evidenziazione dei bottoni
+    private static final double SELECTION_SHADOW_RADIUS = 20;              // Dimensione effetto evidenziazione delle forme selezionate
+    private static final Color  SELECTION_SHADOW_COLOR  = Color.BLUE;      // Colore effetto evidenziazione delle forme selezionate
 
     private Button highlightedButton;               // Bottone di scelta delle forme evidenziato
     private ShapeCreator chosenShape;               // Forma scelta da creare 
@@ -77,7 +77,7 @@ public class ViewController implements Initializable {
 
     private double dragOffsetX;                      // Coordinata X del mouse quando inizia a trascinare una forma
     private double dragOffsetY;                      // Coordinata Y del mouse quando inizia a trascinare una forma
-    private double startDragX;                      // Coordinata X del mouse quando inizia a trascinare una forma
+    private double startDragX;                       // Coordinata X del mouse quando inizia a trascinare una forma
     private double startDragY;
     private ShapeInterface selectedShape;            // Riferimento alla forma selezionata
 
@@ -87,17 +87,17 @@ public class ViewController implements Initializable {
     private double panStartX;
     private double panStartY;
 
-    private static final double expansionStep = 100; // Valore costante che definisce di quanto si espande il workspace ogni volta che serve più spazi
-    private static final double expasionBuffer = 200.0; // Margine minimo dal bordo visibile per attivare l'espansione del workspace
-    private static final double shiftOffset = expansionStep / 2.0; // Offset applicato agli oggetti nel workspace quando si espande verso l'alto o a sinistra
+    private static final double EXPANSION_STEP = 100; // Valore costante che definisce di quanto si espande il workspace ogni volta che serve più spazi
+    private static final double EXPANSION_BUFFER = 200.0; // Margine minimo dal bordo visibile per attivare l'espansione del workspace
+    private static final double SHIFT_OFFSET = EXPANSION_STEP / 2.0; // Offset applicato agli oggetti nel workspace quando si espande verso l'alto o a sinistra
 
-    private static final double scrollMargin = 30.0; // Margine in pixel dai bordi dello scroll pane per attivare lo scroll automatico
-    private static final double scrollSpeed = 0.01; // Velocità con cui lo scroll pane si sposta quando il cursore si avvicina ai bordi
+    private static final double SCROLL_MARGIN = 30.0; // Margine in pixel dai bordi dello scroll pane per attivare lo scroll automatico
+    private static final double SCROLL_SPEED = 0.01; // Velocità con cui lo scroll pane si sposta quando il cursore si avvicina ai bordi
 
     // Flag che indica se l'utente sta trascinando una forma (serve per distinguere il panning dal drag delle forme)
     private boolean isDraggingShape = false;
 
-    private Group gridGroup = new Group();
+    private final Group gridGroup = new Group();
     private int gridSpacing = 25; // Spaziatura tra le linee della griglia in pixel
 
     /**
@@ -390,10 +390,10 @@ public class ViewController implements Initializable {
         double visibleX = scrollH * (contentBounds.getWidth() - viewportWidth);
         double visibleY = scrollV * (contentBounds.getHeight() - viewportHeight);
 
-        boolean expandRight = visibleX + viewportWidth > contentBounds.getWidth() - expasionBuffer;
-        boolean expandBottom = visibleY + viewportHeight > contentBounds.getHeight() - expasionBuffer;
-        boolean expandLeft = visibleX < expasionBuffer;
-        boolean expandTop = visibleY < expasionBuffer;
+        boolean expandRight = visibleX + viewportWidth > contentBounds.getWidth() - EXPANSION_BUFFER;
+        boolean expandBottom = visibleY + viewportHeight > contentBounds.getHeight() - EXPANSION_BUFFER;
+        boolean expandLeft = visibleX < EXPANSION_BUFFER;
+        boolean expandTop = visibleY < EXPANSION_BUFFER;
 
         double newWidth = contentBounds.getWidth();
         double newHeight = contentBounds.getHeight();
@@ -402,18 +402,18 @@ public class ViewController implements Initializable {
         double deltaY = 0;
 
         if (expandRight) {
-            newWidth += expansionStep;
+            newWidth += EXPANSION_STEP;
         }
         if (expandBottom) {
-            newHeight += expansionStep;
+            newHeight += EXPANSION_STEP;
         }
         if (expandLeft) {
-            newWidth += expansionStep;
-            deltaX = shiftOffset;
+            newWidth += EXPANSION_STEP;
+            deltaX = SHIFT_OFFSET;
         }
         if (expandTop) {
-            newHeight += expansionStep;
-            deltaY = shiftOffset;
+            newHeight += EXPANSION_STEP;
+            deltaY = SHIFT_OFFSET;
         }
 
         if (newWidth != contentBounds.getWidth() || newHeight != contentBounds.getHeight()) {
@@ -642,17 +642,17 @@ public class ViewController implements Initializable {
                 double oldVValue = scrollPane.getVvalue();
 
                 // Scroll orizzontale automatico se il mouse si avvicina ai bordi laterali
-                if (mouseX > viewportBounds.getWidth() - scrollMargin) {
-                    scrollPane.setHvalue(Math.min(1.0, oldHValue + scrollSpeed));
-                } else if (mouseX < scrollMargin) {
-                    scrollPane.setHvalue(Math.max(0.0, oldHValue - scrollSpeed));
+                if (mouseX > viewportBounds.getWidth() - SCROLL_MARGIN) {
+                    scrollPane.setHvalue(Math.min(1.0, oldHValue + SCROLL_SPEED));
+                } else if (mouseX < SCROLL_MARGIN) {
+                    scrollPane.setHvalue(Math.max(0.0, oldHValue - SCROLL_SPEED));
                 }
 
                 // Scroll verticale automatico se il mouse si avvicina ai bordi superiori/inferiori
-                if (mouseY > viewportBounds.getHeight() - scrollMargin) {
-                    scrollPane.setVvalue(Math.min(1.0, oldVValue + scrollSpeed));
-                } else if (mouseY < scrollMargin) {
-                    scrollPane.setVvalue(Math.max(0.0, oldVValue - scrollSpeed));
+                if (mouseY > viewportBounds.getHeight() - SCROLL_MARGIN) {
+                    scrollPane.setVvalue(Math.min(1.0, oldVValue + SCROLL_SPEED));
+                } else if (mouseY < SCROLL_MARGIN) {
+                    scrollPane.setVvalue(Math.max(0.0, oldVValue - SCROLL_SPEED));
                 }
 
                 // Calcola lo spostamento effettivo dello scroll e applicalo alla forma

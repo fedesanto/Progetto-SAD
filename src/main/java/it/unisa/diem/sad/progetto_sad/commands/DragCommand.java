@@ -7,7 +7,8 @@ import it.unisa.diem.sad.progetto_sad.shapes.ShapeInterface;
  */
 public class DragCommand implements Command {
     private final ShapeInterface shape;
-    private double startX, startY;
+    private final double startX;
+    private final double startY;
 
 
     /**
